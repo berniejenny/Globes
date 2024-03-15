@@ -21,7 +21,7 @@ struct GlobeSelectionView: View {
     private let globeRadius: Float = 0.035
     
     var body: some View {
-        HStack(spacing: 15) {
+        ZStack(alignment: .leading) {
             // name and author
             VStack(alignment: .leading) {
                 Text(globe.name)
@@ -34,21 +34,24 @@ struct GlobeSelectionView: View {
             }
             .padding(.leading)
             
-            Spacer(minLength: 30)
-            
-            ImmersiveGlobeView(
-                configuration: GlobeEntity.Configuration(
-                    globe: globe,
-                    position: [globeRadius, -globeRadius, globeRadius], // [x: to right, y: upwards, z: toward camera], relative to top-left view corner in scene coordinates
-                    speed: 0.3,
-                    usePreviewTexture: true,
-                    addHoverEffect: false // hover effect on the globe is potentially confusing, because the background changes color when the globe is hovered.
-                ),
-                overrideRadius: globeRadius
-            )
-            .frame(width: globeViewSize, height: globeViewSize)
-            .scaledToFit()
+            HStack {
+                Spacer()
+                
+                ImmersiveGlobeView(
+                    configuration: GlobeEntity.Configuration(
+                        globe: globe,
+                        position: [globeRadius, -globeRadius, globeRadius], // [x: to right, y: upwards, z: toward camera], relative to top-left view corner in scene coordinates
+                        speed: 0.3,
+                        usePreviewTexture: true,
+                        addHoverEffect: false // hover effect on the globe is potentially confusing, because the background changes color when the globe is hovered.
+                    ),
+                    overrideRadius: globeRadius
+                )
+                .frame(width: globeViewSize, height: globeViewSize)
+                .scaledToFit()
+            }
         }
+        
         .padding(.horizontal)
         .frame(width: 4.5 * globeViewSize, height: globeViewSize * 1.1)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20))
