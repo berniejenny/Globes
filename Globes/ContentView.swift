@@ -29,7 +29,7 @@ struct ContentView: View {
                     }
                 }
             } else {
-                // show info for selected globe
+                // show info for the selected globe
                 GlobeInfoView()
             }
             Spacer(minLength: 0)

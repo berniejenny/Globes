@@ -51,14 +51,6 @@ struct ImmersiveGlobeView: View {
             globeEntity?.update(configuration: configuration)
         }
         .placementGestures(axZoomIn: axZoomIn, axZoomOut: axZoomOut)
-//        .onChange(of: configuration.position) { _, _ in
-//            print("Position changed > update globe entity")
-//            globeEntity?.update(configuration: configuration)
-//        }
-//        .onChange(of: configuration.isPaused) { _, _ in
-//            print("isPaused changed > update globe entity")
-//            globeEntity?.update(configuration: configuration)
-//        }
     }
 }
 
