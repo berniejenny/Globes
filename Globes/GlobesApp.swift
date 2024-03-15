@@ -47,11 +47,6 @@ struct GlobesApp: App {
             if let globe = model.selectedGlobeConfiguration?.globe {
                 ImmersiveGlobeView(configuration: model.selectedGlobeConfiguration!)
                     .environment(model)
-                    .onAppear {
-                        model.selectedGlobeConfiguration?.enableGestures = true
-                        model.selectedGlobeConfiguration?.speed = 0.1
-                        model.selectedGlobeConfiguration?.position = [globe.radius, globe.radius, -(globe.radius + 0.5)]
-                    }
                     .onDisappear {
                         // handle home button press that closes the immersive view
                         model.selectedGlobeConfiguration = nil
