@@ -20,6 +20,14 @@
 		7D81B86C2BA1B6E2004C4477 /* GlobeEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D81B86B2BA1B6E2004C4477 /* GlobeEntity.swift */; };
 		7D81B86E2BA1C5EC004C4477 /* RotationSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D81B86D2BA1C5EC004C4477 /* RotationSystem.swift */; };
 		7DAF532A2B9D2D2B0037F5DF /* GlobeInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DAF53292B9D2D2B0037F5DF /* GlobeInfoView.swift */; };
+		7DCFBEF92BA4203B00B4F27C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DCFBEF82BA4203B00B4F27C /* Assets.xcassets */; };
+		7DCFBEFC2BA4203B00B4F27C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DCFBEFB2BA4203B00B4F27C /* Preview Assets.xcassets */; };
+		7DCFBF022BA420B100B4F27C /* Globe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DEAB05C2B9B0520004027B1 /* Globe.swift */; };
+		7DCFBF082BA420F400B4F27C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCFBF032BA420F400B4F27C /* ContentView.swift */; };
+		7DCFBF092BA420F400B4F27C /* GlobesMetaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCFBF042BA420F400B4F27C /* GlobesMetaApp.swift */; };
+		7DCFBF0A2BA420F400B4F27C /* GlobesMetaDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCFBF052BA420F400B4F27C /* GlobesMetaDocument.swift */; };
+		7DCFBF0B2BA420F400B4F27C /* GlobeEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCFBF062BA420F400B4F27C /* GlobeEditorView.swift */; };
+		7DCFBF0C2BA420F400B4F27C /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 7DCFBF072BA420F400B4F27C /* Credits.rtf */; };
 		7DE4FACC2BA2989B00C4B637 /* PlacementGesturesModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE4FACB2BA2989B00C4B637 /* PlacementGesturesModifier.swift */; };
 		7DE4FACE2BA2AB1200C4B637 /* GlobeEntity+Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE4FACD2BA2AB1200C4B637 /* GlobeEntity+Configuration.swift */; };
 		7DE4FAD02BA2AEF600C4B637 /* Globe+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE4FACF2BA2AEF600C4B637 /* Globe+Preview.swift */; };
@@ -46,6 +54,16 @@
 		7D81B86B2BA1B6E2004C4477 /* GlobeEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobeEntity.swift; sourceTree = "<group>"; };
 		7D81B86D2BA1C5EC004C4477 /* RotationSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RotationSystem.swift; sourceTree = "<group>"; };
 		7DAF53292B9D2D2B0037F5DF /* GlobeInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobeInfoView.swift; sourceTree = "<group>"; };
+		7DCFBEF02BA4203900B4F27C /* Globes Meta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Globes Meta.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7DCFBEF82BA4203B00B4F27C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7DCFBEFB2BA4203B00B4F27C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		7DCFBEFD2BA4203B00B4F27C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7DCFBEFE2BA4203B00B4F27C /* Globes_Meta.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Globes_Meta.entitlements; sourceTree = "<group>"; };
+		7DCFBF032BA420F400B4F27C /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		7DCFBF042BA420F400B4F27C /* GlobesMetaApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobesMetaApp.swift; sourceTree = "<group>"; };
+		7DCFBF052BA420F400B4F27C /* GlobesMetaDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobesMetaDocument.swift; sourceTree = "<group>"; };
+		7DCFBF062BA420F400B4F27C /* GlobeEditorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobeEditorView.swift; sourceTree = "<group>"; };
+		7DCFBF072BA420F400B4F27C /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		7DE4FACB2BA2989B00C4B637 /* PlacementGesturesModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlacementGesturesModifier.swift; sourceTree = "<group>"; };
 		7DE4FACD2BA2AB1200C4B637 /* GlobeEntity+Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GlobeEntity+Configuration.swift"; sourceTree = "<group>"; };
 		7DE4FACF2BA2AEF600C4B637 /* Globe+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Globe+Preview.swift"; sourceTree = "<group>"; };
@@ -61,6 +79,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		7DCFBEED2BA4203900B4F27C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7DEAB0412B9B04C2004027B1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -84,11 +109,36 @@
 			path = Textures;
 			sourceTree = "<group>";
 		};
+		7DCFBEF12BA4203900B4F27C /* Globes Meta */ = {
+			isa = PBXGroup;
+			children = (
+				7DCFBF032BA420F400B4F27C /* ContentView.swift */,
+				7DCFBF062BA420F400B4F27C /* GlobeEditorView.swift */,
+				7DCFBF042BA420F400B4F27C /* GlobesMetaApp.swift */,
+				7DCFBF052BA420F400B4F27C /* GlobesMetaDocument.swift */,
+				7DCFBEF82BA4203B00B4F27C /* Assets.xcassets */,
+				7DCFBEFD2BA4203B00B4F27C /* Info.plist */,
+				7DCFBF072BA420F400B4F27C /* Credits.rtf */,
+				7DCFBEFE2BA4203B00B4F27C /* Globes_Meta.entitlements */,
+				7DCFBEFA2BA4203B00B4F27C /* Preview Content */,
+			);
+			path = "Globes Meta";
+			sourceTree = "<group>";
+		};
+		7DCFBEFA2BA4203B00B4F27C /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				7DCFBEFB2BA4203B00B4F27C /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 		7DEAB03B2B9B04C2004027B1 = {
 			isa = PBXGroup;
 			children = (
 				7DEAB0462B9B04C2004027B1 /* Globes */,
 				7DEAB0472B9B04C2004027B1 /* Packages */,
+				7DCFBEF12BA4203900B4F27C /* Globes Meta */,
 				7DEAB0452B9B04C2004027B1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -97,6 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				7DEAB0442B9B04C2004027B1 /* Globes.app */,
+				7DCFBEF02BA4203900B4F27C /* Globes Meta.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -145,6 +196,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		7DCFBEEF2BA4203900B4F27C /* Globes Meta */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7DCFBF012BA4203B00B4F27C /* Build configuration list for PBXNativeTarget "Globes Meta" */;
+			buildPhases = (
+				7DCFBEEC2BA4203900B4F27C /* Sources */,
+				7DCFBEED2BA4203900B4F27C /* Frameworks */,
+				7DCFBEEE2BA4203900B4F27C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Globes Meta";
+			productName = "Globes Meta";
+			productReference = 7DCFBEF02BA4203900B4F27C /* Globes Meta.app */;
+			productType = "com.apple.product-type.application";
+		};
 		7DEAB0432B9B04C2004027B1 /* Globes */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7DEAB0592B9B04C4004027B1 /* Build configuration list for PBXNativeTarget "Globes" */;
@@ -174,6 +242,9 @@
 				LastSwiftUpdateCheck = 1530;
 				LastUpgradeCheck = 1530;
 				TargetAttributes = {
+					7DCFBEEF2BA4203900B4F27C = {
+						CreatedOnToolsVersion = 15.3;
+					};
 					7DEAB0432B9B04C2004027B1 = {
 						CreatedOnToolsVersion = 15.3;
 					};
@@ -193,11 +264,22 @@
 			projectRoot = "";
 			targets = (
 				7DEAB0432B9B04C2004027B1 /* Globes */,
+				7DCFBEEF2BA4203900B4F27C /* Globes Meta */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		7DCFBEEE2BA4203900B4F27C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7DCFBEFC2BA4203B00B4F27C /* Preview Assets.xcassets in Resources */,
+				7DCFBF0C2BA420F400B4F27C /* Credits.rtf in Resources */,
+				7DCFBEF92BA4203B00B4F27C /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7DEAB0422B9B04C2004027B1 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -218,6 +300,18 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		7DCFBEEC2BA4203900B4F27C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7DCFBF092BA420F400B4F27C /* GlobesMetaApp.swift in Sources */,
+				7DCFBF0B2BA420F400B4F27C /* GlobeEditorView.swift in Sources */,
+				7DCFBF0A2BA420F400B4F27C /* GlobesMetaDocument.swift in Sources */,
+				7DCFBF082BA420F400B4F27C /* ContentView.swift in Sources */,
+				7DCFBF022BA420B100B4F27C /* Globe.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7DEAB0402B9B04C2004027B1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -241,6 +335,68 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		7DCFBEFF2BA4203B00B4F27C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Globes Meta/Globes_Meta.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Globes Meta/Preview Content\"";
+				DEVELOPMENT_TEAM = L8FKNLG3XM;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Globes Meta/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2024 Monash University";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "edu.monash.Globes-Meta";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		7DCFBF002BA4203B00B4F27C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Globes Meta/Globes_Meta.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Globes Meta/Preview Content\"";
+				DEVELOPMENT_TEAM = L8FKNLG3XM;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Globes Meta/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2024 Monash University";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "edu.monash.Globes-Meta";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		7DEAB0572B9B04C4004027B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -415,6 +571,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		7DCFBF012BA4203B00B4F27C /* Build configuration list for PBXNativeTarget "Globes Meta" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7DCFBEFF2BA4203B00B4F27C /* Debug */,
+				7DCFBF002BA4203B00B4F27C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		7DEAB03F2B9B04C2004027B1 /* Build configuration list for PBXProject "Globes" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
