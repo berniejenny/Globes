@@ -14,7 +14,9 @@ struct GlobeSelectionView: View {
     
     let globe: Globe
     
-    private let globeViewSize: CGFloat = 100
+    private static let globeViewSize: CGFloat = 100
+    private static let height = 1.1 * globeViewSize
+    private let cornerRadius: CGFloat = 20
     
     /// Radius of preview globe in meter
 #warning("This could be derived from the view geometry size")
@@ -47,16 +49,15 @@ struct GlobeSelectionView: View {
                     ),
                     overrideRadius: globeRadius
                 )
-                .frame(width: globeViewSize, height: globeViewSize)
+                .frame(width: Self.globeViewSize, height: Self.globeViewSize)
                 .scaledToFit()
             }
         }
         
-        .padding(.horizontal)
-        .frame(width: 4.5 * globeViewSize, height: globeViewSize * 1.1)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20))
+        .frame(height: Self.height)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: cornerRadius))
         .hoverEffect()
-        .glassBackgroundEffect(in: RoundedRectangle(cornerRadius: 15))
+        .glassBackgroundEffect(in: RoundedRectangle(cornerRadius: cornerRadius))
         .onTapGesture {
             let configuration = GlobeEntity.Configuration(
                 globe: globe,

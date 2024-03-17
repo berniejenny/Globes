@@ -25,12 +25,12 @@ struct GlobeInfoView: View {
                 ScrollView(.vertical) {
                     Text(description)
                         .multilineTextAlignment(.leading)
-                        .frame(width: 450)
                 }
             }
             if let infoURL = globe.infoURL {
-                let label = infoURL.absoluteString.contains("davidrumsey.com") ? "Open David Rumsey Map Collection" : "Open Webpage"
+                let label = infoURL.absoluteString.contains("davidrumsey.com") ? "Open David Rumsey Map Collection Webpage" : "Open Webpage"
                 Link(label, destination: infoURL)
+                    .padding(.bottom)
             }
         }
         .ornament(attachmentAnchor: .scene(.bottom)) {
