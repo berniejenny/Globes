@@ -23,17 +23,23 @@ struct ContentView: View {
         VStack {
             if model.selectedGlobeConfiguration == nil {
                 // no globe currently selected, show list of globes
-                ScrollView {
-                    ForEach(globes) { globe in
-                        GlobeSelectionView(globe: globe)
+                ScrollView(.vertical) {
+                    VStack(spacing: 6) {
+                        ForEach(globes) { globe in
+                            GlobeSelectionView(globe: globe)
+                        }
                     }
+                    .scrollTargetLayout() // for scrollTargetBehavior
                 }
+                .scrollTargetBehavior(.viewAligned) // align views with border of scroll view
+                .scrollIndicators(.never)
             } else {
                 // show info for the selected globe
                 GlobeInfoView()
             }
             Spacer(minLength: 0)
         }
+        .frame(width: 400)
         .padding(40)
         
         .onChange(of: selectedGlobe) { _, newSelectedGlobe in
@@ -62,7 +68,7 @@ struct ContentView: View {
 }
 
 #Preview(windowStyle: .automatic) {
-    ContentView(globes: [Globe.preview, Globe.preview, Globe.preview])
+    ContentView(globes: Globe.previewGlobes + Globe.previewGlobes)
         .environment(ViewModel.preview)
     
 }
