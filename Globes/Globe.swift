@@ -37,9 +37,36 @@ struct Globe: Identifiable, Equatable, Hashable, Codable {
     /// Full resolution texture image without file extension
     var texture: String
     
-    /// Low resolution texture image without file extension
-    var previewTexture: String
-        
+    /// Low resolution texture image without file extension is the texture file name + `_preview`
+    var previewTexture: String { texture + "_preview" }
+    
+    /// Custom coding keys to avoid encoding `id`.
+    enum CodingKeys: String, CodingKey {
+        case name
+        case nameTranslated
+        case authorSurname
+        case authorFirstName
+        case date
+        case description
+        case infoURL
+        case radius
+        case texture
+    }
+    
+    init(from decoder:Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = UUID()
+        self.name = try values.decode(String.self, forKey: .name)
+        self.nameTranslated = try? values.decode(String.self, forKey: .nameTranslated)
+        self.authorSurname = try? values.decode(String.self, forKey: .authorSurname)
+        self.authorFirstName = try? values.decode(String.self, forKey: .authorFirstName)
+        self.date = try? values.decode(String.self, forKey: .date)
+        self.description = try? values.decode(String.self, forKey: .description)
+        self.infoURL = try? values.decode(URL.self, forKey: .infoURL)
+        self.radius = try values.decode(Float.self, forKey: .radius)
+        self.texture = try values.decode(String.self, forKey: .texture)
+    }
+    
     init(
         name: String = "Unnamed Globe",
         nameTranslated: String? = nil,
@@ -49,8 +76,7 @@ struct Globe: Identifiable, Equatable, Hashable, Codable {
         description: String? = nil,
         infoURL: URL? = nil,
         radius: Float = 0.3,
-        texture: String = "",
-        previewTexture: String = ""
+        texture: String = ""
     ) {
         self.id = UUID()
         self.name = name
@@ -62,7 +88,6 @@ struct Globe: Identifiable, Equatable, Hashable, Codable {
         self.infoURL = infoURL
         self.radius = radius
         self.texture = texture
-        self.previewTexture = previewTexture
     }
     
     /// A string with all authors separated by commas.

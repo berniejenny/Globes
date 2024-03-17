@@ -14,7 +14,7 @@ struct ContentView: View {
     
     private var selectedGlobe: Binding<Globe> {
         Binding(get: {
-            document.globes.first(where: { $0.id == selectedGlobeId }) ?? Globe(name: "", radius: 0, texture: "", previewTexture: "")
+            document.globes.first(where: { $0.id == selectedGlobeId }) ?? Globe(name: "", radius: 0, texture: "")
         }, set: { globe in
             guard let index = document.globes.firstIndex(where: { $0.id == selectedGlobeId }) else { return }
             if document.globes[index] != globe {
@@ -72,7 +72,7 @@ struct ContentView: View {
     }
     
     private func addGlobe() {
-        let globe = Globe(name: "Unnamed Globe", radius: 0.3, texture: "", previewTexture: "")
+        let globe = Globe(name: "Unnamed Globe", radius: 0.3, texture: "")
         let index = document.globes.firstIndex(where: { $0.id == selectedGlobeId }) ?? document.globes.endIndex - 1
         document.globes.insert(globe, at: index + 1)
         select(globe: globe.id)
