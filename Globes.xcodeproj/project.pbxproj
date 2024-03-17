@@ -7,16 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7D6E110C2BA6C81C00C2BCD0 /* Pardies_Celestial_6900023.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11072BA6C81B00C2BCD0 /* Pardies_Celestial_6900023.jpg */; };
+		7D6E110D2BA6C81C00C2BCD0 /* Bellerby65cmSchminkeGagarin16k.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin16k.jpg */; };
+		7D6E110E2BA6C81C00C2BCD0 /* TharpOceanFloor4black_16k.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11092BA6C81B00C2BCD0 /* TharpOceanFloor4black_16k.jpg */; };
+		7D6E110F2BA6C81C00C2BCD0 /* Coronelli_Terrestrial_10070028.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E110A2BA6C81C00C2BCD0 /* Coronelli_Terrestrial_10070028.jpg */; };
+		7D6E11102BA6C81C00C2BCD0 /* Behaim_12237025.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E110B2BA6C81C00C2BCD0 /* Behaim_12237025.jpg */; };
 		7D7464382BA3A0A600182871 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7464372BA3A0A600182871 /* ViewModel.swift */; };
 		7D74643A2BA3C16F00182871 /* ViewModel+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7464392BA3C16F00182871 /* ViewModel+Preview.swift */; };
 		7D74643C2BA3CCE200182871 /* NE1_50M_SR_W.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D74643B2BA3CCE200182871 /* NE1_50M_SR_W.jpg */; };
 		7D81B85D2BA123B5004C4477 /* Globes.json in Resources */ = {isa = PBXBuildFile; fileRef = 7D81B85C2BA123B5004C4477 /* Globes.json */; };
 		7D81B85F2BA13A53004C4477 /* UrbanoMonte_10130093.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D81B85E2BA13A53004C4477 /* UrbanoMonte_10130093.jpg */; };
-		7D81B8652BA13DA8004C4477 /* Coronelli_Terrestrial_10070028.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D81B8612BA13DA8004C4477 /* Coronelli_Terrestrial_10070028.jpg */; };
-		7D81B8662BA13DA8004C4477 /* TharpOceanFloor4black_16k.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D81B8622BA13DA8004C4477 /* TharpOceanFloor4black_16k.jpg */; };
-		7D81B8672BA13DA8004C4477 /* Bellerby65cmSchminkeGagarin16k.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D81B8632BA13DA8004C4477 /* Bellerby65cmSchminkeGagarin16k.jpg */; };
-		7D81B8682BA13DA8004C4477 /* Behaim_12237025.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D81B8642BA13DA8004C4477 /* Behaim_12237025.jpg */; };
-		7D81B86A2BA15BAA004C4477 /* Pardies_Celestial_6900023.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D81B8692BA15BAA004C4477 /* Pardies_Celestial_6900023.jpg */; };
 		7D81B86C2BA1B6E2004C4477 /* GlobeEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D81B86B2BA1B6E2004C4477 /* GlobeEntity.swift */; };
 		7D81B86E2BA1C5EC004C4477 /* RotationSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D81B86D2BA1C5EC004C4477 /* RotationSystem.swift */; };
 		7DAF532A2B9D2D2B0037F5DF /* GlobeInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DAF53292B9D2D2B0037F5DF /* GlobeInfoView.swift */; };
@@ -41,16 +41,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7D6E11072BA6C81B00C2BCD0 /* Pardies_Celestial_6900023.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Pardies_Celestial_6900023.jpg; sourceTree = "<group>"; };
+		7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin16k.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Bellerby65cmSchminkeGagarin16k.jpg; sourceTree = "<group>"; };
+		7D6E11092BA6C81B00C2BCD0 /* TharpOceanFloor4black_16k.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = TharpOceanFloor4black_16k.jpg; sourceTree = "<group>"; };
+		7D6E110A2BA6C81C00C2BCD0 /* Coronelli_Terrestrial_10070028.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Coronelli_Terrestrial_10070028.jpg; sourceTree = "<group>"; };
+		7D6E110B2BA6C81C00C2BCD0 /* Behaim_12237025.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Behaim_12237025.jpg; sourceTree = "<group>"; };
 		7D7464372BA3A0A600182871 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		7D7464392BA3C16F00182871 /* ViewModel+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModel+Preview.swift"; sourceTree = "<group>"; };
 		7D74643B2BA3CCE200182871 /* NE1_50M_SR_W.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = NE1_50M_SR_W.jpg; path = "../../../Textures/Test Textures/NE1_50M_SR_W.jpg"; sourceTree = "<group>"; };
 		7D81B85C2BA123B5004C4477 /* Globes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Globes.json; sourceTree = SOURCE_ROOT; };
 		7D81B85E2BA13A53004C4477 /* UrbanoMonte_10130093.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = UrbanoMonte_10130093.jpg; sourceTree = "<group>"; };
-		7D81B8612BA13DA8004C4477 /* Coronelli_Terrestrial_10070028.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Coronelli_Terrestrial_10070028.jpg; path = "../../../Textures/2024-3-12 David Rumsey/Coronelli_Terrestrial_10070028.jpg"; sourceTree = "<group>"; };
-		7D81B8622BA13DA8004C4477 /* TharpOceanFloor4black_16k.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TharpOceanFloor4black_16k.jpg; path = "../../../Textures/2024-3-12 David Rumsey/TharpOceanFloor4black_16k.jpg"; sourceTree = "<group>"; };
-		7D81B8632BA13DA8004C4477 /* Bellerby65cmSchminkeGagarin16k.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Bellerby65cmSchminkeGagarin16k.jpg; path = "../../../Textures/2024-3-12 David Rumsey/Bellerby65cmSchminkeGagarin16k.jpg"; sourceTree = "<group>"; };
-		7D81B8642BA13DA8004C4477 /* Behaim_12237025.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Behaim_12237025.jpg; path = "../../../Textures/2024-3-12 David Rumsey/Behaim_12237025.jpg"; sourceTree = "<group>"; };
-		7D81B8692BA15BAA004C4477 /* Pardies_Celestial_6900023.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Pardies_Celestial_6900023.jpg; path = "../../../Textures/2024-3-12 David Rumsey/Pardies_Celestial_6900023.jpg"; sourceTree = "<group>"; };
 		7D81B86B2BA1B6E2004C4477 /* GlobeEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobeEntity.swift; sourceTree = "<group>"; };
 		7D81B86D2BA1C5EC004C4477 /* RotationSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RotationSystem.swift; sourceTree = "<group>"; };
 		7DAF53292B9D2D2B0037F5DF /* GlobeInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobeInfoView.swift; sourceTree = "<group>"; };
@@ -99,11 +99,11 @@
 		7D81B8602BA13D67004C4477 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
-				7D81B8642BA13DA8004C4477 /* Behaim_12237025.jpg */,
-				7D81B8632BA13DA8004C4477 /* Bellerby65cmSchminkeGagarin16k.jpg */,
-				7D81B8612BA13DA8004C4477 /* Coronelli_Terrestrial_10070028.jpg */,
-				7D81B8692BA15BAA004C4477 /* Pardies_Celestial_6900023.jpg */,
-				7D81B8622BA13DA8004C4477 /* TharpOceanFloor4black_16k.jpg */,
+				7D6E110B2BA6C81C00C2BCD0 /* Behaim_12237025.jpg */,
+				7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin16k.jpg */,
+				7D6E110A2BA6C81C00C2BCD0 /* Coronelli_Terrestrial_10070028.jpg */,
+				7D6E11072BA6C81B00C2BCD0 /* Pardies_Celestial_6900023.jpg */,
+				7D6E11092BA6C81B00C2BCD0 /* TharpOceanFloor4black_16k.jpg */,
 				7D81B85E2BA13A53004C4477 /* UrbanoMonte_10130093.jpg */,
 			);
 			path = Textures;
@@ -284,16 +284,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D81B8682BA13DA8004C4477 /* Behaim_12237025.jpg in Resources */,
 				7DEAB0552B9B04C4004027B1 /* Preview Assets.xcassets in Resources */,
+				7D6E11102BA6C81C00C2BCD0 /* Behaim_12237025.jpg in Resources */,
 				7D74643C2BA3CCE200182871 /* NE1_50M_SR_W.jpg in Resources */,
-				7D81B8672BA13DA8004C4477 /* Bellerby65cmSchminkeGagarin16k.jpg in Resources */,
+				7D6E110F2BA6C81C00C2BCD0 /* Coronelli_Terrestrial_10070028.jpg in Resources */,
+				7D6E110C2BA6C81C00C2BCD0 /* Pardies_Celestial_6900023.jpg in Resources */,
 				7DEAB0522B9B04C4004027B1 /* Assets.xcassets in Resources */,
-				7D81B8662BA13DA8004C4477 /* TharpOceanFloor4black_16k.jpg in Resources */,
 				7D81B85F2BA13A53004C4477 /* UrbanoMonte_10130093.jpg in Resources */,
+				7D6E110E2BA6C81C00C2BCD0 /* TharpOceanFloor4black_16k.jpg in Resources */,
+				7D6E110D2BA6C81C00C2BCD0 /* Bellerby65cmSchminkeGagarin16k.jpg in Resources */,
 				7D81B85D2BA123B5004C4477 /* Globes.json in Resources */,
-				7D81B86A2BA15BAA004C4477 /* Pardies_Celestial_6900023.jpg in Resources */,
-				7D81B8652BA13DA8004C4477 /* Coronelli_Terrestrial_10070028.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
