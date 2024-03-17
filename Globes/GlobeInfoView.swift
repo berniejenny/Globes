@@ -22,9 +22,11 @@ struct GlobeInfoView: View {
                     .font(.headline)
             }
             if let description = globe.description {
-                Text(description)
-                    .multilineTextAlignment(.leading)
-                    .frame(width: 450)
+                ScrollView(.vertical) {
+                    Text(description)
+                        .multilineTextAlignment(.leading)
+                        .frame(width: 450)
+                }
             }
             if let infoURL = globe.infoURL {
                 let label = infoURL.absoluteString.contains("davidrumsey.com") ? "Open David Rumsey Map Collection" : "Open Webpage"
