@@ -14,7 +14,6 @@
 		7D6E11102BA6C81C00C2BCD0 /* Behaim_12237025.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E110B2BA6C81C00C2BCD0 /* Behaim_12237025.jpg */; };
 		7D7464382BA3A0A600182871 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7464372BA3A0A600182871 /* ViewModel.swift */; };
 		7D74643A2BA3C16F00182871 /* ViewModel+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7464392BA3C16F00182871 /* ViewModel+Preview.swift */; };
-		7D74643C2BA3CCE200182871 /* NE1_50M_SR_W.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D74643B2BA3CCE200182871 /* NE1_50M_SR_W.jpg */; };
 		7D81B85D2BA123B5004C4477 /* Globes.json in Resources */ = {isa = PBXBuildFile; fileRef = 7D81B85C2BA123B5004C4477 /* Globes.json */; };
 		7D81B85F2BA13A53004C4477 /* UrbanoMonte_10130093.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D81B85E2BA13A53004C4477 /* UrbanoMonte_10130093.jpg */; };
 		7D81B86C2BA1B6E2004C4477 /* GlobeEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D81B86B2BA1B6E2004C4477 /* GlobeEntity.swift */; };
@@ -50,7 +49,6 @@
 		7D6E110B2BA6C81C00C2BCD0 /* Behaim_12237025.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Behaim_12237025.jpg; sourceTree = "<group>"; };
 		7D7464372BA3A0A600182871 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		7D7464392BA3C16F00182871 /* ViewModel+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModel+Preview.swift"; sourceTree = "<group>"; };
-		7D74643B2BA3CCE200182871 /* NE1_50M_SR_W.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = NE1_50M_SR_W.jpg; path = "../../../Textures/Test Textures/NE1_50M_SR_W.jpg"; sourceTree = "<group>"; };
 		7D81B85C2BA123B5004C4477 /* Globes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Globes.json; sourceTree = SOURCE_ROOT; };
 		7D81B85E2BA13A53004C4477 /* UrbanoMonte_10130093.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = UrbanoMonte_10130093.jpg; sourceTree = "<group>"; };
 		7D81B86B2BA1B6E2004C4477 /* GlobeEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobeEntity.swift; sourceTree = "<group>"; };
@@ -186,7 +184,6 @@
 				7DEAB0542B9B04C4004027B1 /* Preview Assets.xcassets */,
 				7DE4FACF2BA2AEF600C4B637 /* Globe+Preview.swift */,
 				7D7464392BA3C16F00182871 /* ViewModel+Preview.swift */,
-				7D74643B2BA3CCE200182871 /* NE1_50M_SR_W.jpg */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -285,7 +282,6 @@
 				7DEAB0552B9B04C4004027B1 /* Preview Assets.xcassets in Resources */,
 				7D6E11102BA6C81C00C2BCD0 /* Behaim_12237025.jpg in Resources */,
 				7D8CD0DF2BA6CC630053B32D /* HenzeWorld.jpg in Resources */,
-				7D74643C2BA3CCE200182871 /* NE1_50M_SR_W.jpg in Resources */,
 				7D8CD0E02BA6CC630053B32D /* Cassini_Celestial_5750000.jpg in Resources */,
 				7D6E110F2BA6C81C00C2BCD0 /* Coronelli_Terrestrial_10070028.jpg in Resources */,
 				7D6E110C2BA6C81C00C2BCD0 /* Pardies_Celestial_6900023.jpg in Resources */,
