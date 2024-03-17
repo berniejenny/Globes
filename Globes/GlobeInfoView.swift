@@ -59,12 +59,12 @@ struct GlobeInfoView: View {
             .padding()
             .help("Hide the Globe")
             
-            Button(action: resetGlobeSize) {
-                Label("Hide Globe", systemImage: "circle.circle")
-                    .labelStyle(.iconOnly)
-            }
-            .padding()
-            .help("Reset the Original Size")
+//            Button(action: resetGlobeSize) {
+//                Label("Reset Size", systemImage: "circle.circle")
+//                    .labelStyle(.iconOnly)
+//            }
+//            .padding()
+//            .help("Reset to the Original Size")
             
             Toggle(isOn: isPausedBinding) {
                 Label("Rotate Globe", systemImage: "arrow.counterclockwise")
@@ -74,12 +74,12 @@ struct GlobeInfoView: View {
             .padding()
             .help(isPausedBinding.wrappedValue ? "Rotate the Globe" : "Pause Globe Rotation")
             
-            Button(action: resetGlobeOrientation) {
-                Label("Orient Globe", systemImage: "location.north")
-                    .labelStyle(.iconOnly)
-            }
-            .padding()
-            .help("Orient the Globe")
+//            Button(action: resetGlobeOrientation) {
+//                Label("Orient Globe", systemImage: "location.north")
+//                    .labelStyle(.iconOnly)
+//            }
+//            .padding()
+//            .help("Orient the Globe")
         }
     }
     
