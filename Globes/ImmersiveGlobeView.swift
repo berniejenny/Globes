@@ -5,6 +5,7 @@
 //  Created by Bernhard Jenny on 8/3/2024.
 //
 
+import os
 import RealityKit
 import SwiftUI
 
@@ -22,30 +23,32 @@ struct ImmersiveGlobeView: View {
     var overrideRadius: Float? = nil
     private var radius: Float { overrideRadius ?? configuration.globe.radius }
    
+    private func statusLog(_ message: String, globeName: String, category: String) {
+        let logger = Logger(subsystem: "Immersive Globe View", category: category)
+        logger.info("\(message) \"\(globeName)\"" )
+    }
+    
     var body: some View {
         RealityView { content in
-            print("* Make", configuration.globe.name)
+            statusLog("Make", globeName: configuration.globe.name, category: "RealityView.make")
             let globeEntity = await GlobeEntity(
                 radius: radius,
                 configuration: configuration
             )
-            print("\tAdd globe:", globeEntity.name)
             content.add(globeEntity)
             self.globeEntity = globeEntity
         } update: { content in
-            print("* Update", configuration.globe.name)
-            
             // if the globe changed, remove the old entity and add the new entity
             if let oldGlobeEntity = content.entities.first(where: { $0 is GlobeEntity }),
                oldGlobeEntity.name != configuration.globe.name {
-                print("Remove", oldGlobeEntity.name)
+                statusLog("Update: Remove", globeName: oldGlobeEntity.name, category: "RealityView.update")
                 content.remove(oldGlobeEntity)
             }
             
             // add the globe if there is none
             if content.entities.first(where: {$0 is GlobeEntity }) == nil,
                 let globeEntity {
-                print("\tAdd globe:", globeEntity.name)
+                statusLog("Update: Add globe", globeName: globeEntity.name, category: "RealityView.update")
                 content.add(globeEntity)
             }
             globeEntity?.update(configuration: configuration)
