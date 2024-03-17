@@ -23,4 +23,15 @@ extension Globe {
             previewTexture: "NE1_50M_SR_W_1024"
         )
     }
+
+    /// Globes loaded from Globes.json
+    static var previewGlobes: [Globe] {
+        do {
+            let url = Bundle.main.url(forResource: "Globes", withExtension: "json")!
+            let data = try Data(contentsOf: url)
+            return try JSONDecoder().decode([Globe].self, from: data)
+        } catch {
+            fatalError("An error occurred when loading Globes.json from the bundle: \(error.localizedDescription)")
+        }
+    }
 }
