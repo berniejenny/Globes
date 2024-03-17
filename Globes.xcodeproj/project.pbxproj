@@ -137,7 +137,6 @@
 			isa = PBXGroup;
 			children = (
 				7DEAB0462B9B04C2004027B1 /* Globes */,
-				7DEAB0472B9B04C2004027B1 /* Packages */,
 				7DCFBEF12BA4203900B4F27C /* Globes Meta */,
 				7DEAB0452B9B04C2004027B1 /* Products */,
 			);
@@ -173,13 +172,6 @@
 				7DEAB0532B9B04C4004027B1 /* Preview Content */,
 			);
 			path = Globes;
-			sourceTree = "<group>";
-		};
-		7DEAB0472B9B04C2004027B1 /* Packages */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Packages;
 			sourceTree = "<group>";
 		};
 		7DEAB0532B9B04C4004027B1 /* Preview Content */ = {
