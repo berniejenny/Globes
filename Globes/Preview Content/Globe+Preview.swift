@@ -19,8 +19,7 @@ extension Globe {
             description: "Natural Earth is a public domain map dataset available at 1:10m, 1:50m, and 1:110 million scales. Featuring tightly integrated vector and raster data, with Natural Earth you can make a variety of visually pleasing, well-crafted maps with cartography or GIS software.",
             infoURL: URL(string: "https://www.naturalearthdata.com"),
             radius: 0.4,
-            texture: "NE1_50M_SR_W",
-            previewTexture: "NE1_50M_SR_W_1024"
+            texture: "NE1_50M_SR_W"
         )
     }
 

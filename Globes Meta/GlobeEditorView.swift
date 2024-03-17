@@ -72,9 +72,8 @@ struct GlobeEditorView: View {
                 }
                 Spacer()
                 Section("Texture") {
-                    TextField("Detailed", text: $globe.texture)
-                    TextField("Preview", text: $globe.previewTexture)
-                    Text("Enter texture and preview texture image names without file extensions.")
+                    TextField("File Name", text: $globe.texture)
+                    Text("Texture image name without \".jpg\" file extension.")
                         .font(.caption)
                 }
                 Spacer()
@@ -88,6 +87,6 @@ struct GlobeEditorView: View {
 }
 
 #Preview {
-    let globe = Globe(name: "", radius: 1.23, texture: "Texture_file_name", previewTexture: "texture preview")
+    let globe = Globe(name: "", radius: 1.23, texture: "Texture_file_name")
     return GlobeEditorView(globe: .constant(globe))
 }
