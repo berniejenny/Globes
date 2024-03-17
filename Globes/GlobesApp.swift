@@ -44,8 +44,8 @@ struct GlobesApp: App {
         
         // immersive globe space
         ImmersiveSpace(id: "ImmersiveGlobeSpace") {
-            if let globe = model.selectedGlobeConfiguration?.globe {
-                ImmersiveGlobeView(configuration: model.selectedGlobeConfiguration!)
+            if let configuration = model.selectedGlobeConfiguration {
+                ImmersiveGlobeView(configuration: configuration)
                     .environment(model)
                     .onDisappear {
                         // handle home button press that closes the immersive view
