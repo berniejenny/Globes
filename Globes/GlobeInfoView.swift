@@ -104,9 +104,11 @@ struct GlobeInfoView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     GlobeInfoView()
         .padding(60)
         .glassBackgroundEffect()
         .environment(ViewModel.previewWithSelectedGlobe)
 }
+#endif

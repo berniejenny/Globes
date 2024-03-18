@@ -67,8 +67,10 @@ struct ContentView: View {
     }
 }
 
+#if DEBUG
 #Preview(windowStyle: .automatic) {
     ContentView(globes: Globe.previewGlobes + Globe.previewGlobes)
         .environment(ViewModel.preview)
     
 }
+#endif
