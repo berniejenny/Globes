@@ -53,7 +53,7 @@ struct ImmersiveGlobeView: View {
             }
             globeEntity?.update(configuration: configuration)
         }
-        .placementGestures(axZoomIn: axZoomIn, axZoomOut: axZoomOut)
+        .placementGestures(globeEntity: globeEntity, axZoomIn: axZoomIn, axZoomOut: axZoomOut)
     }
 }
 
