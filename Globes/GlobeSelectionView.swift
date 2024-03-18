@@ -74,7 +74,9 @@ struct GlobeSelectionView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     GlobeSelectionView(globe: Globe.preview)
         .environment(ViewModel.preview)
 }
+#endif

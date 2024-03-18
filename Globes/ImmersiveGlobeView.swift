@@ -57,6 +57,8 @@ struct ImmersiveGlobeView: View {
     }
 }
 
+#if DEBUG
 #Preview(immersionStyle: .mixed) {
     ImmersiveGlobeView(configuration: .init(globe: Globe.preview))
 }
+#endif
