@@ -56,6 +56,18 @@ class GlobeEntity: Entity {
             relativeTo: parent)
     }
     
+    func update(position: SIMD3<Float>) {
+        self.modelEntity.position = position
+    }
+    
+    func update(scale: SIMD3<Float>) {
+        self.modelEntity.scale = scale
+    }
+    
+    func rotate(rotation: simd_quatf) {
+        self.modelEntity.orientation *= rotation
+    }
+    
     /// Load texture material from app bundle (for full resolution) or assets store (for preview globes).
     private func loadMaterial(configuration: Configuration) -> RealityKit.Material {
         let globe = configuration.globe
