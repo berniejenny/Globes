@@ -73,6 +73,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
+      customArchiveName = "Globes"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>
