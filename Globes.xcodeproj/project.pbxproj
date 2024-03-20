@@ -39,6 +39,9 @@
 		7DEAB0552B9B04C4004027B1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DEAB0542B9B04C4004027B1 /* Preview Assets.xcassets */; };
 		7DEAB05D2B9B0520004027B1 /* Globe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DEAB05C2B9B0520004027B1 /* Globe.swift */; };
 		7DEAB0612B9B1D55004027B1 /* GlobeSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DEAB0602B9B1D55004027B1 /* GlobeSelectionView.swift */; };
+		7DFE488D2BAA957600DE6DB4 /* IntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFE488C2BAA957600DE6DB4 /* IntroView.swift */; };
+		7DFE488F2BAAB76D00DE6DB4 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFE488E2BAAB76D00DE6DB4 /* AboutView.swift */; };
+		7DFE48912BAAF18000DE6DB4 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFE48902BAAF18000DE6DB4 /* WebView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -78,6 +81,9 @@
 		7DEAB0562B9B04C4004027B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7DEAB05C2B9B0520004027B1 /* Globe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Globe.swift; sourceTree = "<group>"; };
 		7DEAB0602B9B1D55004027B1 /* GlobeSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobeSelectionView.swift; sourceTree = "<group>"; };
+		7DFE488C2BAA957600DE6DB4 /* IntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroView.swift; sourceTree = "<group>"; };
+		7DFE488E2BAAB76D00DE6DB4 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		7DFE48902BAAF18000DE6DB4 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +168,7 @@
 				7D7464372BA3A0A600182871 /* ViewModel.swift */,
 				7DEAB04B2B9B04C2004027B1 /* GlobesApp.swift */,
 				7DEAB04D2B9B04C2004027B1 /* ContentView.swift */,
+				7DFE488C2BAA957600DE6DB4 /* IntroView.swift */,
 				7DEAB0602B9B1D55004027B1 /* GlobeSelectionView.swift */,
 				7DAF53292B9D2D2B0037F5DF /* GlobeInfoView.swift */,
 				7DEAB04F2B9B04C2004027B1 /* ImmersiveGlobeView.swift */,
@@ -169,6 +176,8 @@
 				7DE4FACD2BA2AB1200C4B637 /* GlobeEntity+Configuration.swift */,
 				7D81B86D2BA1C5EC004C4477 /* RotationSystem.swift */,
 				7DE4FACB2BA2989B00C4B637 /* PlacementGesturesModifier.swift */,
+				7DFE488E2BAAB76D00DE6DB4 /* AboutView.swift */,
+				7DFE48902BAAF18000DE6DB4 /* WebView.swift */,
 				7DEAB0512B9B04C4004027B1 /* Assets.xcassets */,
 				7DEAB0562B9B04C4004027B1 /* Info.plist */,
 				7D81B85C2BA123B5004C4477 /* Globes.json */,
@@ -313,12 +322,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				7D81B86C2BA1B6E2004C4477 /* GlobeEntity.swift in Sources */,
+				7DFE48912BAAF18000DE6DB4 /* WebView.swift in Sources */,
 				7DEAB0612B9B1D55004027B1 /* GlobeSelectionView.swift in Sources */,
 				7DEAB04E2B9B04C2004027B1 /* ContentView.swift in Sources */,
 				7DAF532A2B9D2D2B0037F5DF /* GlobeInfoView.swift in Sources */,
+				7DFE488F2BAAB76D00DE6DB4 /* AboutView.swift in Sources */,
 				7DE4FACC2BA2989B00C4B637 /* PlacementGesturesModifier.swift in Sources */,
 				7DE4FAD02BA2AEF600C4B637 /* Globe+Preview.swift in Sources */,
 				7D81B86E2BA1C5EC004C4477 /* RotationSystem.swift in Sources */,
+				7DFE488D2BAA957600DE6DB4 /* IntroView.swift in Sources */,
 				7DEAB04C2B9B04C2004027B1 /* GlobesApp.swift in Sources */,
 				7DEAB0502B9B04C2004027B1 /* ImmersiveGlobeView.swift in Sources */,
 				7DEAB05D2B9B0520004027B1 /* Globe.swift in Sources */,
@@ -518,7 +530,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 0.1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"Globes/Preview Content\"";
 				DEVELOPMENT_TEAM = L8FKNLG3XM;
 				ENABLE_PREVIEWS = YES;
@@ -528,7 +540,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = edu.monash.Globes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
@@ -544,7 +556,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 0.1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"Globes/Preview Content\"";
 				DEVELOPMENT_TEAM = L8FKNLG3XM;
 				ENABLE_PREVIEWS = YES;
@@ -554,7 +566,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = edu.monash.Globes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";

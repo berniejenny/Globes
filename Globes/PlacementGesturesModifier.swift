@@ -58,7 +58,8 @@ private struct PlacementGesturesModifier: ViewModifier {
     }
     
     private let minimumLongPressDuration = 0.5
-    private let rotationSpeed = 0.01
+    private let rotationSpeed = 0.005
+    
     @GestureState private var dragState = DragState.inactive
     
     func body(content: Content) -> some View {

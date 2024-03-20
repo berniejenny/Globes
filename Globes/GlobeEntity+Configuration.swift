@@ -11,9 +11,9 @@ extension GlobeEntity {
     
     /// Configuration information for globe entities.
     @Observable class Configuration {
-        let globe: Globe
+        var globe: Globe
         
-       var globeEntity: GlobeEntity?
+        var globeEntity: GlobeEntity?
         
         var rotation: simd_quatf
         var position: SIMD3<Float>
