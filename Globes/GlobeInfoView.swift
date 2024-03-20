@@ -42,9 +42,9 @@ struct GlobeInfoView: View {
     
     private var isPausedBinding: Binding<Bool> {
         Binding(get: {
-            model.selectedGlobeConfiguration?.isPaused == true
+            model.selectedGlobeConfiguration?.isRotationPaused == true
         }, set: {
-            model.selectedGlobeConfiguration?.isPaused = $0
+            model.selectedGlobeConfiguration?.isRotationPaused = $0
         })
     }
     
@@ -65,15 +65,20 @@ struct GlobeInfoView: View {
             }
             .disabled(!globeIsScaled)
             .padding()
-            .help(globeIsScaled ? "Reset to the Original Size" : "The Globe Is at Its Original Size.")
+            .help(globeIsScaled ? "Reset to Original Size" : "The Globe is at its Original Size")
             
             Toggle(isOn: isPausedBinding) {
-                Label("Rotate Globe", systemImage: "arrow.counterclockwise")
-                    .labelStyle(.iconOnly)
+                if isPausedBinding.wrappedValue {
+                    Label("Rotate Globe", image: "arrow.counterclockwise.slash")
+                } else {
+                    Label("Rotate Globe", systemImage: "arrow.counterclockwise")
+                }
+                    
             }
+            .labelStyle(.iconOnly)
             .toggleStyle(.button)
             .padding()
-            .help(isPausedBinding.wrappedValue ? "Rotate the Globe" : "Pause Globe Rotation")
+            .help(isPausedBinding.wrappedValue ? "Start Globe Rotation" : "Stop Globe Rotation")
         }
     }
     

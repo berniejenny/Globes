@@ -12,14 +12,14 @@ import RealityKit
 extension View {
     /// Listens for gestures and places an item based on those inputs.
     func placementGestures(
-        globeEntity: GlobeEntity?,
+        configuration: GlobeEntity.Configuration,
         initialPosition: Point3D = .zero,
         axZoomIn: Bool = false,
         axZoomOut: Bool = false
     ) -> some View {
         self.modifier(
             PlacementGesturesModifier(
-                globeEntity: globeEntity,
+                configuration: configuration,
                 initialPosition: initialPosition,
                 axZoomIn: axZoomIn,
                 axZoomOut: axZoomOut
@@ -30,7 +30,7 @@ extension View {
 
 /// A modifier that adds gestures and positioning to a view.
 private struct PlacementGesturesModifier: ViewModifier {
-    var globeEntity: GlobeEntity?
+    @Bindable var configuration: GlobeEntity.Configuration
     var initialPosition: Point3D
     var axZoomIn: Bool
     var axZoomOut: Bool
@@ -40,6 +40,7 @@ private struct PlacementGesturesModifier: ViewModifier {
     @State private var position: Point3D = .zero
     @State private var startPosition: Point3D? = nil
     @State private var previousTranslationWidth: Double = 0.0
+    @State private var initialIsRotationPaused: Bool? = nil
     
     enum DragState {
         case inactive
@@ -90,9 +91,9 @@ private struct PlacementGesturesModifier: ViewModifier {
                 .onChanged { value in
                     if let startScale {
                         scale = max(0.1, min(3, value.magnification * startScale))
-                        self.globeEntity?.globeScale = Float(scale)
+                        configuration.globeEntity?.globeScale = Float(scale)
                     } else {
-                        if let globeEntity {
+                        if let globeEntity = configuration.globeEntity {
                             startScale = Double(globeEntity.globeScale)
                         }
                     }
@@ -105,7 +106,7 @@ private struct PlacementGesturesModifier: ViewModifier {
             .simultaneousGesture(
                 LongPressGesture(minimumDuration: minimumLongPressDuration)
                     .sequenced(before: DragGesture(minimumDistance: 0.0))
-                    .updating($dragState) { value, state, transaction in
+                    .updating($dragState) { value, state, _ in
                         switch value {
                             // Long press begins.
                         case .first(true):
@@ -113,6 +114,15 @@ private struct PlacementGesturesModifier: ViewModifier {
                             
                             // Long press confirmed, dragging may begin.
                         case .second(true, let drag):
+                            DispatchQueue.main.async {
+                                
+                                // remember whether rotation is enabled and pause rotation while the globe is rotated
+                                if initialIsRotationPaused == nil {
+                                    initialIsRotationPaused = configuration.isRotationPaused
+                                    configuration.isRotationPaused = true
+                                }
+                            }
+                            
                             guard let drag = drag else { return }
                             
                             // Update the previous translation width for the next frame
@@ -127,7 +137,7 @@ private struct PlacementGesturesModifier: ViewModifier {
                                 let rotation = simd_quatf(angle: rotationAmount, axis: SIMD3<Float>(0, 1, 0))
                                 
                                 // Apply rotation to the entity
-                                self.globeEntity?.rotate(by: rotation)
+                                configuration.globeEntity?.rotate(by: rotation)
                             }
                             
                             // Dragging ended or the long press cancelled.
@@ -140,6 +150,10 @@ private struct PlacementGesturesModifier: ViewModifier {
                         case .second(true, _):
                             // Reset the previous translation width at the end of the gesture
                             previousTranslationWidth = 0.0
+                            
+                            // Reset the previous rotation state
+                            configuration.isRotationPaused = initialIsRotationPaused ?? true
+                            initialIsRotationPaused = nil
                         default:
                             break
                         }
