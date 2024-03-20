@@ -22,7 +22,7 @@ extension GlobeEntity {
         var speed: Float
         
         /// Pause rotation by `RotationSystem`
-        var isPaused: Bool
+        var isRotationPaused: Bool
         
         /// If true, `globe.previewTexture` is loaded from assets. If false, `globe.texture` is loaded from the app bundle.
         var usePreviewTexture: Bool
@@ -35,7 +35,7 @@ extension GlobeEntity {
         
         /// Current speed of rotation taking `isPaused` flag into account.
         var currentSpeed: Float {
-            isPaused ? 0 : speed
+            isRotationPaused ? 0 : speed
         }
         
         init(
@@ -53,7 +53,7 @@ extension GlobeEntity {
             self.rotation = rotation
             self.position = position
             self.speed = speed
-            self.isPaused = isPaused
+            self.isRotationPaused = isPaused
             self.usePreviewTexture = usePreviewTexture
             self.enableGestures = enableGestures
             self.addHoverEffect = addHoverEffect
