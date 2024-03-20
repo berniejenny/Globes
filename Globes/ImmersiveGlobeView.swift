@@ -11,6 +11,8 @@ import SwiftUI
 
 /// Immersive globe for rendering small preview globes and full-size globes.
 struct ImmersiveGlobeView: View {
+    
+    @Environment(ViewModel.self) private var model
     @Bindable var configuration: GlobeEntity.Configuration
         
     /// Accessibility stuff required by `PlacementGesturesModifier`
@@ -29,26 +31,28 @@ struct ImmersiveGlobeView: View {
     var body: some View {
         RealityView { content in
             statusLog("Make", globeName: configuration.globe.name, category: "RealityView.make")
-            let globeEntity = await GlobeEntity(
-                radius: radius,
-                configuration: configuration
-            )
+            let globeEntity = await GlobeEntity(radius: radius, configuration: configuration)
             content.add(globeEntity)
             configuration.globeEntity = globeEntity
         } update: { content in
+            let oldGlobeEntity = content.entities.first(where: { $0 is GlobeEntity })
+            guard oldGlobeEntity?.name != configuration.globeEntity?.name else {
+                configuration.globeEntity?.update(configuration: configuration)
+                return
+            }
+            
             // if the globe changed, remove the old entity and add the new entity
-            if let oldGlobeEntity = content.entities.first(where: { $0 is GlobeEntity }),
-               oldGlobeEntity.name != configuration.globe.name {
+            if let oldGlobeEntity {
                 statusLog("Update: Remove", globeName: oldGlobeEntity.name, category: "RealityView.update")
                 content.remove(oldGlobeEntity)
             }
             
             // add the globe if there is none
-            if content.entities.first(where: {$0 is GlobeEntity }) == nil,
-                let globeEntity = configuration.globeEntity {
-                statusLog("Update: Add globe", globeName: globeEntity.name, category: "RealityView.update")
+            if let globeEntity = configuration.globeEntity {
+                statusLog("Update: Add globe", globeName: configuration.globe.name, category: "RealityView.update")
                 content.add(globeEntity)
             }
+            
             configuration.globeEntity?.update(configuration: configuration)
         }
         .placementGestures(configuration: configuration, axZoomIn: axZoomIn, axZoomOut: axZoomOut)
@@ -58,5 +62,6 @@ struct ImmersiveGlobeView: View {
 #if DEBUG
 #Preview(immersionStyle: .mixed) {
     ImmersiveGlobeView(configuration: .init(globe: Globe.preview))
+        .environment(ViewModel.preview)
 }
 #endif

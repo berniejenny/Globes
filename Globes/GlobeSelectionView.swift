@@ -27,7 +27,7 @@ struct GlobeSelectionView: View {
             // name and author
             VStack(alignment: .leading) {
                 Text(globe.name)
-                    .font(.title3)
+                    .font(.headline)
                 if !globe.authorAndDate.isEmpty {
                     Text(globe.authorAndDate)
                         .font(.callout)
@@ -49,8 +49,9 @@ struct GlobeSelectionView: View {
                     ),
                     overrideRadius: globeRadius
                 )
+//                .scaleEffect(CGFloat(model.shrinkFactor))
                 .frame(width: Self.globeViewSize, height: Self.globeViewSize)
-                .scaledToFit()
+                .scaledToFit()                
             }
         }
         
@@ -59,16 +60,24 @@ struct GlobeSelectionView: View {
         .hoverEffect()
         .glassBackgroundEffect(in: RoundedRectangle(cornerRadius: cornerRadius))
         .onTapGesture {
-            let configuration = GlobeEntity.Configuration(
-                globe: globe,
-                position: [globe.radius, globe.radius, -(globe.radius + 0.5)],
-                speed: 0.1,
-                isPaused: false,
-                usePreviewTexture: false,
-                enableGestures: true,
-                addHoverEffect: false
-            )
-            model.selectedGlobeConfiguration = configuration
+            if model.selectedGlobeConfiguration == nil {
+                model.selectedGlobeConfiguration = GlobeEntity.Configuration(
+                    globe: globe,
+                    position: [globe.radius, globe.radius, -(globe.radius + 0.5)],
+                    speed: 0.1,
+                    isPaused: false,
+                    usePreviewTexture: false,
+                    enableGestures: true,
+                    addHoverEffect: false
+                )
+            } else {
+                Task {
+                    if let configuration = model.selectedGlobeConfiguration {
+                        configuration.globe = globe
+                        configuration.globeEntity = await GlobeEntity(configuration: configuration)
+                    }
+                }
+            }
         }
     }
 }

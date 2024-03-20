@@ -37,10 +37,10 @@ struct GlobesApp: App {
         // window for selecting a globe and displaying information about a globe
         WindowGroup {
             ContentView(globes: globes)
+                .frame(minWidth: 1000, minHeight: 600)
                 .environment(model)
         }
-//        .defaultSize(width: 550, height: 800)
-        .windowResizability(.contentMinSize)
+        .windowResizability(.contentMinSize) // window cannot become smaller than the minimum size restriction of its content
         
         // immersive globe space
         ImmersiveSpace(id: "ImmersiveGlobeSpace") {
@@ -49,7 +49,8 @@ struct GlobesApp: App {
                     .environment(model)
                     .onDisappear {
                         // handle home button press that closes the immersive view
-                        model.selectedGlobeConfiguration = nil
+#warning("TBD")
+//                        model.selectedGlobeConfiguration = nil
                     }
             }
         }

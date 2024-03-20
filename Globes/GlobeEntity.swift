@@ -16,8 +16,9 @@ import SwiftUI
         super.init()
     }
     
-    init(radius: Float, configuration: Configuration) async {
+    init(radius: Float? = nil, configuration: Configuration) async {
         super.init()
+        let radius = radius ?? configuration.globe.radius
         
         let material = loadMaterial(configuration: configuration)
         let mesh: MeshResource = .generateSphere(radius: radius)
