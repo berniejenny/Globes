@@ -11,10 +11,8 @@ import SwiftUI
 
 /// Immersive globe for rendering small preview globes and full-size globes.
 struct ImmersiveGlobeView: View {
-    var configuration: GlobeEntity.Configuration
-    
-    @State private var globeEntity: GlobeEntity?
-    
+    @Bindable var configuration: GlobeEntity.Configuration
+        
     /// Accessibility stuff required by `PlacementGesturesModifier`
     @State var axZoomIn: Bool = false
     @State var axZoomOut: Bool = false
@@ -36,7 +34,7 @@ struct ImmersiveGlobeView: View {
                 configuration: configuration
             )
             content.add(globeEntity)
-            self.globeEntity = globeEntity
+            configuration.globeEntity = globeEntity
         } update: { content in
             // if the globe changed, remove the old entity and add the new entity
             if let oldGlobeEntity = content.entities.first(where: { $0 is GlobeEntity }),
@@ -47,13 +45,16 @@ struct ImmersiveGlobeView: View {
             
             // add the globe if there is none
             if content.entities.first(where: {$0 is GlobeEntity }) == nil,
-                let globeEntity {
+                let globeEntity = configuration.globeEntity {
                 statusLog("Update: Add globe", globeName: globeEntity.name, category: "RealityView.update")
                 content.add(globeEntity)
             }
-            globeEntity?.update(configuration: configuration)
+            configuration.globeEntity?.update(configuration: configuration)
         }
-        .placementGestures(globeEntity: globeEntity, axZoomIn: axZoomIn, axZoomOut: axZoomOut)
+        .placementGestures(globeEntity: configuration.globeEntity, axZoomIn: axZoomIn, axZoomOut: axZoomOut)
+//        .onChange(of: configuration.globeEntity?.globePosition) {
+//            print("configuration.globeEntity?.globePosition", configuration.globeEntity?.globePosition)
+//        }
     }
 }
 

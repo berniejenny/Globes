@@ -34,7 +34,7 @@ private struct PlacementGesturesModifier: ViewModifier {
     var initialPosition: Point3D
     var axZoomIn: Bool
     var axZoomOut: Bool
-
+    
     @State private var scale: Double = 1
     @State private var startScale: Double? = nil
     @State private var position: Point3D = .zero
@@ -57,6 +57,7 @@ private struct PlacementGesturesModifier: ViewModifier {
     }
     
     private let minimumLongPressDuration = 0.5
+    private let rotationSpeed = 0.01
     @GestureState private var dragState = DragState.inactive
     
     func body(content: Content) -> some View {
@@ -89,13 +90,15 @@ private struct PlacementGesturesModifier: ViewModifier {
                 .onChanged { value in
                     if let startScale {
                         scale = max(0.1, min(3, value.magnification * startScale))
-                        self.globeEntity?.update(scale: SIMD3<Float>(repeating: Float(scale)))
+                        self.globeEntity?.globeScale = Float(scale)
                     } else {
-                        startScale = scale
+                        if let globeEntity {
+                            startScale = Double(globeEntity.globeScale)
+                        }
                     }
                 }
-                .onEnded { value in
-                    startScale = scale
+                .onEnded { _ in
+                    startScale = nil
                 }
             )
         // Enable people to rotate the globe (after a pinch and hold)
@@ -118,13 +121,13 @@ private struct PlacementGesturesModifier: ViewModifier {
                                 previousTranslationWidth = drag.translation.width
                                 
                                 // Multiplier can be adjusted as needed
-                                let rotationAmount = Float(deltaTranslation) * 0.01
+                                let rotationAmount = Float(deltaTranslation * rotationSpeed)
                                 
                                 // Create a rotation quaternion around the Y axis
                                 let rotation = simd_quatf(angle: rotationAmount, axis: SIMD3<Float>(0, 1, 0))
                                 
                                 // Apply rotation to the entity
-                                self.globeEntity?.rotate(rotation: rotation)
+                                self.globeEntity?.rotate(by: rotation)
                             }
                             
                             // Dragging ended or the long press cancelled.
@@ -134,7 +137,7 @@ private struct PlacementGesturesModifier: ViewModifier {
                     }
                     .onEnded { value in
                         switch value {
-                        case .second(true, let drag?):
+                        case .second(true, _):
                             // Reset the previous translation width at the end of the gesture
                             previousTranslationWidth = 0.0
                         default:

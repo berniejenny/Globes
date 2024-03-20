@@ -61,7 +61,6 @@ struct GlobeSelectionView: View {
         .onTapGesture {
             let configuration = GlobeEntity.Configuration(
                 globe: globe,
-                scale: 1,
                 position: [globe.radius, globe.radius, -(globe.radius + 0.5)],
                 speed: 0.1,
                 isPaused: false,

@@ -39,7 +39,7 @@ struct GlobesApp: App {
             ContentView(globes: globes)
                 .environment(model)
         }
-        .defaultSize(width: 550, height: 800)
+//        .defaultSize(width: 550, height: 800)
         .windowResizability(.contentMinSize)
         
         // immersive globe space
