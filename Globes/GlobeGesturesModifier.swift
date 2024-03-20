@@ -88,7 +88,7 @@ private struct GlobeGesturesModifier: ViewModifier {
             .simultaneousGesture(MagnifyGesture()
                 .onChanged { value in
                     if let startScale {
-                        scale = max(0.1, min(3, value.magnification * startScale))
+                        scale = max(configuration.minScale, min(configuration.maxScale, value.magnification * startScale))
                         configuration.globeEntity?.globeScale = Float(scale)
                     } else {
                         if let globeEntity = configuration.globeEntity {

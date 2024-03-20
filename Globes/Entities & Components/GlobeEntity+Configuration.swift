@@ -11,6 +11,13 @@ extension GlobeEntity {
     
     /// Configuration information for globe entities.
     @Observable class Configuration {
+        
+        /// maximum diameter of globe when scaled up in meter
+        private let maxDiameter: Double = 5
+        
+        /// minimum diameter of globe when scaled down in meter
+        private let minDiameter: Double = 0.05
+        
         var globe: Globe
         
         var globeEntity: GlobeEntity?
@@ -36,6 +43,16 @@ extension GlobeEntity {
         /// Current speed of rotation taking `isPaused` flag into account.
         var currentSpeed: Float {
             isRotationPaused ? 0 : speed
+        }
+        
+        var minScale: Double {
+            let d = 2 * Double(globe.radius)
+            return minDiameter / d
+        }
+        
+        var maxScale: Double {
+            let d = 2 * Double(globe.radius)
+            return max(1, maxDiameter / d)
         }
         
         init(
