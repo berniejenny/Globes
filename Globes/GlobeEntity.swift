@@ -9,7 +9,7 @@ import RealityKit
 import SwiftUI
 
 /// Globe entity with a model child consisting of a mesh and a material, plus optional `InputTargetComponent`, `CollisionComponent`, and `HoverEffectComponent` components.
-class GlobeEntity: Entity {
+@Observable class GlobeEntity: Entity {
     private var modelEntity = Entity()
     
     @MainActor required init() {
@@ -50,21 +50,42 @@ class GlobeEntity: Entity {
         // Scale and position the entire entity.
         move(
             to: Transform(
-                scale: SIMD3(repeating: configuration.scale),
+                scale: SIMD3(repeating: 1),
                 rotation: orientation,
                 translation: configuration.position),
             relativeTo: parent)
     }
-    
-    func update(position: SIMD3<Float>) {
-        self.modelEntity.position = position
+        
+    var globePosition: SIMD3<Float> {
+        // modelEntity is not @Observed, so programmatically inform the Observation framework about access and mutation.
+        // https://developer.apple.com/wwdc23/10149?time=558
+        get {
+            access(keyPath: \.globePosition)
+            return modelEntity.position
+        }
+        set {
+            withMutation(keyPath: \.globePosition) {
+                modelEntity.position = newValue
+            }
+        }
     }
     
-    func update(scale: SIMD3<Float>) {
-        self.modelEntity.scale = scale
+    /// The uniform scale of the model entity, which is a child of this entity.
+    var globeScale: Float {
+        // modelEntity is not @Observed, so programmatically inform the Observation framework about access and mutation.
+        // https://developer.apple.com/wwdc23/10149?time=558
+        get {
+            access(keyPath: \.globeScale)
+            return (modelEntity.scale.x + modelEntity.scale.y + modelEntity.scale.z) / 3
+        }
+        set {
+            withMutation(keyPath: \.globeScale) {
+                modelEntity.scale = SIMD3<Float>(repeating: newValue)
+            }
+        }
     }
     
-    func rotate(rotation: simd_quatf) {
+    func rotate(by rotation: simd_quatf) {
         self.modelEntity.orientation *= rotation
     }
     

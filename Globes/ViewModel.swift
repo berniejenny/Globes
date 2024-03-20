@@ -7,9 +7,7 @@
 
 import SwiftUI
 
-@Observable
-class ViewModel {
-    
-    /// The configuration of the currently selected globe. Nil if not globe is selected.
+@Observable class ViewModel {    
+    /// The configuration of the currently selected globe. Nil if no globe is selected.
     var selectedGlobeConfiguration: GlobeEntity.Configuration? = nil
 }

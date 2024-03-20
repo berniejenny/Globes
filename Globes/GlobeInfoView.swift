@@ -49,7 +49,7 @@ struct GlobeInfoView: View {
     }
     
     @ViewBuilder private var ornamentView: some View {
-        @Bindable var model = model
+        let globeIsScaled = model.selectedGlobeConfiguration?.globeEntity?.globeScale != 1
         
         HStack {
             Button(action: hideGlobe) {
@@ -59,12 +59,13 @@ struct GlobeInfoView: View {
             .padding()
             .help("Hide the Globe")
             
-//            Button(action: resetGlobeSize) {
-//                Label("Reset Size", systemImage: "circle.circle")
-//                    .labelStyle(.iconOnly)
-//            }
-//            .padding()
-//            .help("Reset to the Original Size")
+            Button(action: resetGlobeScale) {
+                Label("Reset Size", systemImage: "circle.circle")
+                    .labelStyle(.iconOnly)
+            }
+            .disabled(!globeIsScaled)
+            .padding()
+            .help(globeIsScaled ? "Reset to the Original Size" : "The Globe Is at Its Original Size.")
             
             Toggle(isOn: isPausedBinding) {
                 Label("Rotate Globe", systemImage: "arrow.counterclockwise")
@@ -73,33 +74,20 @@ struct GlobeInfoView: View {
             .toggleStyle(.button)
             .padding()
             .help(isPausedBinding.wrappedValue ? "Rotate the Globe" : "Pause Globe Rotation")
-            
-//            Button(action: resetGlobeOrientation) {
-//                Label("Orient Globe", systemImage: "location.north")
-//                    .labelStyle(.iconOnly)
-//            }
-//            .padding()
-//            .help("Orient the Globe")
         }
     }
     
     private func hideGlobe() {
+#warning("Animation of globe visibility not working")
         withAnimation(.easeInOut(duration: 0.5)) {
             model.selectedGlobeConfiguration = nil
         }
     }
     
-    private func resetGlobeSize() {
-        withAnimation(.easeInOut(duration: 1)) {
-#warning("TBD: reset scale of globe")
-            model.selectedGlobeConfiguration?.scale = 1
-        }
-    }
-    
-    private func resetGlobeOrientation() {
-        withAnimation(.easeInOut(duration: 1)) {
-#warning("TBD: reset axis of rotation of globe such that north is on top")
-            model.selectedGlobeConfiguration?.rotation = .init(angle: 0, axis: [0, 1, 0])
+    private func resetGlobeScale() {
+#warning("Animation of globe scale not working")
+        withAnimation(.easeInOut(duration: 2)) {
+            model.selectedGlobeConfiguration?.globeEntity?.globeScale = 1
         }
     }
 }
