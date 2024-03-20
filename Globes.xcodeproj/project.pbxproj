@@ -29,7 +29,7 @@
 		7DCFBF0A2BA420F400B4F27C /* GlobesMetaDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCFBF052BA420F400B4F27C /* GlobesMetaDocument.swift */; };
 		7DCFBF0B2BA420F400B4F27C /* GlobeEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCFBF062BA420F400B4F27C /* GlobeEditorView.swift */; };
 		7DCFBF0C2BA420F400B4F27C /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 7DCFBF072BA420F400B4F27C /* Credits.rtf */; };
-		7DE4FACC2BA2989B00C4B637 /* PlacementGesturesModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE4FACB2BA2989B00C4B637 /* PlacementGesturesModifier.swift */; };
+		7DE4FACC2BA2989B00C4B637 /* GlobeGesturesModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE4FACB2BA2989B00C4B637 /* GlobeGesturesModifier.swift */; };
 		7DE4FACE2BA2AB1200C4B637 /* GlobeEntity+Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE4FACD2BA2AB1200C4B637 /* GlobeEntity+Configuration.swift */; };
 		7DE4FAD02BA2AEF600C4B637 /* Globe+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE4FACF2BA2AEF600C4B637 /* Globe+Preview.swift */; };
 		7DEAB04C2B9B04C2004027B1 /* GlobesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DEAB04B2B9B04C2004027B1 /* GlobesApp.swift */; };
@@ -69,7 +69,7 @@
 		7DCFBF052BA420F400B4F27C /* GlobesMetaDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobesMetaDocument.swift; sourceTree = "<group>"; };
 		7DCFBF062BA420F400B4F27C /* GlobeEditorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobeEditorView.swift; sourceTree = "<group>"; };
 		7DCFBF072BA420F400B4F27C /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
-		7DE4FACB2BA2989B00C4B637 /* PlacementGesturesModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlacementGesturesModifier.swift; sourceTree = "<group>"; };
+		7DE4FACB2BA2989B00C4B637 /* GlobeGesturesModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobeGesturesModifier.swift; sourceTree = "<group>"; };
 		7DE4FACD2BA2AB1200C4B637 /* GlobeEntity+Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GlobeEntity+Configuration.swift"; sourceTree = "<group>"; };
 		7DE4FACF2BA2AEF600C4B637 /* Globe+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Globe+Preview.swift"; sourceTree = "<group>"; };
 		7DEAB0442B9B04C2004027B1 /* Globes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Globes.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -104,6 +104,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7D487E7B2BAB97CA00F8660A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				7DEAB04D2B9B04C2004027B1 /* ContentView.swift */,
+				7DFE488E2BAAB76D00DE6DB4 /* AboutView.swift */,
+				7DAF53292B9D2D2B0037F5DF /* GlobeInfoView.swift */,
+				7DEAB0602B9B1D55004027B1 /* GlobeSelectionView.swift */,
+				7DEAB04F2B9B04C2004027B1 /* ImmersiveGlobeView.swift */,
+				7DFE488C2BAA957600DE6DB4 /* IntroView.swift */,
+				7DFE48902BAAF18000DE6DB4 /* WebView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		7D487E7C2BAB983200F8660A /* Entities & Components */ = {
+			isa = PBXGroup;
+			children = (
+				7D81B86B2BA1B6E2004C4477 /* GlobeEntity.swift */,
+				7DE4FACD2BA2AB1200C4B637 /* GlobeEntity+Configuration.swift */,
+				7D81B86D2BA1C5EC004C4477 /* RotationSystem.swift */,
+			);
+			path = "Entities & Components";
+			sourceTree = "<group>";
+		};
 		7D81B8602BA13D67004C4477 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
@@ -167,17 +191,9 @@
 				7DEAB05C2B9B0520004027B1 /* Globe.swift */,
 				7D7464372BA3A0A600182871 /* ViewModel.swift */,
 				7DEAB04B2B9B04C2004027B1 /* GlobesApp.swift */,
-				7DEAB04D2B9B04C2004027B1 /* ContentView.swift */,
-				7DFE488C2BAA957600DE6DB4 /* IntroView.swift */,
-				7DEAB0602B9B1D55004027B1 /* GlobeSelectionView.swift */,
-				7DAF53292B9D2D2B0037F5DF /* GlobeInfoView.swift */,
-				7DEAB04F2B9B04C2004027B1 /* ImmersiveGlobeView.swift */,
-				7D81B86B2BA1B6E2004C4477 /* GlobeEntity.swift */,
-				7DE4FACD2BA2AB1200C4B637 /* GlobeEntity+Configuration.swift */,
-				7D81B86D2BA1C5EC004C4477 /* RotationSystem.swift */,
-				7DE4FACB2BA2989B00C4B637 /* PlacementGesturesModifier.swift */,
-				7DFE488E2BAAB76D00DE6DB4 /* AboutView.swift */,
-				7DFE48902BAAF18000DE6DB4 /* WebView.swift */,
+				7D487E7B2BAB97CA00F8660A /* Views */,
+				7D487E7C2BAB983200F8660A /* Entities & Components */,
+				7DE4FACB2BA2989B00C4B637 /* GlobeGesturesModifier.swift */,
 				7DEAB0512B9B04C4004027B1 /* Assets.xcassets */,
 				7DEAB0562B9B04C4004027B1 /* Info.plist */,
 				7D81B85C2BA123B5004C4477 /* Globes.json */,
@@ -327,7 +343,7 @@
 				7DEAB04E2B9B04C2004027B1 /* ContentView.swift in Sources */,
 				7DAF532A2B9D2D2B0037F5DF /* GlobeInfoView.swift in Sources */,
 				7DFE488F2BAAB76D00DE6DB4 /* AboutView.swift in Sources */,
-				7DE4FACC2BA2989B00C4B637 /* PlacementGesturesModifier.swift in Sources */,
+				7DE4FACC2BA2989B00C4B637 /* GlobeGesturesModifier.swift in Sources */,
 				7DE4FAD02BA2AEF600C4B637 /* Globe+Preview.swift in Sources */,
 				7D81B86E2BA1C5EC004C4477 /* RotationSystem.swift in Sources */,
 				7DFE488D2BAA957600DE6DB4 /* IntroView.swift in Sources */,

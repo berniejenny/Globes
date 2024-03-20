@@ -1,9 +1,6 @@
 /*
- From the Apple Hello World project
+ Modified version of PlacementGesturesModifier of the Apple `Hello World` project
  https://developer.apple.com/documentation/visionos/world
- 
- Abstract:
- A modifier for placing objects.
  */
 
 import SwiftUI
@@ -11,14 +8,14 @@ import RealityKit
 
 extension View {
     /// Listens for gestures and places an item based on those inputs.
-    func placementGestures(
+    func globeGestures(
         configuration: GlobeEntity.Configuration,
         initialPosition: Point3D = .zero,
         axZoomIn: Bool = false,
         axZoomOut: Bool = false
     ) -> some View {
         self.modifier(
-            PlacementGesturesModifier(
+            GlobeGesturesModifier(
                 configuration: configuration,
                 initialPosition: initialPosition,
                 axZoomIn: axZoomIn,
@@ -29,7 +26,7 @@ extension View {
 }
 
 /// A modifier that adds gestures and positioning to a view.
-private struct PlacementGesturesModifier: ViewModifier {
+private struct GlobeGesturesModifier: ViewModifier {
     @Bindable var configuration: GlobeEntity.Configuration
     var initialPosition: Point3D
     var axZoomIn: Bool
