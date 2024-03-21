@@ -11,8 +11,8 @@ import SwiftUI
 /// A view with name, author and 3D model for a globe
 struct GlobeSelectionView: View {
     @Environment(ViewModel.self) private var model
-    
-    let globe: Globe
+        
+    @State private var configuration: GlobeEntity.Configuration
     
     private static let globeViewSize: CGFloat = 100
     private static let height = 1.1 * globeViewSize
@@ -22,39 +22,46 @@ struct GlobeSelectionView: View {
 #warning("This could be derived from the view geometry size")
     private let globeRadius: Float = 0.035
     
+    init(globe: Globe) {
+        self.configuration = GlobeEntity.Configuration(
+            globe: globe,
+            position: [globeRadius, -globeRadius, globeRadius], // [x: to right, y: upwards, z: toward camera], relative to top-left view corner in scene coordinates
+            speed: 0.3,
+            usePreviewTexture: true,
+            addHoverEffect: false // hover effect on the globe is potentially confusing, because the background changes color when the globe is hovered.
+        )
+    }
+    
+    private var globe: Globe { configuration.globe }
+    
     var body: some View {
+        let authorAndDate = globe.authorAndDate
+        
         ZStack(alignment: .leading) {
             // name and author
             VStack(alignment: .leading) {
                 Text(globe.name)
                     .font(.headline)
-                if !globe.authorAndDate.isEmpty {
-                    Text(globe.authorAndDate)
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                }
+                Text(authorAndDate)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .opacity(authorAndDate.isEmpty ? 0 : 1)
             }
             .padding(.leading)
             
             HStack {
                 Spacer()
                 
-                ImmersiveGlobeView(
-                    configuration: GlobeEntity.Configuration(
-                        globe: globe,
-                        position: [globeRadius, -globeRadius, globeRadius], // [x: to right, y: upwards, z: toward camera], relative to top-left view corner in scene coordinates
-                        speed: 0.3,
-                        usePreviewTexture: true,
-                        addHoverEffect: false // hover effect on the globe is potentially confusing, because the background changes color when the globe is hovered.
-                    ),
-                    overrideRadius: globeRadius
-                )
-//                .scaleEffect(CGFloat(model.shrinkFactor))
+                ImmersiveGlobeView(configuration: configuration, overrideRadius: globeRadius)
                 .frame(width: Self.globeViewSize, height: Self.globeViewSize)
-                .scaledToFit()                
+                .scaledToFit()
+                .onChange(of: model.hidePreviewGlobes) {
+                    DispatchQueue.main.async {
+                        configuration.opacity = model.hidePreviewGlobes ? 0 : 1
+                    }
+                }
             }
         }
-        
         .frame(height: Self.height)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: cornerRadius))
         .hoverEffect()

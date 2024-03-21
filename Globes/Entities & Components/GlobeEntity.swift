@@ -32,7 +32,7 @@ import SwiftUI
         if configuration.addHoverEffect {
             modelEntity.components.set(HoverEffectComponent())
         }
-     
+        
         self.addChild(modelEntity)
         self.name = configuration.globe.name
         
@@ -55,6 +55,8 @@ import SwiftUI
                 rotation: orientation,
                 translation: configuration.position),
             relativeTo: parent)
+        
+        modelEntity.components.set(OpacityComponent(opacity: configuration.opacity))
     }
         
     var globePosition: SIMD3<Float> {
