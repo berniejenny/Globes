@@ -22,6 +22,9 @@ extension GlobeEntity {
         
         var globeEntity: GlobeEntity?
         
+        /// Opacity of the globe
+        var opacity: Float = 1
+        
         var rotation: simd_quatf
         var position: SIMD3<Float>
         

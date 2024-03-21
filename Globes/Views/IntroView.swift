@@ -58,12 +58,12 @@ struct IntroView: View {
     
     @ViewBuilder private var aboutButton: some View {
         Button("About Globes…") {
-            model.shrinkFactor = 0.3
+            model.hidePreviewGlobes = true
             showingAboutSheet.toggle()
         }
         .onChange(of: showingAboutSheet) {
-            if showingAboutSheet == false {
-                model.shrinkFactor = 1
+            DispatchQueue.main.async {
+                model.hidePreviewGlobes = showingAboutSheet
             }
         }
     }
