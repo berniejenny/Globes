@@ -13,7 +13,7 @@ struct AboutView: View {
     private static let appName = Bundle.main.infoDictionary![kCFBundleNameKey as String] as! String
     private let appVersion = Bundle.main.infoDictionary!["CFBundleShortVersionString" as String] as! String   
     private let authors = "Software development by Bernhard Jenny and Dilpreet Singh, Monash University.\nGlobe images and metadata by David Rumsey."
-    private let copyright = "Copyright 2024 by Monash University, Melbourne, Australia and David Rumsey, USA."
+    private let copyright = "Copyright 2024 by Monash University, Melbourne, Australia and David Rumsey Map Center, Stanford Libraries, USA."
     private let license = "\(appName) source code is distributed under MIT license."
     private let sourceURL = URL(string: "https://github.com/berniejenny/Globes")!
     
@@ -50,7 +50,7 @@ struct AboutView: View {
         }
         .multilineTextAlignment(.center)
         .padding()
-        .frame(width: 400, height: 500)
+        .frame(width: 400, height: 550)
     }
 }
 

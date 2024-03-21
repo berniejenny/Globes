@@ -13,13 +13,11 @@ struct IntroView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Harvard University Library")
-                .font(.callout)
-                .foregroundStyle(.secondary)
             Text("Globes")
                 .font(.title)
                 .padding(.top)
-            Text("David Rumsey Map Collection")
+            Text("David Rumsey Map Center, Stanford Libraries")
+                .foregroundStyle(.secondary)
                 .font(.callout)
             Spacer()
             
