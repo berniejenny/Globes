@@ -10,30 +10,39 @@ import SwiftUI
 struct AboutView: View {
     @Environment(\.dismiss) var dismiss
     
-    private let appName = Bundle.main.infoDictionary![kCFBundleNameKey as String] as! String
+    private static let appName = Bundle.main.infoDictionary![kCFBundleNameKey as String] as! String
     
     private let appVersion = Bundle.main.infoDictionary!["CFBundleShortVersionString" as String] as! String
     
     private let authors = "Software development by Bernhard Jenny and Dilpreet Singh, Monash University.\nGlobe images and metadata by David Rumsey."
     private let copyright = "Copyright 2024 by Monash University, Melbourne, Australia and David Rumsey, USA."
+    private let license = "\(appName) source code is distributed under MIT license."
+    private let sourceURL = URL(string: "https://github.com/berniejenny/Globes")!
     
     var body: some View {
-        VStack(spacing: 10) {            
+        VStack {
             Image("icon")
                 .resizable()
                 .scaledToFit()
-                .frame(height: 120)
+                .frame(height: 100)
             
-            Text(appName)
+            Text(Self.appName)
                 .font(.title)
             Text(appVersion)
+                .padding(.bottom)
             
             Group {
                 Text(authors)
+                    .padding(.bottom)
                 Text(copyright)
+                    .padding(.bottom)
+                Text(license)
+                Link("Source on GitHub", destination: sourceURL)
             }
             .font(.callout)
             .foregroundStyle(.secondary)
+            
+            Spacer()
             
             Button(action: { dismiss() }) {
                 Label("Close", systemImage: "xmark")
@@ -43,7 +52,7 @@ struct AboutView: View {
         }
         .multilineTextAlignment(.center)
         .padding()
-        .frame(width: 400)
+        .frame(width: 400, height: 550)
     }
 }
 
