@@ -11,7 +11,7 @@ import SwiftUI
 /// A view with name, author and 3D model for a globe
 struct GlobeSelectionView: View {
     @Environment(ViewModel.self) private var model
-        
+    
     @State private var configuration: GlobeEntity.Configuration
     
     private static let globeViewSize: CGFloat = 100
@@ -53,13 +53,13 @@ struct GlobeSelectionView: View {
                 Spacer()
                 
                 ImmersiveGlobeView(configuration: configuration, overrideRadius: globeRadius)
-                .frame(width: Self.globeViewSize, height: Self.globeViewSize)
-                .scaledToFit()
-                .onChange(of: model.hidePreviewGlobes) {
-                    DispatchQueue.main.async {
-                        configuration.opacity = model.hidePreviewGlobes ? 0 : 1
+                    .frame(width: Self.globeViewSize, height: Self.globeViewSize)
+                    .scaledToFit()
+                    .onChange(of: model.hidePreviewGlobes) {
+                        DispatchQueue.main.async {
+                            configuration.opacity = model.hidePreviewGlobes ? 0 : 1
+                        }
                     }
-                }
             }
         }
         .frame(height: Self.height)

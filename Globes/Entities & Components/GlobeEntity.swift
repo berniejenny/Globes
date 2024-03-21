@@ -56,6 +56,7 @@ import SwiftUI
                 translation: configuration.position),
             relativeTo: parent)
         
+        // adjust the opacity
         modelEntity.components.set(OpacityComponent(opacity: configuration.opacity))
     }
         

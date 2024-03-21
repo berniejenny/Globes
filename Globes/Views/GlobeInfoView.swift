@@ -27,12 +27,15 @@ struct GlobeInfoView: View {
                         .multilineTextAlignment(.leading)
                 }
                 .frame(maxWidth: 400)
+                .padding(.horizontal)
             }
             if let infoURL = globe.infoURL {
                 let label = infoURL.absoluteString.contains("davidrumsey.com") ? "Open David Rumsey Map Collection Webpage" : "Open Webpage"
-                Button(label) {
+                Button("More Information") {
                     model.webURL = infoURL
                 }
+                .help(label)
+                .controlSize(.small)
                 .padding(.bottom)
             }
         }

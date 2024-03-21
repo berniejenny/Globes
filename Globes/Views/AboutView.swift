@@ -11,9 +11,7 @@ struct AboutView: View {
     @Environment(\.dismiss) var dismiss
     
     private static let appName = Bundle.main.infoDictionary![kCFBundleNameKey as String] as! String
-    
-    private let appVersion = Bundle.main.infoDictionary!["CFBundleShortVersionString" as String] as! String
-    
+    private let appVersion = Bundle.main.infoDictionary!["CFBundleShortVersionString" as String] as! String   
     private let authors = "Software development by Bernhard Jenny and Dilpreet Singh, Monash University.\nGlobe images and metadata by David Rumsey."
     private let copyright = "Copyright 2024 by Monash University, Melbourne, Australia and David Rumsey, USA."
     private let license = "\(appName) source code is distributed under MIT license."
@@ -52,7 +50,7 @@ struct AboutView: View {
         }
         .multilineTextAlignment(.center)
         .padding()
-        .frame(width: 400, height: 550)
+        .frame(width: 400, height: 500)
     }
 }
 
