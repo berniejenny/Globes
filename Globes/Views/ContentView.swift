@@ -182,11 +182,10 @@ struct ContentView: View {
     @ViewBuilder private var pauseRotationButton: some View {
         Toggle(isOn: isRotationPausedBinding) {
             if isRotationPausedBinding.wrappedValue {
-                Label("Globe Rotation", image: "arrow.counterclockwise.slash")
+                Label("Globe Rotation", image: "rotate.3d.slash")
             } else {
-                Label("Globe Rotation", systemImage: "arrow.counterclockwise")
+                Label("Globe Rotation", systemImage: "rotate.3d")
             }
-            
         }
         .labelStyle(.iconOnly)
         .toggleStyle(.button)
