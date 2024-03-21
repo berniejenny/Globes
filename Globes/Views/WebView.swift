@@ -1,17 +1,16 @@
-//
-//  WebView.swift
-//
-//  Created by Ryan Anderson on 9/23/19.
-//  Copyright © 2019 Ryan Anderson. All rights reserved.
-//
-
-import Combine
 import SwiftUI
 import WebKit
 
+enum WebViewStatus {
+    case loading
+    case finishedLoading
+    case failed(error: Error)
+}
+
 struct WebView: UIViewRepresentable {
     let url: URL
-
+    @Binding var status: WebViewStatus
+    
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
@@ -28,22 +27,28 @@ struct WebView: UIViewRepresentable {
     }
 
     class Coordinator: NSObject, WKNavigationDelegate {
-        let parent: WebView
+        var parent: WebView
 
         init(_ parent: WebView) {
             self.parent = parent
         }
 
         func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-            print("Webview started loading.")
+            DispatchQueue.main.async {
+                self.parent.status = .loading
+            }
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            print("Webview finished loading.")
+            DispatchQueue.main.async {
+                self.parent.status = .finishedLoading
+            }
         }
 
         func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-            print("Webview failed with error: \(error.localizedDescription)")
+            DispatchQueue.main.async {
+                self.parent.status = .failed(error: error)
+            }
         }
     }
 }

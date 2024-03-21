@@ -17,27 +17,55 @@ struct ContentView: View {
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
     
+    @State private var webViewStatus: WebViewStatus = .loading
+    
     private var selectedGlobe: Globe? { model.selectedGlobeConfiguration?.globe }
     
     var body: some View {
-        if let webURL = model.webURL {
-            WebView(url: webURL)
-                .ornament(attachmentAnchor: .scene(.bottom)) {
-                    HStack {
-                        Button(action: { model.webURL = nil }) {
-                            Label("Go Back to Globes", systemImage: "chevron.left")
-                        }
-                        .labelStyle(.iconOnly)
-                        .padding()
-                        
-                        Link("Open in Safari", destination: model.webURL ?? URL(string: "https://www.davidrumsey.com")!)
-                            .padding()
-                    }
-                    .padding()
-                    .glassBackgroundEffect()
-                }
+        if model.webURL != nil {
+            webView
         } else {
             navigationView
+        }
+    }
+    
+    @ViewBuilder private var webView: some View {
+        let url = model.webURL ?? URL(string: "https://www.davidrumsey.com")!
+        
+        ZStack {
+            WebView(url: url, status: $webViewStatus)
+            
+            switch webViewStatus {
+            case .loading:
+                ProgressView("Loading Page")
+                    .padding()
+                    .glassBackgroundEffect(in: RoundedRectangle(cornerRadius: 20))
+            case .finishedLoading:
+                EmptyView()
+            case .failed(let error):
+                VStack {
+                    Text("The page could not be loaded.")
+                    Text(error.localizedDescription)
+                }
+                .padding()
+                .glassBackgroundEffect(in: RoundedRectangle(cornerRadius: 20))
+            }
+        }
+        .ornament(attachmentAnchor: .scene(.bottom)) {
+            HStack {
+                Button(action: {
+                    model.webURL = nil
+                }) {
+                    Label("Go Back to Globes", systemImage: "chevron.left")
+                }
+                .labelStyle(.iconOnly)
+                .help("Go Back to Globes")
+                .padding()
+                
+                Link("Open in Safari", destination: url)
+                    .padding()
+            }
+            .glassBackgroundEffect()
         }
     }
     
