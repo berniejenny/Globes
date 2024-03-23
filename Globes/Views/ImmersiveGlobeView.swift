@@ -31,7 +31,11 @@ struct ImmersiveGlobeView: View {
     var body: some View {
         RealityView { content in
             statusLog("Make", globeName: configuration.globe.name, category: "RealityView.make")
-            let globeEntity = await GlobeEntity(radius: radius, configuration: configuration)
+            guard let globeEntity = try? await GlobeEntity(radius: radius, configuration: configuration) else {
+                statusLog("Cannot create globe entity", globeName: configuration.globe.name, category: "RealityView.make")
+#warning("TBD: Error message")
+                return
+            }
             content.add(globeEntity)
             configuration.globeEntity = globeEntity
         } update: { content in

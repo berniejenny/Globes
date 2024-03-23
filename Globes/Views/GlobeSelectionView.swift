@@ -20,6 +20,7 @@ struct GlobeSelectionView: View {
     
     /// Radius of preview globe in meter
 #warning("This could be derived from the view geometry size")
+    // https://developer.apple.com/wwdc23/10080
     private let globeRadius: Float = 0.035
     
     init(globe: Globe) {
@@ -81,7 +82,7 @@ struct GlobeSelectionView: View {
                 Task {
                     if let configuration = model.selectedGlobeConfiguration {
                         configuration.globe = globe
-                        configuration.globeEntity = await GlobeEntity(configuration: configuration)
+                        configuration.globeEntity = try await GlobeEntity(configuration: configuration)
                     }
                 }
             }
