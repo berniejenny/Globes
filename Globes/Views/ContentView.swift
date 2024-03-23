@@ -95,10 +95,12 @@ struct ContentView: View {
                         .glassBackgroundEffect(in: RoundedRectangle(cornerRadius: 20))
                         .opacity(selectedGlobe == nil ? 0 : 1)
                     
-                    Text("Select a Globe")
-                        .font(.title)
-                        .padding(.bottom, 50)
-                        .opacity(selectedGlobe == nil ? 1 : 0)
+                    VStack {
+                        Text("Select a Globe")
+                            .font(.title)
+                        Spacer()
+                    }
+                    .opacity(selectedGlobe == nil ? 1 : 0)
                 }
                 .padding(.horizontal)
                 .padding(.trailing)
