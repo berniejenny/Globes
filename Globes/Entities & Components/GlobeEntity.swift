@@ -16,11 +16,14 @@ import SwiftUI
         super.init()
     }
     
-    init(radius: Float? = nil, configuration: Configuration) async {
+    init(radius: Float? = nil, configuration: Configuration) async throws {
         super.init()
+        try await addGlobe(radius: radius, configuration: configuration)
+    }
+    
+    func addGlobe(radius: Float? = nil, configuration: Configuration) async throws {
+        let material = await loadMaterial(configuration: configuration)
         let radius = radius ?? configuration.globe.radius
-        
-        let material = loadMaterial(configuration: configuration)
         let mesh: MeshResource = .generateSphere(radius: radius)
         modelEntity = ModelEntity(mesh: mesh, materials: [material])
         
@@ -94,7 +97,7 @@ import SwiftUI
     }
     
     /// Load texture material from app bundle (for full resolution) or assets store (for preview globes).
-    private func loadMaterial(configuration: Configuration) -> RealityKit.Material {
+    private func loadMaterial(configuration: Configuration) async -> RealityKit.Material {
         let globe = configuration.globe
         
         // 16k textures cannot be loaded from the assets catalogue, so load preview images from assets and full resolution image from the app bundle
@@ -103,15 +106,15 @@ import SwiftUI
             let textureOptions = TextureResource.CreateOptions(semantic: .color, mipmapsMode: .allocateAndGenerateAll)
 #if targetEnvironment(simulator)
             // The visionOS simulator cannot handle 16k textures, so use the preview texture when running in the simulator.
-            textureResource = try TextureResource.load(named: globe.previewTexture, options: textureOptions)
+            textureResource = try await TextureResource(named: globe.previewTexture, options: textureOptions)
 #else
             if configuration.usePreviewTexture {
-                textureResource = try TextureResource.load(named: globe.previewTexture, options: textureOptions)
+                textureResource = try await TextureResource(named: globe.previewTexture, options: textureOptions)
             } else {
                 guard let url = Bundle.main.url(forResource: globe.texture, withExtension: "jpg") else {
                     fatalError("Cannot find \(globe.texture).jpg in the app bundle.")
                 }
-                textureResource = try TextureResource.load(contentsOf: url, options: textureOptions)
+                textureResource = try await TextureResource(contentsOf: url, options: textureOptions)
             }
 #endif
             // unlit material looks nice for small globes in selection view. Drop shadows for the large globe would require a lit material.
