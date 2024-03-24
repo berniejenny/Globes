@@ -37,6 +37,7 @@ private struct GlobeGesturesModifier: ViewModifier {
     @State private var position: Point3D = .zero
     @State private var startPosition: Point3D? = nil
     @State private var previousTranslationWidth: Double = 0.0
+    @State private var previousTranslationHeight: Double = 0.0
     @State private var initialIsRotationPaused: Bool? = nil
     
     enum DragState {
@@ -125,17 +126,27 @@ private struct GlobeGesturesModifier: ViewModifier {
                             
                             // Update the previous translation width for the next frame
                             DispatchQueue.main.async {
-                                let deltaTranslation = drag.translation.width - previousTranslationWidth
+                                // Capture delta translations for both axes
+                                let deltaX = drag.translation.width - previousTranslationWidth
+                                let deltaY = drag.translation.height - previousTranslationHeight
+                                
+                                // Update the previous translations for the next frame
                                 previousTranslationWidth = drag.translation.width
+                                previousTranslationHeight = drag.translation.height
                                 
-                                // Multiplier can be adjusted as needed
-                                let rotationAmount = Float(deltaTranslation * rotationSpeed)
+                                // Adjust these multipliers as needed for sensitivity
+                                let rotationSpeedX = Float(deltaX * rotationSpeed) // Rotation around Y axis
+                                let rotationSpeedY = Float(deltaY * rotationSpeed) // Rotation around X axis
                                 
-                                // Create a rotation quaternion around the Y axis
-                                let rotation = simd_quatf(angle: rotationAmount, axis: SIMD3<Float>(0, 1, 0))
+                                // Create rotation quaternions for each axis
+                                let rotationY = simd_quatf(angle: rotationSpeedX, axis: SIMD3<Float>(0, 1, 0)) // Y axis
+                                let rotationX = simd_quatf(angle: rotationSpeedY, axis: SIMD3<Float>(1, 0, 0)) // X axis
                                 
-                                // Apply rotation to the entity
-                                configuration.globeEntity?.rotate(by: rotation)
+                                // Combine the rotations
+                                let combinedRotation = simd_mul(rotationX, rotationY)
+                                
+                                // Apply the combined rotation to the entity
+                                configuration.globeEntity?.rotate(by: combinedRotation)
                             }
                             
                             // Dragging ended or the long press cancelled.
@@ -146,8 +157,9 @@ private struct GlobeGesturesModifier: ViewModifier {
                     .onEnded { value in
                         switch value {
                         case .second(true, _):
-                            // Reset the previous translation width at the end of the gesture
+                            // Reset the previous translation width & height at the end of the gesture
                             previousTranslationWidth = 0.0
+                            previousTranslationHeight = 0.0
                             
                             // Reset the previous rotation state
                             configuration.isRotationPaused = initialIsRotationPaused ?? true
