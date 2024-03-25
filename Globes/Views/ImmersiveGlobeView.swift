@@ -13,7 +13,7 @@ import SwiftUI
 struct ImmersiveGlobeView: View {
     
     @Environment(ViewModel.self) private var model
-    @Bindable var configuration: GlobeEntity.Configuration
+    @Bindable var configuration: GlobeConfiguration
     
     /// A hack to override the radius of `configuration`.
     var overrideRadius: Float? = nil

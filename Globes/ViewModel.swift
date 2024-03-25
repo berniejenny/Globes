@@ -9,7 +9,7 @@ import SwiftUI
 
 @Observable class ViewModel {    
     /// The configuration of the currently selected globe. Nil if no globe is selected.
-    var selectedGlobeConfiguration: GlobeEntity.Configuration? = nil
+    var selectedGlobeConfiguration: GlobeConfiguration? = nil
     
     /// Hide small preview globes when an alert, a confirmation dialog or a sheet is shown to avoid intersections between these views and the globes
     var hidePreviewGlobes = false
