@@ -66,7 +66,7 @@ struct GlobeSelectionView: View {
             HStack {
                 Spacer()
                 
-                ImmersiveGlobeView(configuration: configuration, overrideRadius: globeRadius)
+                ImmersivePreviewGlobeView(configuration: configuration, radius: globeRadius)
                     .frame(width: Self.globeViewSize, height: Self.globeViewSize)
                     .scaledToFit()
                     .onChange(of: model.hidePreviewGlobes) {
