@@ -161,16 +161,21 @@ struct ContentView: View {
     }
     
     @ViewBuilder private var resetSizeButton: some View {
-        let globeIsScaled = model.selectedGlobeConfiguration?.globeEntity?.globeScale != 1
-        Button(action: {
-            model.selectedGlobeConfiguration?.globeEntity?.globeScale = 1
-        }) {
+        let globeIsScaled = model.selectedGlobeConfiguration?.globeEntity?.uniformScale != 1
+        Button(action: resetGlobeSize) {
             Label("Reset the Globe to its Original Size", systemImage: "circle.circle")
                 .labelStyle(.iconOnly)
         }
         .disabled(!globeIsScaled)
         .padding()
         .help(globeIsScaled ? "Reset to Original Size" : "The Globe is at its Original Size")
+    }
+    
+    private func resetGlobeSize() {
+        guard let configuration = model.selectedGlobeConfiguration else { return }
+        configuration.globeEntity?.scaleAndAdjustDistanceToCamera(
+            newScale: 1,
+            globeRadius: configuration.globe.radius)
     }
     
     private var isRotationPausedBinding: Binding<Bool> {

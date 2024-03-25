@@ -26,13 +26,12 @@ struct GlobeSelectionView: View {
     
     /// Radius of preview globe in meter
 #warning("This could be derived from the view geometry size")
-    // https://developer.apple.com/wwdc23/10080
+    // https://developer.apple.com/wwdc23/10080 at 14:45
     private let globeRadius: Float = 0.035
     
     init(globe: Globe) {
         self.configuration = GlobeEntity.Configuration(
             globe: globe,
-            position: [globeRadius, -globeRadius, globeRadius], // [x: to right, y: upwards, z: toward camera], relative to top-left view corner in scene coordinates
             speed: 0.3,
             usePreviewTexture: true,
             addHoverEffect: false // hover effect on the globe is potentially confusing, because the background changes color when the globe is hovered.
@@ -75,6 +74,7 @@ struct GlobeSelectionView: View {
                             configuration.opacity = model.hidePreviewGlobes ? 0 : 1
                         }
                     }
+                    .offset(z: Self.globeViewSize / 2)
             }
         }
         .frame(height: Self.height)
@@ -94,33 +94,61 @@ struct GlobeSelectionView: View {
     private func loadGlobe() {
         guard !globeIsSelected else { return }
         
-        // create a new configuration if there is no selected globe
-        let r = configuration.globe.radius
-        if model.selectedGlobeConfiguration == nil {
-            model.selectedGlobeConfiguration = GlobeEntity.Configuration(
-                globe: configuration.globe,
-                position: [r, r, -(r + 0.5)],
-                speed: 0.1,
-                isPaused: false,
-                usePreviewTexture: false,
-                enableGestures: true,
-                addHoverEffect: false
-            )
-        }
-        
         Task {
+            // create a new configuration if there is no selected globe
+            if model.selectedGlobeConfiguration == nil {
+                model.selectedGlobeConfiguration = GlobeEntity.Configuration(
+                    globe: configuration.globe,
+                    speed: 0.1,
+                    isPaused: false,
+                    usePreviewTexture: false,
+                    enableGestures: true,
+                    addHoverEffect: false
+                )
+            }
+            
             if let selectedGlobeConfiguration = model.selectedGlobeConfiguration {
                 withAnimation {
                     loadingTexture = true
                 }
-                // replace the globe metadata, but reuse other settings, such as position, rotation, etc.
+                defer {
+                    withAnimation {
+                        loadingTexture = false
+                    }
+                }
+                
+                // replace the globe metadata, but reuse other settings, such as rotation toggle.
+                let oldRadius = selectedGlobeConfiguration.globe.radius // remember the radius
                 selectedGlobeConfiguration.globe = configuration.globe
                 
                 // load the globe
-                selectedGlobeConfiguration.globeEntity = try await GlobeEntity(configuration: selectedGlobeConfiguration)
-                withAnimation {
-                    loadingTexture = false
+                let newGlobe = try await GlobeEntity(configuration: selectedGlobeConfiguration)
+                
+                // position the new globe such that its closest part is at the same distance as the closest part of the current globe
+                if let globeEntity = selectedGlobeConfiguration.globeEntity {
+                    print("Reuse position for", configuration.globe.name)
+                    // the position of the previous globe
+                    let oldPosition = await globeEntity.position
+                    // scaled radius of the globe
+                    let oldScaledRadius = await oldRadius * globeEntity.uniformScale
+                    // the new globe (with scale = 1) differs by this factor in size from the old globe
+                    let oldScale = oldScaledRadius / configuration.globe.radius
+                    await newGlobe.scaleAndAdjustDistanceToCamera(
+                        newScale: 1,
+                        oldScale: oldScale,
+                        oldPosition: oldPosition,
+                        globeRadius: configuration.globe.radius
+                    )
+                } else {
+                    print("New position for", configuration.globe.name)
+                    // position the globe in front of the camera
+                    let r = configuration.globe.radius
+                    let globeCenter = SIMD3<Float>([0, 1, -(r + 0.5)])
+                    await newGlobe.setPosition(globeCenter, relativeTo: nil)
+                    await print(newGlobe.position)
                 }
+                
+                selectedGlobeConfiguration.globeEntity = newGlobe
             }
         }
     }

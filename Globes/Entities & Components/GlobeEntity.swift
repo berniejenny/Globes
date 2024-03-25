@@ -29,8 +29,8 @@ import SwiftUI
         
         // Add InputTargetComponent and CollisionComponent to enable gestures, which is also needed for the hover effect
         if configuration.enableGestures {
-            modelEntity.components.set(InputTargetComponent())
-            modelEntity.components.set(CollisionComponent(shapes: [.generateSphere(radius: radius)], mode: .trigger))
+            components.set(InputTargetComponent())
+            components.set(CollisionComponent(shapes: [.generateSphere(radius: radius)], mode: .trigger))
         }
         if configuration.addHoverEffect {
             modelEntity.components.set(HoverEffectComponent())
@@ -52,44 +52,66 @@ import SwiftUI
         }
         
         // Scale and position the entire entity.
-        move(
-            to: Transform(
-                scale: SIMD3(repeating: 1),
-                rotation: orientation,
-                translation: configuration.position),
-            relativeTo: parent)
+//        move(
+//            to: Transform(
+//                scale: SIMD3(repeating: 1),
+//                rotation: orientation,
+//                translation: configuration.position),
+//            relativeTo: parent)
         
         // adjust the opacity
         modelEntity.components.set(OpacityComponent(opacity: configuration.opacity))
+//        print()
+//        print(configuration.globe.name)
+//        print("entity", position)
+//        print("model", modelEntity.position)
     }
-        
-    var globePosition: SIMD3<Float> {
+    
+    /// The  uniform scale factor. Read and write access is observed by SwiftUI (unlike changes to normal entity properties).
+    var uniformScale: Float {
         // modelEntity is not @Observed, so programmatically inform the Observation framework about access and mutation.
         // https://developer.apple.com/wwdc23/10149?time=558
         get {
-            access(keyPath: \.globePosition)
-            return modelEntity.position
+            access(keyPath: \.uniformScale)
+            return scale.sum() / 3
         }
         set {
-            withMutation(keyPath: \.globePosition) {
-                modelEntity.position = newValue
+            withMutation(keyPath: \.uniformScale) {
+                scale = SIMD3<Float>(repeating: newValue)
             }
         }
     }
     
-    /// The uniform scale of the model entity, which is a child of this entity.
-    var globeScale: Float {
-        // modelEntity is not @Observed, so programmatically inform the Observation framework about access and mutation.
-        // https://developer.apple.com/wwdc23/10149?time=558
-        get {
-            access(keyPath: \.globeScale)
-            return (modelEntity.scale.x + modelEntity.scale.y + modelEntity.scale.z) / 3
-        }
-        set {
-            withMutation(keyPath: \.globeScale) {
-                modelEntity.scale = SIMD3<Float>(repeating: newValue)
-            }
-        }
+    /// Changes the scale of the globe and move the globe along a line connecting the camera and the center of the globe,
+    /// such that the globe section facing the camera remains at a constant distance.
+    /// - Parameters:
+    ///   - newScale: The new scale of the globe.
+    ///   - oldScale: The current scale of the globe. If nil, `uniformScale` is used.
+    ///   - oldPosition: The current position of the globe. If nil, `position` is used.
+    ///   - cameraPosition: The camera position. If nil, the current camera position is retrieved.
+    ///   - globeRadius: The radius of the globe in meter.
+    func scaleAndAdjustDistanceToCamera(
+        newScale: Float,
+        oldScale: Float? = nil,
+        oldPosition: SIMD3<Float>? = nil,
+        cameraPosition: SIMD3<Float>? = nil,
+        globeRadius: Float
+    ) {
+        let oldScale = oldScale ?? uniformScale
+        let oldPosition = oldPosition ?? position
+        let cameraPosition = cameraPosition ?? CameraTracker.shared.position
+        
+        // Compute by how much the globe radius changes.
+        let deltaRadius = (newScale - oldScale) * globeRadius
+
+        // The unary direction vector from the globe to the camera.
+        let globeCameraDirection = normalize(cameraPosition - oldPosition)
+        
+        // Move the globe center along that direction.
+        position = oldPosition - globeCameraDirection * deltaRadius
+        
+        // Change `uniformScale` instead of `scale`, such that SwiftUI is informed and updates.
+        uniformScale = newScale
     }
     
     func rotate(by rotation: simd_quatf) {

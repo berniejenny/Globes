@@ -12,22 +12,21 @@ extension GlobeEntity {
     /// Configuration information for globe entities.
     @Observable class Configuration {
         
-        /// maximum diameter of globe when scaled up in meter
-        private let maxDiameter: Double = 5
+        /// Maximum diameter of globe when scaled up in meter
+        private let maxDiameter: Float = 5
         
-        /// minimum diameter of globe when scaled down in meter
-        private let minDiameter: Double = 0.05
+        /// Minimum diameter of globe when scaled down in meter
+        private let minDiameter: Float = 0.05
         
+        /// Globe metadata and texture source name
         var globe: Globe
         
+        /// An entity consisting of a mesh, material, etc.
         var globeEntity: GlobeEntity?
         
         /// Opacity of the globe
         var opacity: Float = 1
-        
-        var rotation: simd_quatf
-        var position: SIMD3<Float>
-        
+                
         /// Speed of rotation used `RotationSystem`
         var speed: Float
         
@@ -48,20 +47,20 @@ extension GlobeEntity {
             isRotationPaused ? 0 : speed
         }
         
-        var minScale: Double {
-            let d = 2 * Double(globe.radius)
+        /// Minimum scale factor
+        var minScale: Float {
+            let d = 2 * globe.radius
             return minDiameter / d
         }
         
-        var maxScale: Double {
-            let d = 2 * Double(globe.radius)
+        /// Maximum scale factor
+        var maxScale: Float {
+            let d = 2 * globe.radius
             return max(1, maxDiameter / d)
         }
         
         init(
             globe: Globe,
-            rotation: simd_quatf = .init(angle: 0, axis: [0, 1, 0]),
-            position: SIMD3<Float> = .zero,
             speed: Float = 0,
             isPaused: Bool = false,
             usePreviewTexture: Bool = false,
@@ -70,8 +69,6 @@ extension GlobeEntity {
         ) {
             self.globe = globe
             self.globeEntity = nil
-            self.rotation = rotation
-            self.position = position
             self.speed = speed
             self.isRotationPaused = isPaused
             self.usePreviewTexture = usePreviewTexture
