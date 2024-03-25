@@ -15,7 +15,7 @@ struct GlobeSelectionView: View {
     @Environment(ViewModel.self) private var model
     
     /// The globe that can be selected by pinching this view
-    @State private var configuration: GlobeEntity.Configuration
+    @State private var configuration: GlobeConfiguration
     
     /// Flag to show progress view while loading large globe texture
     @State private var loadingTexture = false
@@ -30,7 +30,7 @@ struct GlobeSelectionView: View {
     private let globeRadius: Float = 0.035
     
     init(globe: Globe) {
-        self.configuration = GlobeEntity.Configuration(
+        self.configuration = GlobeConfiguration(
             globe: globe,
             speed: 0.3,
             usePreviewTexture: true,
@@ -97,7 +97,7 @@ struct GlobeSelectionView: View {
         Task {
             // create a new configuration if there is no selected globe
             if model.selectedGlobeConfiguration == nil {
-                model.selectedGlobeConfiguration = GlobeEntity.Configuration(
+                model.selectedGlobeConfiguration = GlobeConfiguration(
                     globe: configuration.globe,
                     speed: 0.1,
                     isPaused: false,

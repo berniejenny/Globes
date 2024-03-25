@@ -16,12 +16,12 @@ import SwiftUI
         super.init()
     }
     
-    init(radius: Float? = nil, configuration: Configuration) async throws {
+    init(radius: Float? = nil, configuration: GlobeConfiguration) async throws {
         super.init()
         try await addGlobe(radius: radius, configuration: configuration)
     }
     
-    func addGlobe(radius: Float? = nil, configuration: Configuration) async throws {
+    func addGlobe(radius: Float? = nil, configuration: GlobeConfiguration) async throws {
         let material = await loadMaterial(configuration: configuration)
         let radius = radius ?? configuration.globe.radius
         let mesh: MeshResource = .generateSphere(radius: radius)
@@ -42,7 +42,7 @@ import SwiftUI
         update(configuration: configuration)
     }
     
-    func update(configuration: Configuration) {
+    func update(configuration: GlobeConfiguration) {
         // Set the speed of the automatic rotation
         if var rotation: RotationComponent = modelEntity.components[RotationComponent.self] {
             rotation.speed = configuration.currentSpeed
@@ -124,7 +124,7 @@ import SwiftUI
     }
     
     /// Load texture material from app bundle (for full resolution) or assets store (for preview globes).
-    private func loadMaterial(configuration: Configuration) async -> RealityKit.Material {
+    private func loadMaterial(configuration: GlobeConfiguration) async -> RealityKit.Material {
         let globe = configuration.globe
         
         // 16k textures cannot be loaded from the assets catalogue, so load preview images from assets and full resolution image from the app bundle

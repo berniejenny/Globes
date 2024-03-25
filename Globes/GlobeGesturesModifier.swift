@@ -4,7 +4,7 @@ import SwiftUI
 
 extension View {
     /// Adds gestures for moving, scaling and rotating a globe.
-    func globeGestures(configuration: GlobeEntity.Configuration) -> some View {
+    func globeGestures(configuration: GlobeConfiguration) -> some View {
         self.modifier(
             GlobeGesturesModifier(configuration: configuration)
         )
@@ -13,7 +13,7 @@ extension View {
 
 /// A modifier that adds gestures and positioning to a view.
 private struct GlobeGesturesModifier: ViewModifier {
-    @Bindable var configuration: GlobeEntity.Configuration
+    @Bindable var configuration: GlobeConfiguration
     
     /// The entity currently being manipulated if a gesture is in progress.
     @State private var targetedEntity: Entity?
