@@ -14,10 +14,6 @@ struct ImmersiveGlobeView: View {
     
     @Environment(ViewModel.self) private var model
     @Bindable var configuration: GlobeEntity.Configuration
-        
-    /// Accessibility stuff required by `PlacementGesturesModifier`
-    @State var axZoomIn: Bool = false
-    @State var axZoomOut: Bool = false
     
     /// A hack to override the radius of `configuration`.
     var overrideRadius: Float? = nil
@@ -39,6 +35,7 @@ struct ImmersiveGlobeView: View {
             content.add(globeEntity)
             configuration.globeEntity = globeEntity
         } update: { content in
+            statusLog("Update", globeName: configuration.globe.name, category: "RealityView.update")
             let oldGlobeEntity = content.entities.first(where: { $0 is GlobeEntity })
             guard oldGlobeEntity?.name != configuration.globeEntity?.name else {
                 configuration.globeEntity?.update(configuration: configuration)
@@ -59,7 +56,7 @@ struct ImmersiveGlobeView: View {
             
             configuration.globeEntity?.update(configuration: configuration)
         }
-        .globeGestures(configuration: configuration, axZoomIn: axZoomIn, axZoomOut: axZoomOut)
+        .globeGestures(configuration: configuration)
     }
 }
 
