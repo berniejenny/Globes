@@ -96,6 +96,11 @@ import SwiftUI
         self.modelEntity.orientation *= rotation
     }
     
+    /// Reset the orientation of the enttity to identity quaternion
+    func resetRotation() {
+        self.modelEntity.orientation = simd_quatf(real: 1, imag: SIMD3<Float>(0, 0, 0))
+    }
+    
     /// Load texture material from app bundle (for full resolution) or assets store (for preview globes).
     private func loadMaterial(configuration: Configuration) async -> RealityKit.Material {
         let globe = configuration.globe
