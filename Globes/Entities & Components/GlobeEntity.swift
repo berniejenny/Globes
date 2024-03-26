@@ -51,20 +51,8 @@ import SwiftUI
             modelEntity.components.set(RotationComponent(speed: configuration.currentSpeed))
         }
         
-        // Scale and position the entire entity.
-//        move(
-//            to: Transform(
-//                scale: SIMD3(repeating: 1),
-//                rotation: orientation,
-//                translation: configuration.position),
-//            relativeTo: parent)
-        
         // adjust the opacity
         modelEntity.components.set(OpacityComponent(opacity: configuration.opacity))
-//        print()
-//        print(configuration.globe.name)
-//        print("entity", position)
-//        print("model", modelEntity.position)
     }
     
     /// The  uniform scale factor. Read and write access is observed by SwiftUI (unlike changes to normal entity properties).
@@ -115,12 +103,28 @@ import SwiftUI
     }
     
     func rotate(by rotation: simd_quatf) {
-        self.modelEntity.orientation *= rotation
+        globeOrientation *= rotation
     }
     
-    /// Reset the orientation of the enttity to identity quaternion
+    /// Reset the orientation of the entity to identity quaternion
     func resetRotation() {
-        self.modelEntity.orientation = simd_quatf(real: 1, imag: SIMD3<Float>(0, 0, 0))
+        globeOrientation = simd_quatf(real: 1, imag: SIMD3<Float>(0, 0, 0))
+    }
+    
+    /// The  orientation of the globe. Read and write access is observed by SwiftUI (unlike changes to normal entity properties).
+    /// This changes the orientation of this parent entity, and not the orientation of its child model entity, which has an optional rotation animation. 
+    var globeOrientation: simd_quatf {
+        // globeOrientation is not @Observed, so programmatically inform the Observation framework about access and mutation.
+        // https://developer.apple.com/wwdc23/10149?time=558
+        get {
+            access(keyPath: \.globeOrientation)
+            return orientation
+        }
+        set {
+            withMutation(keyPath: \.globeOrientation) {
+                orientation = newValue
+            }
+        }
     }
     
     /// Load texture material from app bundle (for full resolution) or assets store (for preview globes).

@@ -113,6 +113,9 @@ struct ContentView: View {
                             resetSizeButton
                         }
                         ToolbarItem(placement: .topBarTrailing) {
+                            orientButton
+                        }
+                        ToolbarItem(placement: .topBarTrailing) {
                             pauseRotationButton
                         }
                         ToolbarItem(placement: .topBarTrailing) {
@@ -160,6 +163,15 @@ struct ContentView: View {
         .help("Hide the Globe")
     }
     
+    @ViewBuilder private var orientButton: some View {
+        Button(action: orientGlobe) {
+            Label("Orient the Globe", systemImage: "location.north.line")
+                .labelStyle(.iconOnly)
+        }
+        .disabled(isGlobeNorthOriented)
+        .padding()
+    }
+    
     @ViewBuilder private var resetSizeButton: some View {
         let globeIsScaled = model.selectedGlobeConfiguration?.globeEntity?.uniformScale != 1
         Button(action: resetGlobeSize) {
@@ -169,6 +181,16 @@ struct ContentView: View {
         .disabled(!globeIsScaled)
         .padding()
         .help(globeIsScaled ? "Reset to Original Size" : "The Globe is at its Original Size")
+    }
+    
+    private func orientGlobe() {
+        model.selectedGlobeConfiguration?.globeEntity?.resetRotation()
+    }
+    
+    private var isGlobeNorthOriented: Bool {
+        guard let currentOrientation = model.selectedGlobeConfiguration?.globeEntity?.globeOrientation else { return false }
+        let northOrientation = simd_quatf(real: 1, imag: SIMD3<Float>(0, 0, 0))
+        return currentOrientation == northOrientation
     }
     
     private func resetGlobeSize() {

@@ -197,7 +197,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                                                                           z: -rotation.axis.z))
                     
                     let newOrientation = orientationAtGestureStart.rotated(by: flippedRotation)
-                    globeEntity.setOrientation(.init(newOrientation), relativeTo: nil)
+                    globeEntity.globeOrientation = simd_quatf(newOrientation)
                 }
             }
             .onEnded { _ in
