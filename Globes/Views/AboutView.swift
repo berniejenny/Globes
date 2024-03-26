@@ -34,8 +34,8 @@ struct AboutView: View {
                     .padding(.bottom)
                 Text(copyright)
                     .padding(.bottom)
-                Text(license)
-                Link("Source on GitHub", destination: sourceURL)
+//                Text(license)
+//                Link("Source on GitHub", destination: sourceURL)
             }
             .font(.callout)
             .foregroundStyle(.secondary)
