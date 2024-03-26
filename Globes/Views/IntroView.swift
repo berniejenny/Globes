@@ -26,6 +26,7 @@ struct IntroView: View {
                 Text("Pinch and drag to position the globe.")
                 Text("Pinch and hold for a moment, then drag to rotate the globe.")
                 Text("Pinch and drag with both hands to resize the globe.")
+                Text("Double-pinch to stop and start globe rotation.")
             }
             .font(.callout)
             .foregroundStyle(.secondary)
