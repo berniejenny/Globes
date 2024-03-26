@@ -1,4 +1,5 @@
 import ARKit
+import os
 import RealityKit
 import SwiftUI
 
@@ -13,27 +14,44 @@ extension View {
 
 /// A modifier that adds gestures and positioning to a view.
 private struct GlobeGesturesModifier: ViewModifier {
+    
+    /// State variables for drag, magnify, scale and 3D rotation gestures. State variables for the y-rotation gesture is separate.
+    struct GlobeGestureState {
+        var isDragging = false
+        var isScaling: Bool { scaleAtGestureStart != nil }
+        var isRotating: Bool { orientationAtGestureStart != nil }
+        
+        /// The position of the globe at the start of a drag or magnify gesture
+        var positionAtGestureStart: SIMD3<Float>? = nil
+        
+        /// The scale of the globe at the start of a magnify gesture
+        var scaleAtGestureStart: Float? = nil
+        
+        /// The orientation of the globe at the start of a 3D rotation gesture.
+        var orientationAtGestureStart: Rotation3D? = nil
+        
+        /// The position of the camera at the start of a magnify gesture
+        var cameraPositionAtGestureStart: SIMD3<Float>? = nil
+        
+        var isRotationPausedAtStartOfGesture: Bool? = nil
+        
+        mutating func endGesture() {
+            isDragging = false
+            positionAtGestureStart = nil
+            scaleAtGestureStart = nil
+            orientationAtGestureStart = nil
+            cameraPositionAtGestureStart = nil
+            isRotationPausedAtStartOfGesture = nil
+        }
+    }
+    
     @Bindable var configuration: GlobeConfiguration
     
-    /// The entity currently being manipulated if a gesture is in progress.
-    @State private var targetedEntity: Entity?
-    
-    /// The scale of the globe at the start of a magnify gesture
-    @State private var globeScaleAtGestureStart: Float? = nil
-    
-    /// The position of the globe at the start of a drag or magnify gesture
-    @State private var globePositionAtGestureStart: SIMD3<Float>? = nil
-    
-    /// The position of the camera at the start of a magnify gesture
-    @State private var cameraPositionAtGestureStart: SIMD3<Float>? = nil
-    
-    /// The orientation of the globe at the start of a 3D rotation gesture.
-    @State private var orientationAtGestureStart: Rotation3D? = nil
-    
     @State private var previousTranslationWidth: Double = 0.0
-    @State private var initialIsRotationPaused: Bool? = nil
     
-    enum DragState {
+    @State private var state = GlobeGestureState()
+    
+    enum YRotationState {
         case inactive
         case pressing
         case dragging(translation: CGSize)
@@ -48,17 +66,17 @@ private struct GlobeGesturesModifier: ViewModifier {
         }
     }
     
-    @GestureState private var dragState = DragState.inactive
+    @GestureState private var yRotationState = YRotationState.inactive
     
     private let minimumLongPressDuration = 0.5
     
-#warning("adjust the speed of rotation to the size and distance of the globe?")
+#warning("adjust the speed of rotation to the size and distance of the globe")
     private let rotationSpeed = 0.005
     
     func body(content: Content) -> some View {
         if configuration.enableGestures {
             content
-                .gesture(doubleTapGesture)
+                .simultaneousGesture(doubleTapGesture)
                 .simultaneousGesture(dragGesture)
                 .simultaneousGesture(magnifyGesture)
                 .simultaneousGesture(rotateGesture)
@@ -68,50 +86,70 @@ private struct GlobeGesturesModifier: ViewModifier {
         }
     }
     
+    /// Double pinch gesture for starting and stoping globe rotation.
     private var doubleTapGesture: some Gesture {
         TapGesture(count: 2)
-            .targetedToAnyEntity()
+            .targetedToEntity(configuration.globeEntity ?? Entity())
             .onEnded { _ in
                 configuration.isRotationPaused.toggle()
             }
     }
+    
+    /// Drag gesture to reposition the globe.
     private var dragGesture: some Gesture {
         DragGesture(minimumDistance: 0.0)
             .targetedToEntity(configuration.globeEntity ?? Entity())
             .handActivationBehavior(.automatic) // allow for globes being pushed when the hand or a finger intersects it
             .onChanged { value in
                 
-#warning("combine the following two states?")
-                guard !self.dragState.isActive else { return }
-                guard globeScaleAtGestureStart == nil else { return }
+                guard !state.isScaling,
+                      !state.isRotating,
+                      !yRotationState.isActive else {
+                    log("exit drag")
+                    return
+                }
+                if state.positionAtGestureStart == nil {
+                    log("start drag")
+                    state.isDragging = true
+                    state.positionAtGestureStart = value.entity.position
+                }
                 
-                if let targetedEntity, let globePositionAtGestureStart {
+                if let globePositionAtGestureStart = state.positionAtGestureStart {
+                    log("update drag")
                     let location3D = value.convert(value.location3D, from: .local, to: .scene)
                     let startLocation3D = value.convert(value.startLocation3D, from: .local, to: .scene)
                     let delta = location3D - startLocation3D
-                    targetedEntity.position = globePositionAtGestureStart + SIMD3<Float>(delta)
-                } else {
-                    // drag gesture starts
-                    targetedEntity = value.entity
-                    globePositionAtGestureStart = value.entity.position
+                    value.entity.position = globePositionAtGestureStart + SIMD3<Float>(delta)
                 }
             }
             .onEnded { _ in
-                targetedEntity = nil
-                globePositionAtGestureStart = nil
+                log("end drag")
+                state.endGesture()
             }
     }
     
     private var magnifyGesture: some Gesture {
-        MagnifyGesture()
+        MagnifyGesture(minimumScaleDelta: 0)
             .targetedToEntity(configuration.globeEntity ?? Entity())
             .onChanged { value in
-                guard orientationAtGestureStart == nil else { return }
+                guard let globeEntity = value.entity as? GlobeEntity else { return }
+                guard !state.isRotating, !yRotationState.isActive else {
+                    log("exit magnify")
+                    return
+                }
+                if !state.isScaling {
+                    log("start magnify")
+                    state.scaleAtGestureStart = globeEntity.uniformScale
+                    state.positionAtGestureStart = value.entity.position
+                    // The camera position at the start of the scaling gesture is used to move the globe.
+                    // Querying the position on each update would result in an unstable globe position if the camera is moved.
+                    state.cameraPositionAtGestureStart = CameraTracker.shared.position
+                }
                 
-                if let globeEntity = targetedEntity as? GlobeEntity,
-                    let globeScaleAtGestureStart,
-                    let globePositionAtGestureStart,
-                    let cameraPositionAtGestureStart {
+                if let globeScaleAtGestureStart = state.scaleAtGestureStart,
+                   let globePositionAtGestureStart = state.positionAtGestureStart,
+                   let cameraPositionAtGestureStart = state.cameraPositionAtGestureStart {
+                    log("update magnify")
                     let scale = max(configuration.minScale, min(configuration.maxScale, Float(value.magnification) * globeScaleAtGestureStart))
                     globeEntity.scaleAndAdjustDistanceToCamera(
                         newScale: scale,
@@ -120,35 +158,35 @@ private struct GlobeGesturesModifier: ViewModifier {
                         cameraPosition: cameraPositionAtGestureStart,
                         globeRadius: configuration.globe.radius
                     )
-                } else {
-                    // magnify gesture starts
-                    targetedEntity = value.entity
-                    globeScaleAtGestureStart = value.entity.scale.x
-                    globePositionAtGestureStart = value.entity.position
-                    // The camera position at the start of the scaling gesture is used to move the globe.
-                    // Querying the position on each update would result in an unstable position if the camera is moved laterally.
-                    cameraPositionAtGestureStart = CameraTracker.shared.position
                 }
             }
             .onEnded { _ in
-                targetedEntity = nil
-                globeScaleAtGestureStart = nil
-                globePositionAtGestureStart = nil
-                cameraPositionAtGestureStart = nil
+                state.endGesture()
+                log("end magnify")
             }
     }
     
+    /// Two-handed rotation gesture for 3D rotation.
     private var rotateGesture: some Gesture {
         RotateGesture3D()
             .targetedToEntity(configuration.globeEntity ?? Entity())
             .onChanged { value in
-#warning("combine the following two states?")
-                guard !self.dragState.isActive else { return }
-                guard globeScaleAtGestureStart == nil else { return }
+                guard !state.isScaling, !yRotationState.isActive else {
+                    log ("exit rotate")
+                    return
+                }
+                if !state.isRotating {
+                    log("start rotate")
+                    state.orientationAtGestureStart = .init(value.entity.orientation(relativeTo: nil))
+                    
+                    DispatchQueue.main.async {
+                        pauseRotationAndStoreRotationState()
+                    }
+                }
                 
                 if let globeEntity = value.entity as? GlobeEntity,
-                   let orientationAtGestureStart {
-                    
+                   let orientationAtGestureStart = state.orientationAtGestureStart {
+                    log("update rotate")
                     // Flip orientation of rotation to match rotation direction of hands.
                     // Flipping code from "GestureComponent.swift" of Apple sample code project "Transforming RealityKit entities using gestures"
                     // https://developer.apple.com/documentation/realitykit/transforming-realitykit-entities-with-gestures?changes=_8
@@ -160,31 +198,32 @@ private struct GlobeGesturesModifier: ViewModifier {
                     
                     let newOrientation = orientationAtGestureStart.rotated(by: flippedRotation)
                     globeEntity.setOrientation(.init(newOrientation), relativeTo: nil)
-                } else {
-                    orientationAtGestureStart = .init(value.entity.orientation(relativeTo: nil))
                 }
             }
             .onEnded { _ in
-                orientationAtGestureStart = nil
+                log("end rotate")
+                // Reset the previous rotation state
+                if let paused = state.isRotationPausedAtStartOfGesture {
+                    configuration.isRotationPaused = paused
+                }
+                
+                state.endGesture()
             }
     }
     
+    /// One-handed gesture to rotate globe around the vertical y-axis.
     private var yAxisRotateGesture: some Gesture {
         LongPressGesture(minimumDuration: minimumLongPressDuration)
             .sequenced(before: DragGesture(minimumDistance: 0.0))
-            .updating($dragState) { value, state, _ in
+            .updating($yRotationState) { value, yRotationState, _ in
                 switch value {
                     // Long press begins.
                 case .first(true):
-                    state = .pressing
+                    yRotationState = .pressing
                     // Long press confirmed, dragging may begin.
                 case .second(true, let drag):
                     DispatchQueue.main.async {
-                        // remember whether rotation is enabled and pause rotation while the globe is rotated
-                        if initialIsRotationPaused == nil {
-                            initialIsRotationPaused = configuration.isRotationPaused
-                            configuration.isRotationPaused = true
-                        }
+                        pauseRotationAndStoreRotationState()
                     }
                     
                     guard let drag = drag else { return }
@@ -206,7 +245,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                     
                     // Dragging ended or the long press cancelled.
                 default:
-                    state = .inactive
+                    yRotationState = .inactive
                 }
             }
             .onEnded { value in
@@ -216,11 +255,29 @@ private struct GlobeGesturesModifier: ViewModifier {
                     previousTranslationWidth = 0.0
                     
                     // Reset the previous rotation state
-                    configuration.isRotationPaused = initialIsRotationPaused ?? true
-                    initialIsRotationPaused = nil
+                    if let paused = state.isRotationPausedAtStartOfGesture {
+                        configuration.isRotationPaused = paused
+                    }
+                    
+                    state.endGesture()
                 default:
                     break
                 }
             }
+    }
+    
+    /// Pauses automatic rotation of the globe while the globe is rotated by a gesture, and stores the automatic rotation state.
+    private func pauseRotationAndStoreRotationState() {
+        if state.isRotationPausedAtStartOfGesture == nil {
+            state.isRotationPausedAtStartOfGesture = configuration.isRotationPaused
+            configuration.isRotationPaused = true
+        }
+    }
+    
+    private func log(_ message: String) {
+#if DEBUG
+        let logger = Logger(subsystem: "Globe Gestures", category: "Gestures")
+        logger.info("\(message)")
+#endif
     }
 }
