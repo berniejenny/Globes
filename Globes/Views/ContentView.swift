@@ -13,7 +13,8 @@ struct ContentView: View {
     
     @Environment(ViewModel.self) private var model
     
-    @State private var immersiveSpaceIsShown = false
+    @Binding var immersiveSpaceIsShown: Bool
+    
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
     
@@ -225,7 +226,7 @@ struct ContentView: View {
 
 #if DEBUG
 #Preview(windowStyle: .automatic) {
-    ContentView(globes: Globe.previewGlobes + Globe.previewGlobes)
+    ContentView(globes: Globe.previewGlobes + Globe.previewGlobes, immersiveSpaceIsShown: .constant(true))
         .environment(ViewModel.preview)
     
 }
