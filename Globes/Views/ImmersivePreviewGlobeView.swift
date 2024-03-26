@@ -9,6 +9,7 @@ import os
 import RealityKit
 import SwiftUI
 
+/// Immersive globe for rendering small preview globes that do not change over time.
 struct ImmersivePreviewGlobeView: View {
     @Environment(ViewModel.self) private var model
     @Bindable var configuration: GlobeConfiguration
