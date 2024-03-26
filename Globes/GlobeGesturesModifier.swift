@@ -77,8 +77,8 @@ private struct GlobeGesturesModifier: ViewModifier {
     }
     private var dragGesture: some Gesture {
         DragGesture(minimumDistance: 0.0)
-            .targetedToAnyEntity()
-            .handActivationBehavior(.pinch)
+            .targetedToEntity(configuration.globeEntity ?? Entity())
+            .handActivationBehavior(.automatic) // allow for globes being pushed when the hand or a finger intersects it
             .onChanged { value in
                 
 #warning("combine the following two states?")
