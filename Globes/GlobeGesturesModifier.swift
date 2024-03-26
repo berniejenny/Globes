@@ -55,7 +55,8 @@ private struct GlobeGesturesModifier: ViewModifier {
     func body(content: Content) -> some View {
         if configuration.enableGestures {
             content
-                .gesture(dragGesture)
+                .gesture(doubleTapGesture)
+                .simultaneousGesture(dragGesture)
                 .simultaneousGesture(magnifyGesture)
                 .simultaneousGesture(rotateGesture)
         } else {
@@ -63,6 +64,13 @@ private struct GlobeGesturesModifier: ViewModifier {
         }
     }
     
+    private var doubleTapGesture: some Gesture {
+        TapGesture(count: 2)
+            .targetedToAnyEntity()
+            .onEnded { _ in
+                configuration.isRotationPaused.toggle()
+            }
+    }
     private var dragGesture: some Gesture {
         DragGesture(minimumDistance: 0.0)
             .targetedToAnyEntity()
