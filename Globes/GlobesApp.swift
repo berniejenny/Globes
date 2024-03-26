@@ -17,6 +17,7 @@ struct GlobesApp: App {
     @State private var model = ViewModel()
     
     @State private var globeImmersionStyle: ImmersionStyle = .mixed
+    @State private var immersiveSpaceIsShown = false
     
     init() {
         // Register custom components and systems
@@ -36,7 +37,7 @@ struct GlobesApp: App {
     var body: some Scene {
         // window for selecting a globe and displaying information about a globe
         WindowGroup {
-            ContentView(globes: globes)
+            ContentView(globes: globes, immersiveSpaceIsShown: $immersiveSpaceIsShown)
                 .frame(minWidth: 1000, minHeight: 600)
                 .environment(model)
         }
@@ -49,8 +50,8 @@ struct GlobesApp: App {
                     .environment(model)
                     .onDisappear {
                         // handle home button press that closes the immersive view
-#warning("TBD")
-//                        model.selectedGlobeConfiguration = nil
+                        immersiveSpaceIsShown = false
+                        model.selectedGlobeConfiguration = nil
                     }
             }
         }
