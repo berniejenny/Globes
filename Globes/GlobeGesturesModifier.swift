@@ -27,6 +27,9 @@ private struct GlobeGesturesModifier: ViewModifier {
     /// The position of the camera at the start of a magnify gesture
     @State private var cameraPositionAtGestureStart: SIMD3<Float>? = nil
     
+    /// The orientation of the globe at the start of a 3D rotation gesture.
+    @State private var orientationAtGestureStart: Rotation3D? = nil
+    
     @State private var previousTranslationWidth: Double = 0.0
     @State private var initialIsRotationPaused: Bool? = nil
     
@@ -59,6 +62,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                 .simultaneousGesture(dragGesture)
                 .simultaneousGesture(magnifyGesture)
                 .simultaneousGesture(rotateGesture)
+                .simultaneousGesture(yAxisRotateGesture)
         } else {
             content
         }
@@ -102,6 +106,8 @@ private struct GlobeGesturesModifier: ViewModifier {
         MagnifyGesture()
             .targetedToEntity(configuration.globeEntity ?? Entity())
             .onChanged { value in
+                guard orientationAtGestureStart == nil else { return }
+                
                 if let globeEntity = targetedEntity as? GlobeEntity,
                     let globeScaleAtGestureStart,
                     let globePositionAtGestureStart,
@@ -133,6 +139,37 @@ private struct GlobeGesturesModifier: ViewModifier {
     }
     
     private var rotateGesture: some Gesture {
+        RotateGesture3D()
+            .targetedToEntity(configuration.globeEntity ?? Entity())
+            .onChanged { value in
+#warning("combine the following two states?")
+                guard !self.dragState.isActive else { return }
+                guard globeScaleAtGestureStart == nil else { return }
+                
+                if let globeEntity = value.entity as? GlobeEntity,
+                   let orientationAtGestureStart {
+                    
+                    // Flip orientation of rotation to match rotation direction of hands.
+                    // Flipping code from "GestureComponent.swift" of Apple sample code project "Transforming RealityKit entities using gestures"
+                    // https://developer.apple.com/documentation/realitykit/transforming-realitykit-entities-with-gestures?changes=_8
+                    let rotation = value.rotation
+                    let flippedRotation = Rotation3D(angle: rotation.angle,
+                                                     axis: RotationAxis3D(x: -rotation.axis.x,
+                                                                          y: rotation.axis.y,
+                                                                          z: -rotation.axis.z))
+                    
+                    let newOrientation = orientationAtGestureStart.rotated(by: flippedRotation)
+                    globeEntity.setOrientation(.init(newOrientation), relativeTo: nil)
+                } else {
+                    orientationAtGestureStart = .init(value.entity.orientation(relativeTo: nil))
+                }
+            }
+            .onEnded { _ in
+                orientationAtGestureStart = nil
+            }
+    }
+    
+    private var yAxisRotateGesture: some Gesture {
         LongPressGesture(minimumDuration: minimumLongPressDuration)
             .sequenced(before: DragGesture(minimumDistance: 0.0))
             .updating($dragState) { value, state, _ in
