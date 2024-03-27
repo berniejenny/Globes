@@ -70,8 +70,8 @@ private struct GlobeGesturesModifier: ViewModifier {
     
     private let minimumLongPressDuration = 0.5
     
-#warning("adjust the speed of rotation to the size and distance of the globe")
-    private let rotationSpeed = 0.005
+    /// Amount of angular rotation per translation delta. This value is reduced for enlarged globes.
+    private let rotationSpeed: Float = 0.0015
     
     func body(content: Content) -> some View {
         if configuration.enableGestures {
@@ -215,7 +215,10 @@ private struct GlobeGesturesModifier: ViewModifier {
     private var yAxisRotateGesture: some Gesture {
         LongPressGesture(minimumDuration: minimumLongPressDuration)
             .sequenced(before: DragGesture(minimumDistance: 0.0))
+            .targetedToEntity(configuration.globeEntity ?? Entity())
             .updating($yRotationState) { value, yRotationState, _ in
+                guard let entity = value.entity as? GlobeEntity else { return }
+                let value = value.gestureValue
                 switch value {
                     // Long press begins.
                 case .first(true):
@@ -233,8 +236,10 @@ private struct GlobeGesturesModifier: ViewModifier {
                         let deltaTranslation = drag.translation.width - previousTranslationWidth
                         previousTranslationWidth = drag.translation.width
                         
-                        // Multiplier can be adjusted as needed
-                        let rotationAmount = Float(deltaTranslation * rotationSpeed)
+                        // Adjust the amount of rotation per translation delta to the size of the globe.
+                        // The angular rotation per translation delta is reduced for enlarged globes.
+                        let scaleRadius = max(1, entity.uniformScale) * configuration.globe.radius
+                        let rotationAmount = Float(deltaTranslation) * rotationSpeed / scaleRadius
                         
                         // Create a rotation quaternion around the Y axis
                         let rotation = simd_quatf(angle: rotationAmount, axis: SIMD3<Float>(0, 1, 0))
@@ -249,7 +254,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                 }
             }
             .onEnded { value in
-                switch value {
+                switch value.gestureValue {
                 case .second(true, _):
                     // Reset the previous translation width at the end of the gesture
                     previousTranslationWidth = 0.0
