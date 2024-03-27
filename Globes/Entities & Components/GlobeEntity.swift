@@ -44,11 +44,14 @@ import SwiftUI
     
     func update(configuration: GlobeConfiguration) {
         // Set the speed of the automatic rotation
-        if var rotation: RotationComponent = modelEntity.components[RotationComponent.self] {
-            rotation.speed = configuration.currentSpeed
-            modelEntity.components[RotationComponent.self] = rotation
-        } else {
-            modelEntity.components.set(RotationComponent(speed: configuration.currentSpeed))
+        if configuration.adjustRotationSpeedToSize {
+            let currentSpeed = configuration.currentSpeed(scale: uniformScale)
+            if var rotation: RotationComponent = modelEntity.components[RotationComponent.self] {
+                rotation.speed = currentSpeed
+                modelEntity.components[RotationComponent.self] = rotation
+            } else {
+                modelEntity.components.set(RotationComponent(speed: currentSpeed))
+            }
         }
         
         // adjust the opacity
