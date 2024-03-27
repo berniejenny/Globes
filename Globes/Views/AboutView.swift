@@ -16,12 +16,25 @@ struct AboutView: View {
     private let copyright: LocalizedStringKey = "Copyright 2024 by Monash University, Melbourne, Australia and [David Rumsey Map Center](https://library.stanford.edu/libraries/david-rumsey-map-center), Stanford Libraries, USA."
     private let license: LocalizedStringKey = "Source code under MIT license on [GitHub](https://github.com/berniejenny/Globes)"
     
+    private let iconSize: CGFloat = 100
+    
     var body: some View {
         VStack {
-            Image("icon")
-                .resizable()
-                .scaledToFit()
-                .frame(height: 100)
+            ZStack {
+                Image("AppIcon/Back/Content")
+                    .resizable()
+                    .frame(width: iconSize, height: iconSize)
+                    .mask {
+                        Circle()
+                    }
+//                Image("AppIcon/Middle/Content")
+//                    .resizable()
+//                    .frame(width: iconSize, height: iconSize)
+                Image("AppIcon/Front/Content")
+                    .resizable()
+                    .frame(width: iconSize, height: iconSize)
+            }
+            .padding()
             
             Text(Self.appName)
                 .font(.title)
@@ -33,7 +46,7 @@ struct AboutView: View {
                     .padding(.bottom)
                 Text(copyright)
                     .padding(.bottom)
-//                Text(license)
+//                Text(license) // TBD: increase frame height when license is shown
             }
             .font(.callout)
             .foregroundStyle(.secondary)
@@ -48,10 +61,11 @@ struct AboutView: View {
         }
         .multilineTextAlignment(.center)
         .padding()
-        .frame(width: 400, height: 550)
+        .frame(width: 400, height: 500)
     }
 }
 
 #Preview {
     AboutView()
+        .glassBackgroundEffect()
 }
