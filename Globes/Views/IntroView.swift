@@ -23,10 +23,10 @@ struct IntroView: View {
             
             Group {
                 Text("Choose a globe from the list.")
-                Text("Pinch and drag to position the globe.")
-                Text("Pinch and hold for a moment, then drag to rotate the globe.")
-                Text("Pinch and drag with both hands to resize the globe.")
-                Text("Double-pinch to stop and start globe rotation.")
+                Text("To position the globe, pinch and drag it with one hand.")
+                Text("To resize the globe, pinch and drag it with both hands.")
+                Text("To rotate the globe, pinch it with one hand, hold for a moment and then drag, or pinch and rotate with both hands.")
+                Text("Double-pinch to stop and start the rotation.")
             }
             .font(.callout)
             .foregroundStyle(.secondary)
