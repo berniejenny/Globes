@@ -12,10 +12,9 @@ struct AboutView: View {
     
     private static let appName = Bundle.main.infoDictionary![kCFBundleNameKey as String] as! String
     private let appVersion = Bundle.main.infoDictionary!["CFBundleShortVersionString" as String] as! String   
-    private let authors = "Software development by Bernhard Jenny and Dilpreet Singh, Monash University.\nGlobe images and metadata by David Rumsey."
-    private let copyright = "Copyright 2024 by Monash University, Melbourne, Australia and David Rumsey Map Center, Stanford Libraries, USA."
-    private let license = "\(appName) source code is distributed under MIT license."
-    private let sourceURL = URL(string: "https://github.com/berniejenny/Globes")!
+    private let authors: LocalizedStringKey = "Software development by [Bernhard Jenny](https://berniejenny.info) and [Dilpreet Singh](https://dilpreet.co), Monash University.\nGlobe images and metadata by [David Rumsey](https://www.davidrumsey.com)."
+    private let copyright: LocalizedStringKey = "Copyright 2024 by Monash University, Melbourne, Australia and [David Rumsey Map Center](https://library.stanford.edu/libraries/david-rumsey-map-center), Stanford Libraries, USA."
+    private let license: LocalizedStringKey = "Source code under MIT license on [GitHub](https://github.com/berniejenny/Globes)"
     
     var body: some View {
         VStack {
@@ -35,7 +34,6 @@ struct AboutView: View {
                 Text(copyright)
                     .padding(.bottom)
 //                Text(license)
-//                Link("Source on GitHub", destination: sourceURL)
             }
             .font(.callout)
             .foregroundStyle(.secondary)

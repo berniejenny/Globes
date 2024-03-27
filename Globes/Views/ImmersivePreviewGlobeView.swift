@@ -25,6 +25,9 @@ struct ImmersivePreviewGlobeView: View {
             content.add(globeEntity)
             globeEntity.components.set(RotationComponent(speed: configuration.currentSpeed))
             globeEntity.components.set(OpacityComponent(opacity: configuration.opacity))
+        } update: { content in
+            let entity = content.entities.first(where: { $0 is GlobeEntity })
+            entity?.components.set(OpacityComponent(opacity: configuration.opacity))
         }
     }
 }
