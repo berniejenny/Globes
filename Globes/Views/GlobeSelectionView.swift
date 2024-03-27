@@ -32,7 +32,7 @@ struct GlobeSelectionView: View {
     init(globe: Globe) {
         self.configuration = GlobeConfiguration(
             globe: globe,
-            speed: 0.3,
+            speed: GlobeConfiguration.defaultRotationSpeedForPreviewGlobes,
             usePreviewTexture: true,
             addHoverEffect: false // hover effect on the globe is potentially confusing, because the background changes color when the globe is hovered.
         )
@@ -99,7 +99,8 @@ struct GlobeSelectionView: View {
             if model.selectedGlobeConfiguration == nil {
                 model.selectedGlobeConfiguration = GlobeConfiguration(
                     globe: configuration.globe,
-                    speed: 0.1,
+                    speed: GlobeConfiguration.defaultRotationSpeed,
+                    adjustRotationSpeedToSize: true,
                     isPaused: false,
                     usePreviewTexture: false,
                     enableGestures: true,

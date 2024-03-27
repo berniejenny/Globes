@@ -53,7 +53,7 @@ struct ImmersiveGlobeView: View {
 
 #if DEBUG
 #Preview(immersionStyle: .mixed) {
-    ImmersiveGlobeView(configuration: .init(globe: Globe.preview))
+    ImmersiveGlobeView(configuration: .init(globe: Globe.preview, adjustRotationSpeedToSize: true))
         .environment(ViewModel.preview)
 }
 #endif
