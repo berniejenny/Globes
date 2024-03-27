@@ -8,6 +8,7 @@
 import SwiftUI
 import RealityKit
 
+@MainActor
 struct ContentView: View {
     let globes: [Globe]
     
@@ -132,7 +133,6 @@ struct ContentView: View {
             if newSelectedGlobe == nil {
                 Task {
                     if immersiveSpaceIsShown {
-#warning("Passing argument of non-sendable type 'DismissImmersiveSpaceAction' into main actor-isolated context may introduce data races")
                         await dismissImmersiveSpace()
                     }
                     immersiveSpaceIsShown = false
