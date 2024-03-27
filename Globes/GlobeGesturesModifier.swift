@@ -70,7 +70,7 @@ private struct GlobeGesturesModifier: ViewModifier {
     
     private let minimumLongPressDuration = 0.5
     
-    /// Amount of angular rotation per translation delta. This value is reduced for enlarged globes.
+    /// Amount of angular rotation per translation delta for single-handed rotation around the y-axis. This value is reduced for enlarged globes.
     private let rotationSpeed: Float = 0.0015
     
     func body(content: Content) -> some View {
@@ -187,11 +187,16 @@ private struct GlobeGesturesModifier: ViewModifier {
                 if let globeEntity = value.entity as? GlobeEntity,
                    let orientationAtGestureStart = state.orientationAtGestureStart {
                     log("update rotate")
+                    
+                    // reduce the rotation angle for enlarged globes to avoid excessively fast movements
+                    let rotation = value.rotation
+                    let scale = max(1, Double(globeEntity.uniformScale))
+                    let angle = Angle2D(radians: rotation.angle.radians / scale)
+                    
                     // Flip orientation of rotation to match rotation direction of hands.
                     // Flipping code from "GestureComponent.swift" of Apple sample code project "Transforming RealityKit entities using gestures"
                     // https://developer.apple.com/documentation/realitykit/transforming-realitykit-entities-with-gestures?changes=_8
-                    let rotation = value.rotation
-                    let flippedRotation = Rotation3D(angle: rotation.angle,
+                    let flippedRotation = Rotation3D(angle: angle,
                                                      axis: RotationAxis3D(x: -rotation.axis.x,
                                                                           y: rotation.axis.y,
                                                                           z: -rotation.axis.z))
