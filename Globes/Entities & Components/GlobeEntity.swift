@@ -136,21 +136,8 @@ import SwiftUI
         
         // 16k textures cannot be loaded from the assets catalogue, so load preview images from assets and full resolution image from the app bundle
         do {
-            let textureResource: TextureResource
-            let textureOptions = TextureResource.CreateOptions(semantic: .color, mipmapsMode: .allocateAndGenerateAll)
-#if targetEnvironment(simulator)
-            // The visionOS simulator cannot handle 16k textures, so use the preview texture when running in the simulator.
-            textureResource = try await TextureResource(named: globe.previewTexture, options: textureOptions)
-#else
-            if configuration.usePreviewTexture {
-                textureResource = try await TextureResource(named: globe.previewTexture, options: textureOptions)
-            } else {
-                guard let url = Bundle.main.url(forResource: globe.texture, withExtension: "jpg") else {
-                    fatalError("Cannot find \(globe.texture).jpg in the app bundle.")
-                }
-                textureResource = try await TextureResource(contentsOf: url, options: textureOptions)
-            }
-#endif
+            let textureResource = try await loadTexture(configuration: configuration)
+            
             // unlit material looks nice for small globes in selection view. Drop shadows for the large globe would require a lit material.
             var material = UnlitMaterial()
             material.color = .init(texture: .init(textureResource))
@@ -159,5 +146,29 @@ import SwiftUI
             let textureName = configuration.usePreviewTexture ? globe.previewTexture : globe.texture
             fatalError("Cannot load \(textureName) from the app bundle. \(error.localizedDescription)")
         }
+    }
+    
+    /// Load a texture from assets, the app bundle or and URL
+    /// - Parameter configuration: Globe configuration
+    /// - Returns: A texture resource.
+    private func loadTexture(configuration: GlobeConfiguration) async throws -> TextureResource {
+        let globe = configuration.globe
+        let textureOptions = TextureResource.CreateOptions(semantic: .color, mipmapsMode: .allocateAndGenerateAll)
+       
+#if targetEnvironment(simulator)
+        // The visionOS simulator cannot handle 16k textures, so use the preview texture when running in the simulator.
+        return try await TextureResource(named: globe.previewTexture, options: textureOptions)
+#else
+        if configuration.usePreviewTexture {
+            // load texture from assets
+            return try await TextureResource(named: globe.previewTexture, options: textureOptions)
+        } else {
+            // load texture from image file in app bundle
+            guard let url = Bundle.main.url(forResource: globe.texture, withExtension: "jpg") else {
+                fatalError("Cannot find \(globe.texture).jpg in the app bundle.")
+            }
+            return try await TextureResource(contentsOf: url, options: textureOptions)
+        }
+#endif
     }
 }
