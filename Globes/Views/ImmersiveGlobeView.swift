@@ -46,8 +46,10 @@ struct ImmersiveGlobeView: View {
     }
     
     private func log(_ message: String, globeName: String, category: String) {
+#if DEBUG
         let logger = Logger(subsystem: "Immersive Globe View", category: category)
         logger.info("\(message) \"\(globeName)\"" )
+#endif
     }
 }
 
