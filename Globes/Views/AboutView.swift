@@ -33,6 +33,7 @@ struct AboutView: View {
                 Image("AppIcon/Front/Content")
                     .resizable()
                     .frame(width: iconSize, height: iconSize)
+                    .offset(z: 5)
             }
             .padding()
             
