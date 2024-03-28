@@ -38,10 +38,10 @@ struct GlobesApp: App {
         // window for selecting a globe and displaying information about a globe
         WindowGroup {
             ContentView(globes: globes, immersiveSpaceIsShown: $immersiveSpaceIsShown)
-                .frame(minWidth: 1000, minHeight: 600)
+                .frame(minWidth: 900, maxWidth: 1300, minHeight: 600) // this defines min and max dimensions of the window
                 .environment(model)
         }
-        .windowResizability(.contentMinSize) // window cannot become smaller than the minimum size restriction of its content
+        .windowResizability(.contentSize) // window resizability is derived from window content
         
         // immersive globe space
         ImmersiveSpace(id: "ImmersiveGlobeSpace") {
