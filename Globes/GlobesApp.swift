@@ -49,7 +49,8 @@ struct GlobesApp: App {
                 ImmersiveGlobeView(configuration: configuration)
                     .environment(model)
                     .onDisappear {
-                        // handle home button press that closes the immersive view
+                        // Handle home button press that dismisses the immersive view.
+                        // No need to call dismissImmersiveSpace
                         immersiveSpaceIsShown = false
                         model.selectedGlobeConfiguration = nil
                     }
