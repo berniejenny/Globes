@@ -129,25 +129,17 @@ struct ContentView: View {
                 .navigationSplitViewColumnWidth(min: 600, ideal: 1000)
             }
         }
-        .onChange(of: selectedGlobe) { _, newSelectedGlobe in
-            if newSelectedGlobe == nil {
-                Task {
-                    if immersiveSpaceIsShown {
-                        await dismissImmersiveSpace()
-                    }
+        .onChange(of: selectedGlobe) {
+            Task {
+                guard selectedGlobe != nil, !immersiveSpaceIsShown else { return }
+                
+                switch await openImmersiveSpace(id: "ImmersiveGlobeSpace") {
+                case .opened:
+                    immersiveSpaceIsShown = true
+                case .error, .userCancelled:
+                    fallthrough
+                @unknown default:
                     immersiveSpaceIsShown = false
-                }
-            } else {
-                Task {
-                    guard !immersiveSpaceIsShown else { return }
-                    switch await openImmersiveSpace(id: "ImmersiveGlobeSpace") {
-                    case .opened:
-                        immersiveSpaceIsShown = true
-                    case .error, .userCancelled:
-                        fallthrough
-                    @unknown default:
-                        immersiveSpaceIsShown = false
-                    }
                 }
             }
         }
@@ -155,7 +147,13 @@ struct ContentView: View {
     
     @ViewBuilder private var hideGlobeButton: some View {
         Button(action: {
-            model.selectedGlobeConfiguration = nil
+            Task {
+                if immersiveSpaceIsShown {
+                    await dismissImmersiveSpace()
+                }
+                immersiveSpaceIsShown = false
+                model.selectedGlobeConfiguration = nil
+            }
         }) {
             Label("Hide the Globe", systemImage: "xmark")
                 .labelStyle(.iconOnly)
