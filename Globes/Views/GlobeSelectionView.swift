@@ -127,7 +127,6 @@ struct GlobeSelectionView: View {
                 
                 // position the new globe such that its closest part is at the same distance as the closest part of the current globe
                 if let globeEntity = selectedGlobeConfiguration.globeEntity {
-                    print("Reuse position for", configuration.globe.name)
                     // the position of the previous globe
                     let oldPosition = await globeEntity.position
                     // scaled radius of the globe
@@ -141,12 +140,10 @@ struct GlobeSelectionView: View {
                         globeRadius: configuration.globe.radius
                     )
                 } else {
-                    print("New position for", configuration.globe.name)
                     // position the globe in front of the camera
                     let r = configuration.globe.radius
                     let globeCenter = SIMD3<Float>([0, 1, -(r + 0.5)])
                     await newGlobe.setPosition(globeCenter, relativeTo: nil)
-                    await print(newGlobe.position)
                 }
                 
                 selectedGlobeConfiguration.globeEntity = newGlobe
