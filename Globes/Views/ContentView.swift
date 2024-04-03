@@ -152,7 +152,7 @@ struct ContentView: View {
                     await dismissImmersiveSpace()
                 }
                 immersiveSpaceIsShown = false
-                model.selectedGlobeConfiguration = nil
+                model.deselectGlobe()
             }
         }) {
             Label("Hide the Globe", systemImage: "xmark")
@@ -224,7 +224,7 @@ struct ContentView: View {
 
 #if DEBUG
 #Preview(windowStyle: .automatic) {
-    ContentView(globes: Globe.previewGlobes + Globe.previewGlobes, immersiveSpaceIsShown: .constant(true))
+    ContentView(globes: Globe.previewGlobes, immersiveSpaceIsShown: .constant(false))
         .environment(ViewModel.preview)
     
 }
