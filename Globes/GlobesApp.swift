@@ -52,7 +52,7 @@ struct GlobesApp: App {
                         // Handle home button press that dismisses the immersive view.
                         // No need to call dismissImmersiveSpace
                         immersiveSpaceIsShown = false
-                        model.selectedGlobeConfiguration = nil
+                        model.deselectGlobe()
                     }
             }
         }

@@ -15,7 +15,7 @@ struct GlobeSelectionView: View {
     @Environment(ViewModel.self) private var model
     
     /// The globe that can be selected by pinching this view
-    @State private var configuration: GlobeConfiguration
+    let globe: Globe
     
     /// Flag to show progress view while loading large globe texture
     @State private var loadingTexture = false
@@ -30,21 +30,22 @@ struct GlobeSelectionView: View {
     private let globeRadius: Float = 0.035
     
     init(globe: Globe) {
-        self.configuration = GlobeConfiguration(
-            globe: globe,
-            speed: GlobeConfiguration.defaultRotationSpeedForPreviewGlobes,
-            usePreviewTexture: true,
-            addHoverEffect: false // hover effect on the globe is potentially confusing, because the background changes color when the globe is hovered.
-        )
+        self.globe = globe
+        //        self.configuration = GlobeConfiguration(
+        //            globe: globe,
+        //            speed: GlobeConfiguration.defaultRotationSpeedForPreviewGlobes,
+        //            usePreviewTexture: true,
+        //            addHoverEffect: false // hover effect on the globe is potentially confusing, because the background changes color when the globe is hovered.
+        //        )
     }
-        
+    
     var body: some View {
-        let authorAndDate = configuration.globe.authorAndDate
+        let authorAndDate = globe.authorAndDate
         
         ZStack(alignment: .leading) {
             // name and author
             VStack(alignment: .leading) {
-                Text(configuration.globe.name)
+                Text(globe.name)
                     .font(.headline)
                 Text(authorAndDate)
                     .font(.callout)
@@ -53,6 +54,7 @@ struct GlobeSelectionView: View {
             }
             .padding(.leading)
             
+            // progress view
             HStack {
                 Spacer()
                 ProgressView()
@@ -63,18 +65,17 @@ struct GlobeSelectionView: View {
             .offset(z: 20)
             .opacity(loadingTexture ? 1 : 0)
             
+            // 3D preview globe
             HStack {
                 Spacer()
-                
-                ImmersivePreviewGlobeView(configuration: configuration, radius: globeRadius)
-                    .frame(width: Self.globeViewSize, height: Self.globeViewSize)
-                    .scaledToFit()
-                    .onChange(of: model.hidePreviewGlobes) {
-                        DispatchQueue.main.async {
-                            configuration.opacity = model.hidePreviewGlobes ? 0 : 1
-                        }
-                    }
-                    .offset(z: Self.globeViewSize / 2)
+                ImmersivePreviewGlobeView(
+                    globe: globe,
+                    opacity: model.hidePreviewGlobes ? 0 : 1,
+                    radius: globeRadius
+                )
+                .frame(width: Self.globeViewSize, height: Self.globeViewSize)
+                .scaledToFit()
+                .offset(z: Self.globeViewSize / 2)
             }
         }
         .frame(height: Self.height)
@@ -84,70 +85,34 @@ struct GlobeSelectionView: View {
         .onTapGesture(perform: loadGlobe)
     }
     
-    
-    /// True if the globe that can be selected by this view is already selected.
+    /// True if the globe that can be selected by this view is selected.
     private var globeIsSelected: Bool {
-        model.selectedGlobeConfiguration?.globe.id == configuration.globe.id
+        model.selectedGlobeConfiguration?.globe.id == globe.id
     }
     
     /// Async loading of globe.
     private func loadGlobe() {
         guard !globeIsSelected else { return }
-        
         Task {
-            // create a new configuration if there is no selected globe
-            if model.selectedGlobeConfiguration == nil {
-                model.selectedGlobeConfiguration = GlobeConfiguration(
-                    globe: configuration.globe,
-                    speed: GlobeConfiguration.defaultRotationSpeed,
-                    adjustRotationSpeedToSize: true,
-                    isPaused: false,
-                    usePreviewTexture: false,
-                    enableGestures: true,
-                    addHoverEffect: false
-                )
+            withAnimation {
+                loadingTexture = true
             }
-            
-            if let selectedGlobeConfiguration = model.selectedGlobeConfiguration {
+            defer {
                 withAnimation {
-                    loadingTexture = true
+                    loadingTexture = false
                 }
-                defer {
-                    withAnimation {
-                        loadingTexture = false
-                    }
-                }
-                
-                // replace the globe metadata, but reuse other settings, such as rotation toggle.
-                let oldRadius = selectedGlobeConfiguration.globe.radius // remember the radius
-                selectedGlobeConfiguration.globe = configuration.globe
-                
-                // load the globe
-                let newGlobe = try await GlobeEntity(configuration: selectedGlobeConfiguration)
-                
-                // position the new globe such that its closest part is at the same distance as the closest part of the current globe
-                if let globeEntity = selectedGlobeConfiguration.globeEntity {
-                    // the position of the previous globe
-                    let oldPosition = await globeEntity.position
-                    // scaled radius of the globe
-                    let oldScaledRadius = await oldRadius * globeEntity.uniformScale
-                    // the new globe (with scale = 1) differs by this factor in size from the old globe
-                    let oldScale = oldScaledRadius / configuration.globe.radius
-                    await newGlobe.scaleAndAdjustDistanceToCamera(
-                        newScale: 1,
-                        oldScale: oldScale,
-                        oldPosition: oldPosition,
-                        globeRadius: configuration.globe.radius
-                    )
-                } else {
-                    // position the globe in front of the camera
-                    let r = configuration.globe.radius
-                    let globeCenter = SIMD3<Float>([0, 1, -(r + 0.5)])
-                    await newGlobe.setPosition(globeCenter, relativeTo: nil)
-                }
-                
-                selectedGlobeConfiguration.globeEntity = newGlobe
             }
+            let configuration = GlobeConfiguration(
+                globe: globe,
+                speed: GlobeConfiguration.defaultRotationSpeed,
+                adjustRotationSpeedToSize: true,
+                isPaused: false,
+                usePreviewTexture: false,
+                enableGestures: true,
+                addHoverEffect: false
+            )
+#warning("TBD: Handle error")
+            try await model.loadGlobe(configuration: configuration)
         }
     }
 }
