@@ -155,7 +155,7 @@ struct ContentView: View {
                 model.deselectGlobe()
             }
         }) {
-            Label("Hide the Globe", systemImage: "xmark")
+            Label("Hide the Globe", systemImage: "arrow.down.forward.and.arrow.up.backward")
                 .labelStyle(.iconOnly)
         }
         .padding()
