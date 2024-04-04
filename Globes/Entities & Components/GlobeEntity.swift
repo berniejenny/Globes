@@ -22,11 +22,6 @@ import SwiftUI
     }
     
     private func addGlobe(radius: Float?, configuration: GlobeConfiguration) async throws {
-        // return if this is a custom globe without a texture
-        if configuration.globe.customGlobe && !configuration.usePreviewTexture && configuration.globe.textureURL == nil {
-            return
-        }
-        
         let material = try await loadMaterial(configuration: configuration)
         let radius = radius ?? configuration.globe.radius
         let mesh: MeshResource = .generateSphere(radius: radius)
