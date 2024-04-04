@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CreateYourOwnGlobeView: View {
+struct CustomGlobeView: View {
     @Environment(ViewModel.self) private var model
     
     @Binding var globe: Globe
@@ -32,7 +32,7 @@ struct CreateYourOwnGlobeView: View {
                 }
                 
                 Button(action: {
-                    showingFileImporter = true
+                    
                 }) {
                     Label("Generate Globe", systemImage: "globe")
                 }
@@ -64,20 +64,37 @@ struct CreateYourOwnGlobeView: View {
         .fileImporter(isPresented: $showingFileImporter, allowedContentTypes: [.image]) { result in
             switch result {
             case .success(let url):
-                globe.textureURL = url
+                loadGlobe(textureURL: url)
             case .failure(let error):
                 // handle error
+#warning("TBD: Handle error")
                 print(error)
             }
        }
+    }
+    
+    private func loadGlobe(textureURL: URL) {
+        Task {
+            globe.textureURL = textureURL
+            let configuration = GlobeConfiguration(
+                globe: globe,
+                speed: GlobeConfiguration.defaultRotationSpeed,
+                adjustRotationSpeedToSize: true,
+                enableGestures: true
+            )
+#warning("TBD: Handle error")
+            try await model.loadGlobe(configuration: configuration)
+        }
     }
 }
 
 #if DEBUG
 #Preview {
     let viewModel = ViewModel()
-    viewModel.selectedGlobeConfiguration = .init(globe: Globe.preview)
-    return CreateYourOwnGlobeView(globe: .constant(Globe.defaultCustomGlobe))
+    Task {
+        try await viewModel.loadGlobe(configuration: .init(globe: Globe.preview))
+    }
+    return CustomGlobeView(globe: .constant(Globe.defaultCustomGlobe))
         .padding(60)
         .glassBackgroundEffect()
         .environment(viewModel)

@@ -12,9 +12,12 @@ import SwiftUI
 /// Immersive globe for rendering full-size globes.
 struct ImmersiveGlobeView: View {
     
-    @Environment(ViewModel.self) private var model
+    /// The current configuration of the globe displayed by this view. This is bindable, because gesture handlers can change configuration variables.
     @Bindable var configuration: GlobeConfiguration
-       
+    
+    /// True if the `configuration.globeEntity` changed and the entity displayed by this view needs to be replaced.
+    @State private var globeEntityChanged = false
+    
     var body: some View {
         RealityView { content in
             log("Make", globeName: configuration.globe.name, category: "RealityView.make")
@@ -25,14 +28,11 @@ struct ImmersiveGlobeView: View {
         } update: { content in
             log("Update", globeName: configuration.globe.name, category: "RealityView.update")
 
-            let oldGlobeEntity = content.entities.first(where: { $0 is GlobeEntity })
-            let replaceGlobe = oldGlobeEntity?.name != configuration.globeEntity?.name
-            
             // if the globe changed, remove the old entity and add the new entity
-            if replaceGlobe {
-                log("Update replacing old globe with ", globeName: configuration.globe.name, category: "RealityView.update")
+            if globeEntityChanged {
+                log("Update replacing old globe with", globeName: configuration.globe.name, category: "RealityView.update")
                 
-                if let oldGlobeEntity {
+                if let oldGlobeEntity = content.entities.first(where: { $0 is GlobeEntity }) {
                     content.remove(oldGlobeEntity)
                 }
                 if let globeEntity = configuration.globeEntity {
@@ -43,6 +43,11 @@ struct ImmersiveGlobeView: View {
             configuration.globeEntity?.update(configuration: configuration)
         }
         .globeGestures(configuration: configuration)
+        .onChange(of: configuration.globeEntity) {
+            Task {
+                globeEntityChanged = true
+            }
+        }
     }
     
     private func log(_ message: String, globeName: String, category: String) {
@@ -56,6 +61,5 @@ struct ImmersiveGlobeView: View {
 #if DEBUG
 #Preview(immersionStyle: .mixed) {
     ImmersiveGlobeView(configuration: .init(globe: Globe.preview, adjustRotationSpeedToSize: true))
-        .environment(ViewModel.preview)
 }
 #endif
