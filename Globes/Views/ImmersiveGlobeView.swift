@@ -38,6 +38,9 @@ struct ImmersiveGlobeView: View {
                 if let globeEntity = configuration.globeEntity {
                     content.add(globeEntity)
                 }
+                Task {
+                    globeEntityChanged = false
+                }
             }
             
             configuration.globeEntity?.update(configuration: configuration)
