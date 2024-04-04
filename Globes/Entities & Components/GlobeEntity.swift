@@ -21,8 +21,13 @@ import SwiftUI
         try await addGlobe(radius: radius, configuration: configuration)
     }
     
-    func addGlobe(radius: Float? = nil, configuration: GlobeConfiguration) async throws {
-        let material = await loadMaterial(configuration: configuration)
+    private func addGlobe(radius: Float?, configuration: GlobeConfiguration) async throws {
+        // return if this is a custom globe without a texture
+        if configuration.globe.customGlobe && !configuration.usePreviewTexture && configuration.globe.textureURL == nil {
+            return
+        }
+        
+        let material = try await loadMaterial(configuration: configuration)
         let radius = radius ?? configuration.globe.radius
         let mesh: MeshResource = .generateSphere(radius: radius)
         modelEntity = ModelEntity(mesh: mesh, materials: [material])
@@ -131,21 +136,13 @@ import SwiftUI
     }
     
     /// Load texture material from app bundle (for full resolution) or assets store (for preview globes).
-    private func loadMaterial(configuration: GlobeConfiguration) async -> RealityKit.Material {
-        let globe = configuration.globe
+    private func loadMaterial(configuration: GlobeConfiguration) async throws -> RealityKit.Material {
+        let textureResource = try await loadTexture(configuration: configuration)
         
-        // 16k textures cannot be loaded from the assets catalogue, so load preview images from assets and full resolution image from the app bundle
-        do {
-            let textureResource = try await loadTexture(configuration: configuration)
-            
-            // unlit material looks nice for small globes in selection view. Drop shadows for the large globe would require a lit material.
-            var material = UnlitMaterial()
-            material.color = .init(texture: .init(textureResource))
-            return material
-        } catch {
-            let textureName = configuration.usePreviewTexture ? globe.previewTexture : globe.texture
-            fatalError("Cannot load \(textureName) from the app bundle. \(error.localizedDescription)")
-        }
+        // unlit material looks nice for small globes in selection view. Drop shadows for the large globe would require a lit material.
+        var material = UnlitMaterial()
+        material.color = .init(texture: .init(textureResource))
+        return material
     }
     
     /// Load a texture from assets, the app bundle or and URL
