@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7D4C40CF2BBF5FFB0041FADD /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C40CE2BBF5FFB0041FADD /* Error.swift */; };
 		7D6E110C2BA6C81C00C2BCD0 /* Pardies_Celestial_6900023.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11072BA6C81B00C2BCD0 /* Pardies_Celestial_6900023.jpg */; };
 		7D6E110D2BA6C81C00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg */; };
 		7D6E110E2BA6C81C00C2BCD0 /* TharpOceanFloor4black.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11092BA6C81B00C2BCD0 /* TharpOceanFloor4black.jpg */; };
@@ -47,6 +48,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7D4C40CE2BBF5FFB0041FADD /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		7D6E11072BA6C81B00C2BCD0 /* Pardies_Celestial_6900023.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Pardies_Celestial_6900023.jpg; sourceTree = "<group>"; };
 		7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Bellerby65cmSchminkeGagarin.jpg; sourceTree = "<group>"; };
 		7D6E11092BA6C81B00C2BCD0 /* TharpOceanFloor4black.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = TharpOceanFloor4black.jpg; sourceTree = "<group>"; };
@@ -200,6 +202,7 @@
 				7D487E7C2BAB983200F8660A /* Entities & Components */,
 				7D760A362BB03AA0008DF619 /* CameraTracker.swift */,
 				7DE4FACB2BA2989B00C4B637 /* GlobeGesturesModifier.swift */,
+				7D4C40CE2BBF5FFB0041FADD /* Error.swift */,
 				7DEAB0512B9B04C4004027B1 /* Assets.xcassets */,
 				7DEAB0562B9B04C4004027B1 /* Info.plist */,
 				7D81B85C2BA123B5004C4477 /* Globes.json */,
@@ -361,6 +364,7 @@
 				7DC757332BB24355003E6A53 /* ImmersivePreviewGlobeView.swift in Sources */,
 				7DE4FACE2BA2AB1200C4B637 /* GlobeConfiguration.swift in Sources */,
 				7D74643A2BA3C16F00182871 /* ViewModel+Preview.swift in Sources */,
+				7D4C40CF2BBF5FFB0041FADD /* Error.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
