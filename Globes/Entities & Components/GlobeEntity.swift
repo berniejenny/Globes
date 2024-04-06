@@ -9,39 +9,39 @@ import RealityKit
 import SwiftUI
 
 /// Globe entity with a model child consisting of a mesh and a material, plus optional `InputTargetComponent`, `CollisionComponent`, and `HoverEffectComponent` components.
-@Observable class GlobeEntity: Entity {
-    private var modelEntity = Entity()
+class GlobeEntity: Entity {
+   
+    private(set) var modelEntity = Entity()
     
     @MainActor required init() {
         super.init()
     }
     
-    init(radius: Float? = nil, configuration: GlobeConfiguration) async throws {
+    init(
+        globe: Globe,
+        loadPreviewTexture: Bool = false,
+        enableGestures: Bool = true,
+        radius: Float? = nil
+    ) async throws {
         super.init()
-        try await addGlobe(radius: radius, configuration: configuration)
-    }
-    
-    private func addGlobe(radius: Float?, configuration: GlobeConfiguration) async throws {
-        let material = try await loadMaterial(configuration: configuration)
-        let radius = radius ?? configuration.globe.radius
-        let mesh: MeshResource = .generateSphere(radius: radius)
-        modelEntity = ModelEntity(mesh: mesh, materials: [material])
         
-        // Add InputTargetComponent and CollisionComponent to enable gestures, which is also needed for the hover effect
-        if configuration.enableGestures {
+        let radius = radius ?? globe.radius
+        
+        let material = try await Self.loadMaterial(globe: globe, loadPreviewTexture: loadPreviewTexture)
+        let mesh: MeshResource = .generateSphere(radius: radius)
+        self.modelEntity = ModelEntity(mesh: mesh, materials: [material])
+        
+        // Add InputTargetComponent and CollisionComponent to enable gestures
+        if enableGestures {
             components.set(InputTargetComponent())
             components.set(CollisionComponent(shapes: [.generateSphere(radius: radius)], mode: .trigger))
         }
-        if configuration.addHoverEffect {
-            modelEntity.components.set(HoverEffectComponent())
-        }
         
         self.addChild(modelEntity)
-        self.name = configuration.globe.name
-        
-        update(configuration: configuration)
+        self.name = globe.name
     }
     
+    @MainActor
     func update(configuration: GlobeConfiguration) {
         // Set the speed of the automatic rotation
         if configuration.adjustRotationSpeedToSize {
@@ -54,85 +54,18 @@ import SwiftUI
             }
         }
         
-        // adjust the opacity
-        modelEntity.components.set(OpacityComponent(opacity: configuration.opacity))
+        scale = SIMD3<Float>(repeating: configuration.scale)
+        orientation = configuration.orientation
+        position = configuration.position
     }
     
-    /// The  uniform scale factor. Read and write access is observed by SwiftUI (unlike changes to normal entity properties).
-    var uniformScale: Float {
-        // modelEntity is not @Observed, so programmatically inform the Observation framework about access and mutation.
-        // https://developer.apple.com/wwdc23/10149?time=558
-        get {
-            access(keyPath: \.uniformScale)
-            return scale.sum() / 3
-        }
-        set {
-            withMutation(keyPath: \.uniformScale) {
-                scale = SIMD3<Float>(repeating: newValue)
-            }
-        }
-    }
+    /// The  mean scale factor of this entity.
+    @MainActor
+    var uniformScale: Float { scale.sum() / 3 }
     
-    /// Changes the scale of the globe and move the globe along a line connecting the camera and the center of the globe,
-    /// such that the globe section facing the camera remains at a constant distance.
-    /// - Parameters:
-    ///   - newScale: The new scale of the globe.
-    ///   - oldScale: The current scale of the globe. If nil, `uniformScale` is used.
-    ///   - oldPosition: The current position of the globe. If nil, `position` is used.
-    ///   - cameraPosition: The camera position. If nil, the current camera position is retrieved.
-    ///   - globeRadius: The radius of the globe in meter.
-    func scaleAndAdjustDistanceToCamera(
-        newScale: Float,
-        oldScale: Float? = nil,
-        oldPosition: SIMD3<Float>? = nil,
-        cameraPosition: SIMD3<Float>? = nil,
-        globeRadius: Float
-    ) {
-        let oldScale = oldScale ?? uniformScale
-        let oldPosition = oldPosition ?? position
-        let cameraPosition = cameraPosition ?? CameraTracker.shared.position
-        
-        // Compute by how much the globe radius changes.
-        let deltaRadius = (newScale - oldScale) * globeRadius
-
-        // The unary direction vector from the globe to the camera.
-        let globeCameraDirection = normalize(cameraPosition - oldPosition)
-        
-        // Move the globe center along that direction.
-        position = oldPosition - globeCameraDirection * deltaRadius
-        
-        // Change `uniformScale` instead of `scale`, such that SwiftUI is informed and updates.
-        uniformScale = newScale
-    }
-    
-    func rotate(by rotation: simd_quatf) {
-        globeOrientation *= rotation
-    }
-    
-    /// Reset the orientation of the entity to identity quaternion
-    func resetRotation() {
-        globeOrientation = simd_quatf(real: 1, imag: SIMD3<Float>(0, 0, 0))
-    }
-    
-    /// The  orientation of the globe. Read and write access is observed by SwiftUI (unlike changes to normal entity properties).
-    /// This changes the orientation of this parent entity, and not the orientation of its child model entity, which has an optional rotation animation. 
-    var globeOrientation: simd_quatf {
-        // globeOrientation is not @Observed, so programmatically inform the Observation framework about access and mutation.
-        // https://developer.apple.com/wwdc23/10149?time=558
-        get {
-            access(keyPath: \.globeOrientation)
-            return orientation
-        }
-        set {
-            withMutation(keyPath: \.globeOrientation) {
-                orientation = newValue
-            }
-        }
-    }
-    
-    /// Load texture material from app bundle (for full resolution) or assets store (for preview globes).
-    private func loadMaterial(configuration: GlobeConfiguration) async throws -> RealityKit.Material {
-        let textureResource = try await loadTexture(configuration: configuration)
+    /// Load the globe material, including a texture.
+    static private func loadMaterial(globe: Globe, loadPreviewTexture: Bool) async throws -> RealityKit.Material {
+        let textureResource = try await loadTexture(globe: globe, loadPreviewTexture: loadPreviewTexture)
         
         // unlit material looks nice for small globes in selection view. Drop shadows for the large globe would require a lit material.
         var material = UnlitMaterial()
@@ -140,18 +73,14 @@ import SwiftUI
         return material
     }
     
-    /// Load a texture from assets, the app bundle or and URL
-    /// - Parameter configuration: Globe configuration
-    /// - Returns: A texture resource.
-    private func loadTexture(configuration: GlobeConfiguration) async throws -> TextureResource {
-        let globe = configuration.globe
+    /// Load a texture resource from the app bundle (for full resolution) or the assets store (for preview globes).
+    static private func loadTexture(globe: Globe, loadPreviewTexture: Bool) async throws -> TextureResource {
         let textureOptions = TextureResource.CreateOptions(semantic: .color, mipmapsMode: .allocateAndGenerateAll)
-       
 #if targetEnvironment(simulator)
         // The visionOS simulator cannot handle 16k textures, so use the preview texture when running in the simulator.
         return try await TextureResource(named: globe.previewTexture, options: textureOptions)
 #else
-        if configuration.usePreviewTexture {
+        if loadPreviewTexture {
             // load texture from assets
             return try await TextureResource(named: globe.previewTexture, options: textureOptions)
         } else {

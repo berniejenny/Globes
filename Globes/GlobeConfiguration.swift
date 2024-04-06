@@ -8,7 +8,9 @@
 import SwiftUI
 
 /// Configuration information for globe entities.
-@Observable class GlobeConfiguration {
+@MainActor
+@Observable
+class GlobeConfiguration {
     
     /// Duration in seconds for full rotation of a spinning globe.
     static private let rotationDuration: Float = 120
@@ -31,10 +33,7 @@ import SwiftUI
     /// An entity consisting of a mesh, material, etc.
     var globeEntity: GlobeEntity?
     
-    /// Opacity of the globe
-    var opacity: Float = 1
-    
-    /// Speed of rotation used `RotationSystem`
+    /// Speed of rotation used
     var speed: Float
     
     /// If true, the angular rotation speed is proportional to the size of a globe, taking the current scale factor (if greater than 1) into account.
@@ -42,15 +41,6 @@ import SwiftUI
     
     /// Pause rotation by `RotationSystem`
     var isRotationPaused: Bool
-    
-    /// If true, `globe.previewTexture` is loaded from assets. If false, `globe.texture` is loaded from the app bundle.
-    var usePreviewTexture: Bool
-    
-    /// If true,  an InputTargetComponent and a CollisionComponent are added to the globe entity to enable gestures, which is also needed for the hover effect
-    var enableGestures: Bool
-    
-    /// If true, a `HoverEffectComponent` is added to the globe entity.
-    var addHoverEffect: Bool
     
     /// Current speed of rotation taking `isPaused` flag into account.
     var currentSpeed: Float {
@@ -84,22 +74,82 @@ import SwiftUI
         return max(1, maxDiameter / d)
     }
     
+    /// Scale of the globe
+    var scale: Float = 1
+    
+    /// Orientation of the globe
+    var orientation = northOrientation
+    
+    /// Orientation to north
+    static let northOrientation = simd_quatf(real: 1, imag: SIMD3<Float>(0, 0, 0))
+    
+    /// Reset to north orientation
+    func resetOrientation() { orientation = Self.northOrientation }
+    
+    /// Returns true if the globe axis is vertically oriented.
+    var isNorthOriented: Bool { orientation == GlobeConfiguration.northOrientation }
+    
+    /// Position of the center of the globe.
+    var position = SIMD3<Float>.zero
+    
     init(
         globe: Globe,
         speed: Float = 0,
-        adjustRotationSpeedToSize: Bool = false,
-        isPaused: Bool = false,
-        usePreviewTexture: Bool = false,
-        enableGestures: Bool = false,
-        addHoverEffect: Bool = false
+        adjustRotationSpeedToSize: Bool = true,
+        isPaused: Bool = false
     ) {
         self.globe = globe
         self.globeEntity = nil
         self.speed = speed
         self.adjustRotationSpeedToSize = adjustRotationSpeedToSize
         self.isRotationPaused = isPaused
-        self.usePreviewTexture = usePreviewTexture
-        self.enableGestures = enableGestures
-        self.addHoverEffect = addHoverEffect
+    }
+    
+    /// Changes the scale of the globe and moves the globe along a line connecting the camera and the center of the globe,
+    /// such that the globe section facing the camera remains at a constant distance.
+    /// - Parameters:
+    ///   - newScale: The new scale of the globe.
+    ///   - oldScale: The current scale of the globe.
+    ///   - oldPosition: The current position of the globe.
+    ///   - cameraPosition: The camera position. If nil, the current camera position is retrieved.
+    func scaleAndAdjustDistanceToCamera(
+        newScale: Float,
+        oldScale: Float,
+        oldPosition: SIMD3<Float>,
+        cameraPosition: SIMD3<Float>? = nil
+    ) {
+        let cameraPosition = cameraPosition ?? CameraTracker.shared.position
+        
+        // Compute by how much the globe radius changes.
+        let deltaRadius = (newScale - oldScale) * globe.radius
+        
+        // The unary direction vector from the globe to the camera.
+        let globeCameraDirection = normalize(cameraPosition - oldPosition)
+        
+        // Move the globe center along that direction.
+        position = oldPosition - globeCameraDirection * deltaRadius
+        
+        // Change `uniformScale` instead of `scale`, such that SwiftUI is informed and updates.
+        scale = newScale
+    }
+    
+    /// Position the globe such that its closest part is at the same distance as the closest part of the previous globe. The scale of the new globe is set to 1.
+    /// - Parameter oldConfiguration: Configuration of the old globe.
+    func position(relativeTo oldConfiguration: GlobeConfiguration?) {
+        if let oldConfiguration {
+            // radius of the old globe
+            let oldRadius = oldConfiguration.globe.radius
+            // scaled radius of the old globe
+            let oldScaledRadius = oldRadius * oldConfiguration.scale
+            // the new globe (with scale = 1) differs by this factor in size from the old globe
+            let relativeOldScale = oldScaledRadius / globe.radius
+            scaleAndAdjustDistanceToCamera(
+                newScale: 1,
+                oldScale: relativeOldScale,
+                oldPosition: oldConfiguration.position            )
+        } else {
+            // position the globe in front of the camera
+            position = SIMD3<Float>([0, 1, -(globe.radius + 0.5)])
+        }
     }
 }

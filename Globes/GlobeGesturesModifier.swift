@@ -13,6 +13,7 @@ extension View {
 }
 
 /// A modifier that adds gestures and positioning to a view.
+@MainActor
 private struct GlobeGesturesModifier: ViewModifier {
     
     /// State variables for drag, magnify, scale and 3D rotation gestures. State variables for the y-rotation gesture is separate.
@@ -74,16 +75,12 @@ private struct GlobeGesturesModifier: ViewModifier {
     private let rotationSpeed: Float = 0.0015
     
     func body(content: Content) -> some View {
-        if configuration.enableGestures {
-            content
-                .simultaneousGesture(doubleTapGesture)
-                .simultaneousGesture(dragGesture)
-                .simultaneousGesture(magnifyGesture)
-                .simultaneousGesture(rotateGesture)
-                .simultaneousGesture(yAxisRotateGesture)
-        } else {
-            content
-        }
+        content
+            .simultaneousGesture(doubleTapGesture)
+            .simultaneousGesture(dragGesture)
+            .simultaneousGesture(magnifyGesture)
+            .simultaneousGesture(rotateGesture)
+            .simultaneousGesture(yAxisRotateGesture)
     }
     
     /// Double pinch gesture for starting and stoping globe rotation.
@@ -119,7 +116,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                     let location3D = value.convert(value.location3D, from: .local, to: .scene)
                     let startLocation3D = value.convert(value.startLocation3D, from: .local, to: .scene)
                     let delta = location3D - startLocation3D
-                    value.entity.position = globePositionAtGestureStart + SIMD3<Float>(delta)
+                    configuration.position = globePositionAtGestureStart + SIMD3<Float>(delta)
                 }
             }
             .onEnded { _ in
@@ -151,12 +148,11 @@ private struct GlobeGesturesModifier: ViewModifier {
                    let cameraPositionAtGestureStart = state.cameraPositionAtGestureStart {
                     log("update magnify")
                     let scale = max(configuration.minScale, min(configuration.maxScale, Float(value.magnification) * globeScaleAtGestureStart))
-                    globeEntity.scaleAndAdjustDistanceToCamera(
+                    configuration.scaleAndAdjustDistanceToCamera(
                         newScale: scale,
                         oldScale: globeScaleAtGestureStart,
                         oldPosition: globePositionAtGestureStart,
-                        cameraPosition: cameraPositionAtGestureStart,
-                        globeRadius: configuration.globe.radius
+                        cameraPosition: cameraPositionAtGestureStart
                     )
                 }
             }
@@ -179,7 +175,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                     log("start rotate")
                     state.orientationAtGestureStart = .init(value.entity.orientation(relativeTo: nil))
                     
-                    DispatchQueue.main.async {
+                    Task { @MainActor in
                         pauseRotationAndStoreRotationState()
                     }
                 }
@@ -202,7 +198,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                                                                           z: -rotation.axis.z))
                     
                     let newOrientation = orientationAtGestureStart.rotated(by: flippedRotation)
-                    globeEntity.globeOrientation = simd_quatf(newOrientation)
+                    configuration.orientation = simd_quatf(newOrientation)
                 }
             }
             .onEnded { _ in
@@ -230,14 +226,14 @@ private struct GlobeGesturesModifier: ViewModifier {
                     yRotationState = .pressing
                     // Long press confirmed, dragging may begin.
                 case .second(true, let drag):
-                    DispatchQueue.main.async {
+                    Task { @MainActor in
                         pauseRotationAndStoreRotationState()
                     }
                     
                     guard let drag = drag else { return }
                     
                     // Update the previous translation width for the next frame
-                    DispatchQueue.main.async {
+                    Task { @MainActor in
                         let deltaTranslation = drag.translation.width - previousTranslationWidth
                         previousTranslationWidth = drag.translation.width
                         
@@ -247,10 +243,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                         let rotationAmount = Float(deltaTranslation) * rotationSpeed / scaleRadius
                         
                         // Create a rotation quaternion around the Y axis
-                        let rotation = simd_quatf(angle: rotationAmount, axis: SIMD3<Float>(0, 1, 0))
-                        
-                        // Apply rotation to the entity
-                        configuration.globeEntity?.rotate(by: rotation)
+                        configuration.orientation = simd_quatf(angle: rotationAmount, axis: SIMD3<Float>(0, 1, 0))
                     }
                     
                     // Dragging ended or the long press cancelled.

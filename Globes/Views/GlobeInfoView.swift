@@ -11,32 +11,32 @@ import SwiftUI
 struct GlobeInfoView: View {
     @Environment(ViewModel.self) private var model
     
-    private var globe: Globe { model.selectedGlobeConfiguration?.globe ?? Globe() }
-    
     var body: some View {
-        VStack(spacing: 20) {
-            Text(globe.name)
-                .font(.title)
-            if !globe.authorAndDate.isEmpty {
-                Text(globe.authorAndDate)
-                    .font(.callout)
-            }
-            if let description = globe.description {
-                ScrollView(.vertical) {
-                    Text(description)
-                        .multilineTextAlignment(.leading)
+        if let globe = model.selectedGlobeConfiguration?.globe {            
+            VStack(spacing: 20) {
+                Text(globe.name)
+                    .font(.title)
+                if !globe.authorAndDate.isEmpty {
+                    Text(globe.authorAndDate)
+                        .font(.callout)
                 }
-                .frame(maxWidth: 400)
-                .padding(.horizontal)
-            }
-            if let infoURL = globe.infoURL {
-                let label = infoURL.absoluteString.contains("davidrumsey.com") ? "Open David Rumsey Map Collection Webpage" : "Open Webpage"
-                Button("More Information") {
-                    model.webURL = infoURL
+                if let description = globe.description {
+                    ScrollView(.vertical) {
+                        Text(description)
+                            .multilineTextAlignment(.leading)
+                    }
+                    .frame(maxWidth: 400)
+                    .padding(.horizontal)
                 }
-                .help(label)
-                .controlSize(.small)
-                .padding(.bottom)
+                if let infoURL = globe.infoURL {
+                    let label = infoURL.absoluteString.contains("davidrumsey.com") ? "Open David Rumsey Map Collection Webpage" : "Open Webpage"
+                    Button("More Information") {
+                        model.webURL = infoURL
+                    }
+                    .help(label)
+                    .controlSize(.small)
+                    .padding(.bottom)
+                }
             }
         }
     }

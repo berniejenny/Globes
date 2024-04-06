@@ -12,8 +12,8 @@ extension ViewModel {
     
     static var previewWithSelectedGlobe: ViewModel {
         let viewModel = ViewModel()
-        Task {
-            try await viewModel.loadGlobe(configuration: .init(globe: Globe.preview))
+        Task { @MainActor in
+            viewModel.selectedGlobeConfiguration = .init(globe: Globe.preview)
         }
         return viewModel
     }

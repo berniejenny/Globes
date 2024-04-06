@@ -34,19 +34,19 @@ struct WebView: UIViewRepresentable {
         }
 
         func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self.parent.status = .loading
             }
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self.parent.status = .finishedLoading
             }
         }
 
         func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self.parent.status = .failed(error: error)
             }
         }

@@ -9,7 +9,6 @@ import SwiftUI
 
 struct IntroView: View {
     @Environment(ViewModel.self) private var model
-    @State private var showingAboutSheet = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -36,7 +35,9 @@ struct IntroView: View {
             HStack {
                 Spacer()
                 Menu {
-                    aboutButton
+                    Button("About Globes…") {
+                        model.showingAboutSheet.toggle()
+                    }
                     Divider()
                     Link(destination: URL(string: "https://www.davidrumsey.com")!) {
                         Label("Visit David Rumsey Map Collection in Safari", systemImage: "globe")
@@ -50,20 +51,8 @@ struct IntroView: View {
             .padding(.bottom, 24)
         }
         .padding(.horizontal)
-        .sheet(isPresented: $showingAboutSheet) {
+        .sheet(isPresented: Bindable(model).showingAboutSheet) {
             AboutView()
-        }
-    }
-    
-    @ViewBuilder private var aboutButton: some View {
-        Button("About Globes…") {
-            model.hidePreviewGlobes = true
-            showingAboutSheet.toggle()
-        }
-        .onChange(of: showingAboutSheet) {
-            DispatchQueue.main.async {
-                model.hidePreviewGlobes = showingAboutSheet
-            }
         }
     }
 }
