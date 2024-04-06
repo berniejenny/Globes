@@ -243,7 +243,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                         let rotationAmount = Float(deltaTranslation) * rotationSpeed / scaleRadius
                         
                         // Create a rotation quaternion around the Y axis
-                        configuration.orientation = simd_quatf(angle: rotationAmount, axis: SIMD3<Float>(0, 1, 0))
+                        configuration.orientation *= simd_quatf(angle: rotationAmount, axis: SIMD3<Float>(0, 1, 0))
                     }
                     
                     // Dragging ended or the long press cancelled.
