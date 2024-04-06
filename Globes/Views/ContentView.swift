@@ -12,7 +12,7 @@ import RealityKit
 struct ContentView: View {
     let globes: [Globe]
     
-    @Environment(ViewModel.self) private var model
+    @Environment(ViewModel.self) var model
     
     @Binding var immersiveSpaceIsShown: Bool
     
@@ -21,14 +21,38 @@ struct ContentView: View {
     
     @State private var webViewStatus: WebViewStatus = .loading
     
+    var body: some View {
+        
+        Group {
+            if model.webURL != nil {
+                webView
+            } else {
+                navigationView
+            }
+        }
+        .alert(
+            model.errorToShowInAlert?.localizedDescription ?? "An error occurred.",
+            isPresented: showAlertBinding,
+            presenting: model.errorToShowInAlert
+        ) { _ in
+            // default OK button
+        } message: { error in
+            if let message = error.alertSecondaryMessage {
+                Text(message)
+            }
+        }
+    }
+    
     private var selectedGlobe: Globe? { model.selectedGlobeConfiguration?.globe }
     
-    var body: some View {
-        if model.webURL != nil {
-            webView
-        } else {
-            navigationView
-        }
+    private var showAlertBinding: Binding<Bool> {
+        Binding(
+            get: { model.errorToShowInAlert != nil },
+            set: {
+                if $0 == false {
+                    model.errorToShowInAlert = nil
+                }
+            })
     }
     
     @ViewBuilder private var webView: some View {
@@ -130,7 +154,7 @@ struct ContentView: View {
             }
         }
         .onChange(of: selectedGlobe) {
-            Task {
+            Task { @MainActor in
                 guard selectedGlobe != nil, !immersiveSpaceIsShown else { return }
                 
                 switch await openImmersiveSpace(id: "ImmersiveGlobeSpace") {
@@ -147,7 +171,7 @@ struct ContentView: View {
     
     @ViewBuilder private var hideGlobeButton: some View {
         Button(action: {
-            Task {
+            Task { @MainActor in
                 if immersiveSpaceIsShown {
                     await dismissImmersiveSpace()
                 }
@@ -159,55 +183,44 @@ struct ContentView: View {
                 .labelStyle(.iconOnly)
         }
         .padding()
-        .help("Hide the Globe")
     }
     
     @ViewBuilder private var orientButton: some View {
-        Button(action: orientGlobe) {
+        Button(action: { model.selectedGlobeConfiguration?.resetOrientation() } ) {
             Label("Orient the Globe", systemImage: "location.north.line")
                 .labelStyle(.iconOnly)
         }
-        .disabled(isGlobeNorthOriented)
+        .disabled(model.selectedGlobeConfiguration?.isNorthOriented ?? true)
         .padding()
     }
     
     @ViewBuilder private var resetSizeButton: some View {
-        let globeIsScaled = model.selectedGlobeConfiguration?.globeEntity?.uniformScale != 1
+        let globeIsAtOriginalSize = model.selectedGlobeConfiguration?.scale == 1
+        
         Button(action: resetGlobeSize) {
             Label("Reset the Globe to its Original Size", systemImage: "circle.circle")
                 .labelStyle(.iconOnly)
         }
-        .disabled(!globeIsScaled)
+        .disabled(globeIsAtOriginalSize)
         .padding()
-        .help(globeIsScaled ? "Reset to Original Size" : "The Globe is at its Original Size")
-    }
-    
-    private func orientGlobe() {
-        model.selectedGlobeConfiguration?.globeEntity?.resetRotation()
-    }
-    
-    private var isGlobeNorthOriented: Bool {
-        guard let currentOrientation = model.selectedGlobeConfiguration?.globeEntity?.globeOrientation else { return false }
-        let northOrientation = simd_quatf(real: 1, imag: SIMD3<Float>(0, 0, 0))
-        return currentOrientation == northOrientation
     }
     
     private func resetGlobeSize() {
         guard let configuration = model.selectedGlobeConfiguration else { return }
-        configuration.globeEntity?.scaleAndAdjustDistanceToCamera(
+        configuration.scaleAndAdjustDistanceToCamera(
             newScale: 1,
-            globeRadius: configuration.globe.radius)
-    }
-    
-    private var isRotationPausedBinding: Binding<Bool> {
-        Binding(get: {
-            model.selectedGlobeConfiguration?.isRotationPaused == true
-        }, set: {
-            model.selectedGlobeConfiguration?.isRotationPaused = $0
-        })
+            oldScale: configuration.scale,
+            oldPosition: configuration.position,
+            cameraPosition: nil
+        )
     }
     
     @ViewBuilder private var pauseRotationButton: some View {
+        let isRotationPausedBinding: Binding<Bool> = Binding(
+            get: { model.selectedGlobeConfiguration?.isRotationPaused == true },
+            set: { model.selectedGlobeConfiguration?.isRotationPaused = $0 }
+        )
+        
         Toggle(isOn: isRotationPausedBinding) {
             if isRotationPausedBinding.wrappedValue {
                 Label("Globe Rotation", image: "rotate.3d.slash")
@@ -218,7 +231,6 @@ struct ContentView: View {
         .labelStyle(.iconOnly)
         .toggleStyle(.button)
         .padding()
-        .help(isRotationPausedBinding.wrappedValue ? "Start Globe Rotation" : "Stop Globe Rotation")
     }
 }
 

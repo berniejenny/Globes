@@ -9,32 +9,32 @@ import os
 import RealityKit
 import SwiftUI
 
-/// Immersive globe for rendering small preview globes that do not change over time.
+/// A `RealityView` for rendering small preview globes.
 struct ImmersivePreviewGlobeView: View {
     @Environment(ViewModel.self) private var model
     
     /// The globe to show.
     let globe: Globe
     
-    /// The opacity of the preview globe
-    var opacity: Float
-    
     /// A hack to override the radius of `globe.radius`.
     let radius: Float
-   
+    
     var body: some View {
+        let opacity: Float = model.hidePreviewGlobes ? 0 : 1
+        
         RealityView { content in
-            let configuration = GlobeConfiguration(
+            guard let globeEntity = try? await GlobeEntity(
                 globe: globe,
-                usePreviewTexture: true,
-                addHoverEffect: false // hover effect on the globe would be confusing, because the background changes color when the globe is hovered.
-            )
-            guard let globeEntity = try? await GlobeEntity(radius: radius, configuration: configuration) else {
+                loadPreviewTexture: true,
+                enableGestures: false,
+                radius: radius
+            ) else {
                 fatalError("The preview for \"\(globe.name)\" cannot be created.")
             }
-            content.add(globeEntity)
-            globeEntity.components.set(RotationComponent(speed: GlobeConfiguration.defaultRotationSpeedForPreviewGlobes))
+            let rotationSpeed = GlobeConfiguration.defaultRotationSpeedForPreviewGlobes
+            globeEntity.components.set(RotationComponent(speed: rotationSpeed))
             globeEntity.components.set(OpacityComponent(opacity: opacity))
+            content.add(globeEntity)
         } update: { content in
             let entity = content.entities.first(where: { $0 is GlobeEntity })
             entity?.components.set(OpacityComponent(opacity: opacity))
@@ -44,7 +44,7 @@ struct ImmersivePreviewGlobeView: View {
 
 #if DEBUG
 #Preview(immersionStyle: .mixed) {
-    ImmersivePreviewGlobeView(globe: Globe.preview, opacity: 1, radius: 0.05)
+    ImmersivePreviewGlobeView(globe: Globe.preview, radius: 0.05)
         .environment(ViewModel.preview)
 }
 #endif

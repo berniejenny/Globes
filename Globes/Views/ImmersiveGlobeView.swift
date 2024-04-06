@@ -38,7 +38,7 @@ struct ImmersiveGlobeView: View {
                 if let globeEntity = configuration.globeEntity {
                     content.add(globeEntity)
                 }
-                Task {
+                Task { @MainActor in
                     globeEntityChanged = false
                 }
             }
@@ -47,7 +47,7 @@ struct ImmersiveGlobeView: View {
         }
         .globeGestures(configuration: configuration)
         .onChange(of: configuration.globeEntity) {
-            Task {
+            Task { @MainActor in
                 globeEntityChanged = true
             }
         }

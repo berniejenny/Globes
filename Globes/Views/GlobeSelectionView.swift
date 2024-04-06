@@ -21,23 +21,13 @@ struct GlobeSelectionView: View {
     @State private var loadingTexture = false
     
     private static let globeViewSize: CGFloat = 100
-    private static let height = 1.1 * globeViewSize
+    private static let viewHeight = 1.1 * globeViewSize
     private let cornerRadius: CGFloat = 20
     
     /// Radius of preview globe in meter
 #warning("This could be derived from the view geometry size")
     // https://developer.apple.com/wwdc23/10080 at 14:45
     private let globeRadius: Float = 0.035
-    
-    init(globe: Globe) {
-        self.globe = globe
-        //        self.configuration = GlobeConfiguration(
-        //            globe: globe,
-        //            speed: GlobeConfiguration.defaultRotationSpeedForPreviewGlobes,
-        //            usePreviewTexture: true,
-        //            addHoverEffect: false // hover effect on the globe is potentially confusing, because the background changes color when the globe is hovered.
-        //        )
-    }
     
     var body: some View {
         let authorAndDate = globe.authorAndDate
@@ -68,17 +58,13 @@ struct GlobeSelectionView: View {
             // 3D preview globe
             HStack {
                 Spacer()
-                ImmersivePreviewGlobeView(
-                    globe: globe,
-                    opacity: model.hidePreviewGlobes ? 0 : 1,
-                    radius: globeRadius
-                )
+                ImmersivePreviewGlobeView(globe: globe, radius: globeRadius)
                 .frame(width: Self.globeViewSize, height: Self.globeViewSize)
                 .scaledToFit()
                 .offset(z: Self.globeViewSize / 2)
             }
         }
-        .frame(height: Self.height)
+        .frame(height: Self.viewHeight)
         .background(.regularMaterial.opacity(globeIsSelected ? 0 : 1), in: RoundedRectangle(cornerRadius: cornerRadius))
         .hoverEffect(isEnabled: !globeIsSelected)
         .glassBackgroundEffect(in: RoundedRectangle(cornerRadius: cornerRadius))
@@ -86,33 +72,50 @@ struct GlobeSelectionView: View {
     }
     
     /// True if the globe that can be selected by this view is selected.
+    @MainActor
     private var globeIsSelected: Bool {
         model.selectedGlobeConfiguration?.globe.id == globe.id
     }
     
-    /// Async loading of globe.
+    /// Load the globe in an async task.
     private func loadGlobe() {
-        guard !globeIsSelected else { return }
         Task {
-            withAnimation {
-                loadingTexture = true
-            }
-            defer {
-                withAnimation {
+            do {
+                await MainActor.run {
+                    // avoid loading the globe if it already exists
+                    guard !globeIsSelected else { return }
+                    
+                    // show progress view
+                    withAnimation { loadingTexture = true }
+                }
+                
+                // load the globe
+                let globeEntity = try await GlobeEntity(globe: globe)
+                
+                await MainActor.run {
+                    let configuration = GlobeConfiguration(
+                        globe: globe,
+                        speed: GlobeConfiguration.defaultRotationSpeed,
+                        adjustRotationSpeedToSize: true,
+                        isPaused: false
+                    )
+                    configuration.position(relativeTo: model.selectedGlobeConfiguration)
+                    configuration.globeEntity = globeEntity
+                    model.selectedGlobeConfiguration = configuration
+                    
+                    withAnimation { loadingTexture = false }
+                }
+                
+            } catch {
+                await MainActor.run {
+                    // Important: do not animate `loadingTexture` before the error dialog is shown.
+                    // As of VisionOS 1.1, animating `loadingTexture` with `withAnimation { loadingTexture = false }`
+                    // results in some preview globes not disappearing when the alert is shown.
+                    // This seems to be a bug in VisionOS, as it appears with alerts and sheets.
                     loadingTexture = false
+                    model.errorToShowInAlert = error
                 }
             }
-            let configuration = GlobeConfiguration(
-                globe: globe,
-                speed: GlobeConfiguration.defaultRotationSpeed,
-                adjustRotationSpeedToSize: true,
-                isPaused: false,
-                usePreviewTexture: false,
-                enableGestures: true,
-                addHoverEffect: false
-            )
-#warning("TBD: Handle error")
-            try await model.loadGlobe(configuration: configuration)
         }
     }
 }
