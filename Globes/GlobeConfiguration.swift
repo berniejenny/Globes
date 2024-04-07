@@ -84,13 +84,19 @@ class GlobeConfiguration {
     static let northOrientation = simd_quatf(real: 1, imag: SIMD3<Float>(0, 0, 0))
     
     /// Reset to north orientation
-    func resetOrientation() { orientation = Self.northOrientation }
+    func resetOrientation(animate: Bool) {
+        animateTransform = animate
+        orientation = Self.northOrientation
+    }
     
     /// Returns true if the globe axis is vertically oriented.
     var isNorthOriented: Bool { orientation == GlobeConfiguration.northOrientation }
     
     /// Position of the center of the globe.
     var position = SIMD3<Float>.zero
+    
+    /// If true, changes of scale, orientation and position are animated.
+    var animateTransform = false
     
     init(
         globe: Globe,
@@ -112,11 +118,13 @@ class GlobeConfiguration {
     ///   - oldScale: The current scale of the globe.
     ///   - oldPosition: The current position of the globe.
     ///   - cameraPosition: The camera position. If nil, the current camera position is retrieved.
+    ///   - animate: If true, the change in  position and scale is animated.
     func scaleAndAdjustDistanceToCamera(
         newScale: Float,
         oldScale: Float,
         oldPosition: SIMD3<Float>,
-        cameraPosition: SIMD3<Float>? = nil
+        cameraPosition: SIMD3<Float>? = nil,
+        animate: Bool = false
     ) {
         let cameraPosition = cameraPosition ?? CameraTracker.shared.position
         
@@ -129,27 +137,38 @@ class GlobeConfiguration {
         // Move the globe center along that direction.
         position = oldPosition - globeCameraDirection * deltaRadius
         
-        // Change `uniformScale` instead of `scale`, such that SwiftUI is informed and updates.
         scale = newScale
+        animateTransform = animate
     }
     
     /// Position the globe such that its closest part is at the same distance as the closest part of the previous globe. The scale of the new globe is set to 1.
     /// - Parameter oldConfiguration: Configuration of the old globe.
-    func position(relativeTo oldConfiguration: GlobeConfiguration?) {
-        if let oldConfiguration {
-            // radius of the old globe
-            let oldRadius = oldConfiguration.globe.radius
-            // scaled radius of the old globe
-            let oldScaledRadius = oldRadius * oldConfiguration.scale
-            // the new globe (with scale = 1) differs by this factor in size from the old globe
-            let relativeOldScale = oldScaledRadius / globe.radius
-            scaleAndAdjustDistanceToCamera(
-                newScale: 1,
-                oldScale: relativeOldScale,
-                oldPosition: oldConfiguration.position            )
-        } else {
-            // position the globe in front of the camera
-            position = SIMD3<Float>([0, 1, -(globe.radius + 0.5)])
-        }
+    func position(relativeTo oldConfiguration: GlobeConfiguration) {
+        // radius of the old globe
+        let oldRadius = oldConfiguration.globe.radius
+        // scaled radius of the old globe
+        let oldScaledRadius = oldRadius * oldConfiguration.scale
+        // the new globe (with scale = 1) differs by this factor in size from the old globe
+        let relativeOldScale = oldScaledRadius / globe.radius
+        scaleAndAdjustDistanceToCamera(
+            newScale: 1,
+            oldScale: relativeOldScale,
+            oldPosition: oldConfiguration.position
+        )
+    }
+    
+    /// Position the globe relative to the camera position such that closest part of the globe is at `distanceToGlobe`.
+    /// The direction between the camera and the globe is 30 degrees below the horizon.
+    /// - Parameter distanceToGlobe: <#distanceToGlobe description#>
+    func positionRelativeToCamera(distanceToGlobe: Float) {
+        // position the globe at this angle below the horizon
+        let alpha: Float = 30 / 180 * .pi
+        // oblique distance between camera and globe center
+        let d = (globe.radius + distanceToGlobe)
+        // center of globe in upward direction
+        let y = CameraTracker.shared.position.y - sin(alpha) * d
+        // center of globe toward the camera
+        let z = -cos(alpha) * d
+        position = SIMD3<Float>([0, y, z])
     }
 }

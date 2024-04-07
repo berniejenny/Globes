@@ -89,19 +89,55 @@ struct GlobeSelectionView: View {
                     withAnimation { loadingTexture = true }
                 }
                 
-                // load the globe
-                let globeEntity = try await GlobeEntity(globe: globe)
+                let configuration = await GlobeConfiguration(
+                    globe: globe,
+                    speed: GlobeConfiguration.defaultRotationSpeed,
+                    adjustRotationSpeedToSize: true,
+                    isPaused: false
+                )
+                let oldConfiguration = await model.selectedGlobeConfiguration
                 
                 await MainActor.run {
-                    let configuration = GlobeConfiguration(
-                        globe: globe,
-                        speed: GlobeConfiguration.defaultRotationSpeed,
-                        adjustRotationSpeedToSize: true,
-                        isPaused: false
-                    )
-                    configuration.position(relativeTo: model.selectedGlobeConfiguration)
+                    if let oldConfiguration {
+                        // Scale the old globe to the size of the new globe and orient the rotation axis vertically.
+                        // This transformation is animated while the new globe is loading.
+                        oldConfiguration.scaleAndAdjustDistanceToCamera(
+                            newScale: globe.radius / oldConfiguration.globe.radius,
+                            oldScale: oldConfiguration.scale,
+                            oldPosition: oldConfiguration.position,
+                            animate: true
+                        )
+                        oldConfiguration.resetOrientation(animate: true)
+                    } else {
+                        // This is the first globe. Initialize model.selectedGlobeConfiguration, such that
+                        // an ImmersiveGlobeView is created while the globe is loading.
+                        // The view is needed for the move-in animation of the first globe.
+                        model.selectedGlobeConfiguration = configuration
+                    }
+                }
+                
+                // load the globe
+                let globeEntity = try await GlobeEntity(globe: globe)
+
+                await MainActor.run {
                     configuration.globeEntity = globeEntity
-                    model.selectedGlobeConfiguration = configuration
+                    
+                    if let oldConfiguration {
+                        // The new globe is replacing a previous globe.
+                        configuration.position(relativeTo: oldConfiguration)
+                        model.selectedGlobeConfiguration = configuration
+                    } else {
+                        // This is the first globe. Set the initial scale and position for a move-in animation.
+                        configuration.scale = 0
+                        configuration.positionRelativeToCamera(distanceToGlobe: 2)
+                        
+                        // Start the move-in animation.
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            configuration.animateTransform = true
+                            configuration.scale = 1
+                            configuration.positionRelativeToCamera(distanceToGlobe: 0.5)
+                        }
+                    }
                     
                     withAnimation { loadingTexture = false }
                 }
@@ -111,7 +147,7 @@ struct GlobeSelectionView: View {
                     // Important: do not animate `loadingTexture` before the error dialog is shown.
                     // As of VisionOS 1.1, animating `loadingTexture` with `withAnimation { loadingTexture = false }`
                     // results in some preview globes not disappearing when the alert is shown.
-                    // This seems to be a bug in VisionOS, as it appears with alerts and sheets.
+                    // This seems to be a bug in VisionOS; it happens with alerts and sheets.
                     loadingTexture = false
                     model.errorToShowInAlert = error
                 }
