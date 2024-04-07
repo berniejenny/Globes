@@ -10,7 +10,13 @@ import RealityKit
 import SwiftUI
 
 /// Current camera properties.
-public class CameraTracker {
+public final class CameraTracker {
+    
+    /// Camera tracking seems to require a moment to boot up. Call `start()` once when the app starts to initialize camera tracking.
+    static func start() {
+        let _ = shared
+    }
+    
     private init() {
         Task {
             do {
