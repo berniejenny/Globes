@@ -186,7 +186,7 @@ struct ContentView: View {
     }
     
     @ViewBuilder private var orientButton: some View {
-        Button(action: { model.selectedGlobeConfiguration?.resetOrientation() } ) {
+        Button(action: { model.selectedGlobeConfiguration?.resetOrientation(animate: true) } ) {
             Label("Orient the Globe", systemImage: "location.north.line")
                 .labelStyle(.iconOnly)
         }
@@ -211,7 +211,8 @@ struct ContentView: View {
             newScale: 1,
             oldScale: configuration.scale,
             oldPosition: configuration.position,
-            cameraPosition: nil
+            cameraPosition: nil,
+            animate: true
         )
     }
     

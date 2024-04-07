@@ -11,6 +11,8 @@ import SwiftUI
 /// Globe entity with a model child consisting of a mesh and a material, plus optional `InputTargetComponent`, `CollisionComponent`, and `HoverEffectComponent` components.
 class GlobeEntity: Entity {
    
+    private let transformAnimationDuration: Double = 1
+    
     private(set) var modelEntity = Entity()
     
     @MainActor required init() {
@@ -54,9 +56,16 @@ class GlobeEntity: Entity {
             }
         }
         
-        scale = SIMD3<Float>(repeating: configuration.scale)
-        orientation = configuration.orientation
-        position = configuration.position
+        let transform = Transform(
+            scale: SIMD3<Float>(repeating: configuration.scale),
+            rotation: configuration.orientation,
+            translation: configuration.position
+        )
+        if configuration.animateTransform {
+            move(to: transform, relativeTo: nil, duration: transformAnimationDuration)
+        } else {
+            move(to: transform, relativeTo: nil)
+        }
     }
     
     /// The  mean scale factor of this entity.

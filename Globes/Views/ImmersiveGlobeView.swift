@@ -44,6 +44,13 @@ struct ImmersiveGlobeView: View {
             }
             
             configuration.globeEntity?.update(configuration: configuration)
+            
+            // Reset the animation flag. Important: only reset when it changed, otherwise the update closure is called on each frame.
+            if configuration.animateTransform {
+                Task { @MainActor in
+                    configuration.animateTransform = false
+                }
+            }
         }
         .globeGestures(configuration: configuration)
         .onChange(of: configuration.globeEntity) {
