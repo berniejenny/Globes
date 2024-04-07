@@ -32,6 +32,9 @@ struct GlobesApp: App {
         } catch {
             fatalError("An error occurred when loading Globes.json from the bundle: \(error.localizedDescription)")
         }
+        
+        // start camera tracking 
+        CameraTracker.start()
     }
         
     var body: some Scene {
