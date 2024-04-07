@@ -10,17 +10,15 @@ import RealityKit
 
 @MainActor
 struct ContentView: View {
-    let globes: [Globe]
-    
     @Environment(ViewModel.self) var model
+    @Environment(\.openImmersiveSpace) var openImmersiveSpace
     
+    let globes: [Globe]
     @Binding var immersiveSpaceIsShown: Bool
     
-    @Environment(\.openImmersiveSpace) var openImmersiveSpace
-    @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
+    private var selectedGlobe: Globe? { model.selectedGlobeConfiguration?.globe }
     
     var body: some View {
-        
         Group {
             if model.webURL != nil {
                 WebViewDecorated()
@@ -41,8 +39,6 @@ struct ContentView: View {
         }
     }
     
-    private var selectedGlobe: Globe? { model.selectedGlobeConfiguration?.globe }
-    
     private var showAlertBinding: Binding<Bool> {
         Binding(
             get: { model.errorToShowInAlert != nil },
@@ -52,7 +48,6 @@ struct ContentView: View {
                 }
             })
     }
-    
     
     @ViewBuilder private var navigationView: some View {
         NavigationSplitView {
@@ -91,24 +86,11 @@ struct ContentView: View {
                 .padding(.trailing)
                 .padding(.bottom, 30)
                 .frame(minWidth: 0, maxWidth: .infinity) // enforce two columns of identical width
-                
                 .toolbar {
                     if selectedGlobe != nil {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            resetSizeButton
-                        }
-                        ToolbarItem(placement: .topBarTrailing) {
-                            orientButton
-                        }
-                        ToolbarItem(placement: .topBarTrailing) {
-                            pauseRotationButton
-                        }
-                        ToolbarItem(placement: .topBarTrailing) {
-                            hideGlobeButton
-                        }
+                        GlobesToolbarContent(immersiveSpaceIsShown: $immersiveSpaceIsShown)
                     }
                 }
-                
                 .navigationSplitViewColumnWidth(min: 600, ideal: 1000)
             }
         }
@@ -126,71 +108,6 @@ struct ContentView: View {
                 }
             }
         }
-    }
-    
-    @ViewBuilder private var hideGlobeButton: some View {
-        Button(action: {
-            Task { @MainActor in
-                if immersiveSpaceIsShown {
-                    await dismissImmersiveSpace()
-                }
-                immersiveSpaceIsShown = false
-                model.deselectGlobe()
-            }
-        }) {
-            Label("Hide the Globe", systemImage: "arrow.down.forward.and.arrow.up.backward")
-                .labelStyle(.iconOnly)
-        }
-        .padding()
-    }
-    
-    @ViewBuilder private var orientButton: some View {
-        Button(action: { model.selectedGlobeConfiguration?.resetOrientation(animate: true) } ) {
-            Label("Orient the Globe", systemImage: "location.north.line")
-                .labelStyle(.iconOnly)
-        }
-        .disabled(model.selectedGlobeConfiguration?.isNorthOriented ?? true)
-        .padding()
-    }
-    
-    @ViewBuilder private var resetSizeButton: some View {
-        let globeIsAtOriginalSize = model.selectedGlobeConfiguration?.scale == 1
-        
-        Button(action: resetGlobeSize) {
-            Label("Reset the Globe to its Original Size", systemImage: "circle.circle")
-                .labelStyle(.iconOnly)
-        }
-        .disabled(globeIsAtOriginalSize)
-        .padding()
-    }
-    
-    private func resetGlobeSize() {
-        guard let configuration = model.selectedGlobeConfiguration else { return }
-        configuration.scaleAndAdjustDistanceToCamera(
-            newScale: 1,
-            oldScale: configuration.scale,
-            oldPosition: configuration.position,
-            cameraPosition: nil,
-            animate: true
-        )
-    }
-    
-    @ViewBuilder private var pauseRotationButton: some View {
-        let isRotationPausedBinding: Binding<Bool> = Binding(
-            get: { model.selectedGlobeConfiguration?.isRotationPaused == true },
-            set: { model.selectedGlobeConfiguration?.isRotationPaused = $0 }
-        )
-        
-        Toggle(isOn: isRotationPausedBinding) {
-            if isRotationPausedBinding.wrappedValue {
-                Label("Globe Rotation", image: "rotate.3d.slash")
-            } else {
-                Label("Globe Rotation", systemImage: "rotate.3d")
-            }
-        }
-        .labelStyle(.iconOnly)
-        .toggleStyle(.button)
-        .padding()
     }
 }
 
