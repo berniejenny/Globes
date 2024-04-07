@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7D1C405D2BC35FBF00EFD84B /* WebViewDecorated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D1C405C2BC35FBF00EFD84B /* WebViewDecorated.swift */; };
+		7D1C405F2BC3621600EFD84B /* GlobesToolbarContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D1C405E2BC3621600EFD84B /* GlobesToolbarContent.swift */; };
 		7D4C40CF2BBF5FFB0041FADD /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C40CE2BBF5FFB0041FADD /* Error.swift */; };
 		7D6E110C2BA6C81C00C2BCD0 /* Pardies_Celestial_6900023.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11072BA6C81B00C2BCD0 /* Pardies_Celestial_6900023.jpg */; };
 		7D6E110D2BA6C81C00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg */; };
@@ -50,6 +51,7 @@
 
 /* Begin PBXFileReference section */
 		7D1C405C2BC35FBF00EFD84B /* WebViewDecorated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewDecorated.swift; sourceTree = "<group>"; };
+		7D1C405E2BC3621600EFD84B /* GlobesToolbarContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobesToolbarContent.swift; sourceTree = "<group>"; };
 		7D4C40CE2BBF5FFB0041FADD /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		7D6E11072BA6C81B00C2BCD0 /* Pardies_Celestial_6900023.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Pardies_Celestial_6900023.jpg; sourceTree = "<group>"; };
 		7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Bellerby65cmSchminkeGagarin.jpg; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 				7DFE488E2BAAB76D00DE6DB4 /* AboutView.swift */,
 				7DAF53292B9D2D2B0037F5DF /* GlobeInfoView.swift */,
 				7DEAB0602B9B1D55004027B1 /* GlobeSelectionView.swift */,
+				7D1C405E2BC3621600EFD84B /* GlobesToolbarContent.swift */,
 				7DEAB04F2B9B04C2004027B1 /* ImmersiveGlobeView.swift */,
 				7DC757322BB24355003E6A53 /* ImmersivePreviewGlobeView.swift */,
 				7DFE488C2BAA957600DE6DB4 /* IntroView.swift */,
@@ -349,6 +352,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D1C405F2BC3621600EFD84B /* GlobesToolbarContent.swift in Sources */,
 				7D81B86C2BA1B6E2004C4477 /* GlobeEntity.swift in Sources */,
 				7DFE48912BAAF18000DE6DB4 /* WebView.swift in Sources */,
 				7DEAB0612B9B1D55004027B1 /* GlobeSelectionView.swift in Sources */,
