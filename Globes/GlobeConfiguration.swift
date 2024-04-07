@@ -81,7 +81,7 @@ class GlobeConfiguration {
     var orientation = northOrientation
     
     /// Orientation to north
-    static let northOrientation = simd_quatf(real: 1, imag: SIMD3<Float>(0, 0, 0))
+    static let northOrientation = simd_quatf(angle: 0, axis: SIMD3<Float>(0, 1, 0)) //simd_quatf(real: 1, imag: SIMD3<Float>(0, 0, 0))
     
     /// Reset to north orientation
     func resetOrientation(animate: Bool) {
@@ -90,7 +90,14 @@ class GlobeConfiguration {
     }
     
     /// Returns true if the globe axis is vertically oriented.
-    var isNorthOriented: Bool { orientation == GlobeConfiguration.northOrientation }
+    var isNorthOriented: Bool {
+        let eps: Float = 0.000001
+        let axis = orientation.axis
+        if !axis.x.isFinite || !axis.y.isFinite || !axis.z.isFinite {
+            return true
+        }
+        return abs(axis.x) < eps && abs(axis.y) - 1 < eps && abs(axis.z) < eps
+    }
     
     /// Position of the center of the globe.
     var position = SIMD3<Float>.zero
