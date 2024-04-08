@@ -8,7 +8,7 @@
 import RealityKit
 import SwiftUI
 
-/// A view with name, author and 3D model for a globe
+/// A view to select a globe displaying name, author and 3D model of a globe.
 struct GlobeSelectionView: View {
     
     /// The view model contains the currently selected globe.
@@ -77,7 +77,7 @@ struct GlobeSelectionView: View {
         model.selectedGlobeConfiguration?.globe.id == globe.id
     }
     
-    /// Load the globe in an async task.
+    /// Load the globe in an async task and run a move-in  animation or an animation that resizes the previous globe.
     private func loadGlobe() {
         Task {
             do {
@@ -159,6 +159,7 @@ struct GlobeSelectionView: View {
 #if DEBUG
 #Preview {
     GlobeSelectionView(globe: Globe.preview)
+        .frame(width: 500)
         .environment(ViewModel.preview)
 }
 #endif

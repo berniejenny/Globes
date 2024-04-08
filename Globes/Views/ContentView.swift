@@ -63,6 +63,7 @@ struct ContentView: View {
                         }
                     }
                     .scrollTargetLayout() // for scrollTargetBehavior
+                    .padding(.bottom)
                 }
                 .padding(.horizontal)
                 .scrollTargetBehavior(.viewAligned) // align views with border of scroll view

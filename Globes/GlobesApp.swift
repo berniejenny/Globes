@@ -10,7 +10,7 @@ import SwiftUI
 @main
 struct GlobesApp: App {
     
-    /// List of globe loaded from Globes.json in the app bundle
+    /// Globes loaded from Globes.json in the app bundle
     private let globes: [Globe]
     
     /// View model injected in environment.

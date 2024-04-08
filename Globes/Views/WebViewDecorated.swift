@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// A `WebView` for displaying a webpage about the currently selected globe.
 struct WebViewDecorated: View {
     @Environment(ViewModel.self) var model
     @State private var webViewStatus: WebViewStatus = .loading

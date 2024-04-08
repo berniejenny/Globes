@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// View with information about the selected globe, and an ornament to close the globe, rescale the globe and toggle rotation.
+/// View with information about the selected globe.
 struct GlobeInfoView: View {
     @Environment(ViewModel.self) private var model
     
