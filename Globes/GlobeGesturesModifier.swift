@@ -34,8 +34,10 @@ private struct GlobeGesturesModifier: ViewModifier {
         /// The position of the camera at the start of a magnify gesture
         var cameraPositionAtGestureStart: SIMD3<Float>? = nil
         
+        /// Automatic rotation is paused during a gesture. `isRotationPausedAtStartOfGesture` remembers whether the rotation was paused before the gesture started.
         var isRotationPausedAtStartOfGesture: Bool? = nil
         
+        /// Reset all temporary properties.
         mutating func endGesture() {
             isDragging = false
             positionAtGestureStart = nil
@@ -46,6 +48,7 @@ private struct GlobeGesturesModifier: ViewModifier {
         }
     }
     
+    /// Configuration of the manipulated globe.
     @Bindable var configuration: GlobeConfiguration
     
     @State private var previousTranslationWidth: Double = 0.0
@@ -136,7 +139,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                 }
                 if !state.isScaling {
                     log("start magnify")
-                    state.scaleAtGestureStart = globeEntity.uniformScale
+                    state.scaleAtGestureStart = globeEntity.meanScale
                     state.positionAtGestureStart = value.entity.position
                     // The camera position at the start of the scaling gesture is used to move the globe.
                     // Querying the position on each update would result in an unstable globe position if the camera is moved.
@@ -186,7 +189,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                     
                     // reduce the rotation angle for enlarged globes to avoid excessively fast movements
                     let rotation = value.rotation
-                    let scale = max(1, Double(globeEntity.uniformScale))
+                    let scale = max(1, Double(globeEntity.meanScale))
                     let angle = Angle2D(radians: rotation.angle.radians / scale)
                     
                     // Flip orientation of rotation to match rotation direction of hands.
@@ -239,7 +242,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                         
                         // Adjust the amount of rotation per translation delta to the size of the globe.
                         // The angular rotation per translation delta is reduced for enlarged globes.
-                        let scaleRadius = max(1, entity.uniformScale) * configuration.globe.radius
+                        let scaleRadius = max(1, entity.meanScale) * configuration.globe.radius
                         let rotationAmount = Float(deltaTranslation) * rotationSpeed / scaleRadius
                         
                         // Create a rotation quaternion around the Y axis

@@ -8,13 +8,13 @@
 import RealityKit
 import SwiftUI
 
-/// Globe entity with a model child consisting of a mesh and a material, plus optional `InputTargetComponent`, `CollisionComponent`, and `HoverEffectComponent` components.
+/// Globe entity with a model child consisting of a mesh and a material, plus optional `InputTargetComponent` and `CollisionComponent` components.
+/// Gestures mutate the transform of this parent entity, while the optional automatic rotation mutates the transform of the child entity.
 class GlobeEntity: Entity {
-   
+    
+    /// Duration of animations of the transform of this entity in seconds.
     private let transformAnimationDuration: Double = 1
-    
-    private(set) var modelEntity = Entity()
-    
+        
     @MainActor required init() {
         super.init()
     }
@@ -31,7 +31,7 @@ class GlobeEntity: Entity {
         
         let material = try await Self.loadMaterial(globe: globe, loadPreviewTexture: loadPreviewTexture)
         let mesh: MeshResource = .generateSphere(radius: radius)
-        self.modelEntity = ModelEntity(mesh: mesh, materials: [material])
+        let modelEntity = ModelEntity(mesh: mesh, materials: [material])
         
         // Add InputTargetComponent and CollisionComponent to enable gestures
         if enableGestures {
@@ -47,7 +47,8 @@ class GlobeEntity: Entity {
     func update(configuration: GlobeConfiguration) {
         // Set the speed of the automatic rotation
         if configuration.adjustRotationSpeedToSize {
-            let currentSpeed = configuration.currentSpeed(scale: uniformScale)
+            guard let modelEntity = children.first(where: { $0 is ModelEntity }) else { return }
+            let currentSpeed = configuration.currentSpeed(scale: meanScale)
             if var rotation: RotationComponent = modelEntity.components[RotationComponent.self] {
                 rotation.speed = currentSpeed
                 modelEntity.components[RotationComponent.self] = rotation
@@ -70,7 +71,7 @@ class GlobeEntity: Entity {
     
     /// The  mean scale factor of this entity.
     @MainActor
-    var uniformScale: Float { scale.sum() / 3 }
+    var meanScale: Float { scale.sum() / 3 }
     
     /// Load the globe material, including a texture.
     static private func loadMaterial(globe: Globe, loadPreviewTexture: Bool) async throws -> RealityKit.Material {

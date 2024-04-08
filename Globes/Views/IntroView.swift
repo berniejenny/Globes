@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Sidebar with title and information about the app.
 struct IntroView: View {
     @Environment(ViewModel.self) private var model
     

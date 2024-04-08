@@ -14,6 +14,7 @@ struct Globe: Identifiable, Equatable, Hashable, Codable {
     /// Name of the globe in original language
     var name: String
     
+    /// Name of the globe translated to English if `name` is in another language.
     var nameTranslated: String?
     
     /// Family name(s) of the author(s) of the globe. If multiple authors, names are separated by a semicolon.

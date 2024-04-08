@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Toolbar buttons for main window.
 struct GlobesToolbarContent: ToolbarContent {
     @Environment(ViewModel.self) var model
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
