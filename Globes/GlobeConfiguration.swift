@@ -78,15 +78,12 @@ class GlobeConfiguration {
     var scale: Float = 1
     
     /// Orientation of the globe
-    var orientation = northOrientation
-    
-    /// Orientation to north
-    static let northOrientation = simd_quatf(angle: 0, axis: SIMD3<Float>(0, 1, 0)) //simd_quatf(real: 1, imag: SIMD3<Float>(0, 0, 0))
+    var orientation = simd_quatf(angle: 0, axis: SIMD3<Float>(0, 1, 0)) // initialize with north orientation
     
     /// Reset to north orientation
     func resetOrientation(animate: Bool) {
         animateTransform = animate
-        orientation = Self.northOrientation
+        orientation = simd_quatf(angle: orientation.angle, axis: SIMD3<Float>(0, 1, 0))
     }
     
     /// Returns true if the globe axis is vertically oriented.
@@ -96,7 +93,7 @@ class GlobeConfiguration {
         if !axis.x.isFinite || !axis.y.isFinite || !axis.z.isFinite {
             return true
         }
-        return abs(axis.x) < eps && abs(axis.y) - 1 < eps && abs(axis.z) < eps
+        return abs(axis.x) < eps && abs(abs(axis.y) - 1) < eps && abs(axis.z) < eps
     }
     
     /// Position of the center of the globe.

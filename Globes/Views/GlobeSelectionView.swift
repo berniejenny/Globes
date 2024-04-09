@@ -107,7 +107,9 @@ struct GlobeSelectionView: View {
                             oldPosition: oldConfiguration.position,
                             animate: true
                         )
-                        oldConfiguration.resetOrientation(animate: true)
+                        if !oldConfiguration.isNorthOriented {
+                            oldConfiguration.resetOrientation(animate: true)
+                        }
                     } else {
                         // This is the first globe. Initialize model.selectedGlobeConfiguration, such that
                         // an ImmersiveGlobeView is created while the globe is loading.
@@ -123,8 +125,15 @@ struct GlobeSelectionView: View {
                     configuration.globeEntity = globeEntity
                     
                     if let oldConfiguration {
-                        // The new globe is replacing a previous globe.
+                        // Position the new globe relative to the previous globe.
                         configuration.position(relativeTo: oldConfiguration)
+                        
+                        // Align the automatic rotation of the model entities.
+                        configuration.globeEntity?.modelOrientation = oldConfiguration.globeEntity?.modelOrientation
+                        
+                        // Align the manual rotation of the parent entities.
+                        configuration.orientation = oldConfiguration.orientation
+                        
                         model.selectedGlobeConfiguration = configuration
                     } else {
                         // This is the first globe. Set the initial scale and position for a move-in animation.
