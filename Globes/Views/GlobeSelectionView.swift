@@ -89,13 +89,13 @@ struct GlobeSelectionView: View {
                     withAnimation { loadingTexture = true }
                 }
                 
+                let oldConfiguration = await model.selectedGlobeConfiguration
                 let configuration = await GlobeConfiguration(
                     globe: globe,
                     speed: GlobeConfiguration.defaultRotationSpeed,
                     adjustRotationSpeedToSize: true,
-                    isPaused: false
+                    isRotationPaused: oldConfiguration?.isRotationPaused ?? false
                 )
-                let oldConfiguration = await model.selectedGlobeConfiguration
                 
                 await MainActor.run {
                     if let oldConfiguration {
