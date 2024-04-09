@@ -109,13 +109,13 @@ class GlobeConfiguration {
         globe: Globe,
         speed: Float = 0,
         adjustRotationSpeedToSize: Bool = true,
-        isPaused: Bool = false
+        isRotationPaused: Bool = false
     ) {
         self.globe = globe
         self.globeEntity = nil
         self.speed = speed
         self.adjustRotationSpeedToSize = adjustRotationSpeedToSize
-        self.isRotationPaused = isPaused
+        self.isRotationPaused = isRotationPaused
     }
     
     /// Changes the scale of the globe and moves the globe along a line connecting the camera and the center of the globe,
