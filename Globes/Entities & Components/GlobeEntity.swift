@@ -14,7 +14,10 @@ class GlobeEntity: Entity {
     
     /// Duration of animations of the transform of this entity in seconds.
     private let transformAnimationDuration: Double = 1
-        
+    
+    /// Child model entity
+    private var modelEntity: Entity? { children.first(where: { $0 is ModelEntity }) }
+    
     @MainActor required init() {
         super.init()
     }
@@ -46,12 +49,13 @@ class GlobeEntity: Entity {
     @MainActor
     func update(configuration: GlobeConfiguration) {
         // Set the speed of the automatic rotation
-        if configuration.adjustRotationSpeedToSize {
-            guard let modelEntity = children.first(where: { $0 is ModelEntity }) else { return }
+        if let modelEntity {
             let currentSpeed = configuration.currentSpeed(scale: meanScale)
             if var rotation: RotationComponent = modelEntity.components[RotationComponent.self] {
-                rotation.speed = currentSpeed
-                modelEntity.components[RotationComponent.self] = rotation
+                if configuration.adjustRotationSpeedToSize {
+                    rotation.speed = currentSpeed
+                    modelEntity.components[RotationComponent.self] = rotation
+                }
             } else {
                 modelEntity.components.set(RotationComponent(speed: currentSpeed))
             }
@@ -66,6 +70,16 @@ class GlobeEntity: Entity {
             move(to: transform, relativeTo: nil, duration: transformAnimationDuration)
         } else {
             move(to: transform, relativeTo: nil)
+        }
+    }
+    
+    /// The orientation of the model child entity.
+    var modelOrientation: simd_quatf? {
+        get { modelEntity?.orientation }
+        set {
+            if let rotation = newValue {
+                modelEntity?.orientation = rotation
+            }
         }
     }
     
