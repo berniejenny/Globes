@@ -109,8 +109,12 @@ class GlobeEntity: Entity {
             return try await TextureResource(named: globe.previewTexture, options: textureOptions)
         } else {
             // load texture from image file in app bundle
-            guard let url = Bundle.main.url(forResource: globe.texture, withExtension: "jpg") else {
-                fatalError("Cannot find \(globe.texture).jpg in the app bundle.")
+            var url = Bundle.main.url(forResource: globe.texture, withExtension: "jpg")
+            if url == nil {
+                url = Bundle.main.url(forResource: globe.texture, withExtension: "heic")
+            }
+            guard let url else {
+                fatalError("Cannot find \(globe.texture) with JPEG or HEIC format in the app bundle.")
             }
             return try await TextureResource(contentsOf: url, options: textureOptions)
         }
