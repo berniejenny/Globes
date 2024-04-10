@@ -26,6 +26,8 @@
 		7D9614EA2BC66ED500A78DBB /* Coronelli_Terrestrial_10070028.heic in Resources */ = {isa = PBXBuildFile; fileRef = 7D9614E92BC66ED500A78DBB /* Coronelli_Terrestrial_10070028.heic */; };
 		7D9614EB2BC69A6D00A78DBB /* ArrowsmithWorldMercator.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CE92BC639C400A98073 /* ArrowsmithWorldMercator.jpg */; };
 		7D9614EC2BC69A7400A78DBB /* MoonGeology.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CEC2BC63A7000A98073 /* MoonGeology.jpg */; };
+		7D9614ED2BC69F6700A78DBB /* Globe+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE4FACF2BA2AEF600C4B637 /* Globe+Preview.swift */; };
+		7D9614EE2BC69FE500A78DBB /* Globes.json in Resources */ = {isa = PBXBuildFile; fileRef = 7D81B85C2BA123B5004C4477 /* Globes.json */; };
 		7DAF532A2B9D2D2B0037F5DF /* GlobeInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DAF53292B9D2D2B0037F5DF /* GlobeInfoView.swift */; };
 		7DBE6CE02BC637EE00A98073 /* Quingeo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CDF2BC637EE00A98073 /* Quingeo.jpg */; };
 		7DBE6CE22BC6387500A98073 /* MoonBW.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CE12BC6387500A98073 /* MoonBW.jpg */; };
@@ -169,16 +171,16 @@
 		7D81B8602BA13D67004C4477 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
-				7D9614E92BC66ED500A78DBB /* Coronelli_Terrestrial_10070028.heic */,
 				7DBE6CE92BC639C400A98073 /* ArrowsmithWorldMercator.jpg */,
 				7D6E110B2BA6C81C00C2BCD0 /* Behaim_12237025.jpg */,
 				7DBE6CED2BC63AEA00A98073 /* Bellerby65cmPrussianBlue.jpg */,
-				7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg */,
 				7DBE6CEF2BC63B2F00A98073 /* Bellerby65cmYellowOchre.jpg */,
 				7DBE6CF52BC63C1700A98073 /* BerghausWorld.jpg */,
 				7D8CD0DE2BA6CC630053B32D /* Cassini_Celestial_5750000.jpg */,
 				7DBE6CF12BC63BBA00A98073 /* Cassini_Terrestrial_5749000.jpg */,
 				7DBE6CF32BC63BEF00A98073 /* Coronelli_Celestial_10570028.jpg */,
+				7D9614E92BC66ED500A78DBB /* Coronelli_Terrestrial_10070028.heic */,
+				7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg */,
 				7D8CD0DD2BA6CC630053B32D /* HenzeWorld.jpg */,
 				7DBE6CE72BC6395000A98073 /* Jupiter_IO.jpg */,
 				7DBE6CE32BC6389E00A98073 /* Mercury_10591.jpg */,
@@ -351,6 +353,7 @@
 				7DCFBEFC2BA4203B00B4F27C /* Preview Assets.xcassets in Resources */,
 				7DCFBF0C2BA420F400B4F27C /* Credits.rtf in Resources */,
 				7DCFBEF92BA4203B00B4F27C /* Assets.xcassets in Resources */,
+				7D9614EE2BC69FE500A78DBB /* Globes.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -392,6 +395,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D9614ED2BC69F6700A78DBB /* Globe+Preview.swift in Sources */,
 				7DCFBF092BA420F400B4F27C /* GlobesMetaApp.swift in Sources */,
 				7DCFBF0B2BA420F400B4F27C /* GlobeEditorView.swift in Sources */,
 				7DCFBF0A2BA420F400B4F27C /* GlobesMetaDocument.swift in Sources */,
