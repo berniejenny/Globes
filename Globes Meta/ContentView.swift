@@ -33,11 +33,12 @@ struct ContentView: View {
                 NavigationLink(value: globe) {
                     VStack(alignment: .leading) {
                         Text(globe.name)
-                        Text(globe.authorSurname ?? "")
+                        Text((globe.authorSurname ?? "") + " " + (globe.date ?? ""))
                             .foregroundStyle(.secondary)
                     }
                 }
             }
+            .navigationSplitViewColumnWidth(min: 150, ideal: 300, max: 500)
         } detail: {
             Group {
                 if document.globes.first(where: { $0.id == selectedGlobeId }) != nil {
@@ -91,5 +92,7 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView(document: .constant(GlobesMetaDocument()))
+    var doc = GlobesMetaDocument()
+    doc.globes = Globe.previewGlobes
+    return ContentView(document: .constant(doc))
 }
