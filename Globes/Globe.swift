@@ -95,7 +95,10 @@ struct Globe: Identifiable, Equatable, Hashable, Codable {
     var author: String {
         let firstNames = (authorFirstName ?? "").components(separatedBy: ";").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
         let surnames = (authorSurname ?? "").components(separatedBy: ";").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-        let names = zip(firstNames, surnames).map { $0.0 + " " + $0.1 }.joined(separator: ", ")
+        let names = zip(firstNames, surnames).map {
+            let separator = $0.0.isEmpty || $0.1.isEmpty ? "" : " "
+            return $0.0 + separator + $0.1
+        }.joined(separator: ", ")
         return names
     }
     
