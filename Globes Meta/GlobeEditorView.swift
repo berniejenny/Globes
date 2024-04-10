@@ -34,33 +34,43 @@ struct GlobeEditorView: View {
     }
     
     var body: some View {
+        let topPadding: CGFloat = 20
+        
         VStack {
-            Form {
-                Section("Name") {
+            Form() {
+                Section {
                     TextField("Original", text: $globe.name)
                     TextField("Translated", text: $globe.nameTranslated ?? "")
+                } header: {
+                    Text("Name")
                 }
-                Spacer()
-                Section("Publication") {
+                
+                Section {
                     TextField("Date", text: $globe.date ?? "")
                     Text("The date can include \"ca.\" or similar.")
                         .font(.caption)
+                } header: {
+                    Text("Publication")
+                        .padding(.top, topPadding)
                 }
-                Spacer()
-                Section("Authors") {
+                Section {
                     TextField("Surname", text: $globe.authorSurname ?? "")
                     TextField("First Name", text: $globe.authorFirstName ?? "")
                     Text("Separate multiple names with a semicolon.")
                         .font(.caption)
+                } header: {
+                    Text("Authors")
+                        .padding(.top, topPadding)
                 }
-                Spacer()
-                Section("Geometry") {
+                Section {
                     TextField("Radius", value: $globe.radius, format: .number)
                     Text("Radius in meter")
                         .font(.caption)
+                } header: {
+                    Text("Geometry")
+                        .padding(.top, topPadding)
                 }
-                Spacer()
-                Section("Information") {
+                Section {
                     TextField("Description", text: $globe.description ?? "", axis: .vertical)
                         .lineLimit(4...20)
                     HStack {
@@ -69,12 +79,17 @@ struct GlobeEditorView: View {
                             Link("Open", destination: url)
                         }
                     }
+                } header: {
+                    Text("Information")
+                        .padding(.top, topPadding)
                 }
-                Spacer()
-                Section("Texture") {
+                Section {
                     TextField("File Name", text: $globe.texture)
                     Text("Texture image name without \".jpg\" file extension.")
                         .font(.caption)
+                } header: {
+                    Text("Texture")
+                        .padding(.top, topPadding)
                 }
                 Spacer()
             }
@@ -87,6 +102,6 @@ struct GlobeEditorView: View {
 }
 
 #Preview {
-    let globe = Globe(name: "", radius: 1.23, texture: "Texture_file_name")
-    return GlobeEditorView(globe: .constant(globe))
+    GlobeEditorView(globe: .constant(Globe.preview))
+        .frame(height: 1000)
 }
