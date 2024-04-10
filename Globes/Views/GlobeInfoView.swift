@@ -13,12 +13,25 @@ struct GlobeInfoView: View {
     
     var body: some View {
         if let globe = model.selectedGlobeConfiguration?.globe {            
-            VStack(spacing: 20) {
+            VStack(spacing: 10) {
                 Text(globe.name)
                     .font(.title)
-                if !globe.authorAndDate.isEmpty {
-                    Text(globe.authorAndDate)
+                    .multilineTextAlignment(.center)
+                
+                if let nameTranslated = globe.nameTranslated, !nameTranslated.isEmpty {
+                    Text(nameTranslated)
+                        .font(.title3)
+                        .multilineTextAlignment(.center)
+                }
+                if let date = globe.date, !date.isEmpty {
+                    Text(date)
                         .font(.callout)
+                        .multilineTextAlignment(.center)
+                }
+                if !globe.author.isEmpty {
+                    Text(globe.author)
+                        .font(.callout)
+                        .multilineTextAlignment(.center)
                 }
                 if let description = globe.description {
                     ScrollView(.vertical) {
@@ -26,7 +39,7 @@ struct GlobeInfoView: View {
                             .multilineTextAlignment(.leading)
                     }
                     .frame(maxWidth: 400)
-                    .padding(.horizontal)
+                    .padding()
                 }
                 if let infoURL = globe.infoURL {
                     let label = infoURL.absoluteString.contains("davidrumsey.com") ? "Open David Rumsey Map Collection Webpage" : "Open Webpage"

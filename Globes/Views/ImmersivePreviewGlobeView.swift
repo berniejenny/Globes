@@ -29,7 +29,7 @@ struct ImmersivePreviewGlobeView: View {
                 enableGestures: false,
                 radius: radius
             ) else {
-                fatalError("The preview for \"\(globe.name)\" cannot be created.")
+                fatalError("The preview for \"\(globe.name)\" by \(globe.author) cannot be created.")
             }
             let rotationSpeed = GlobeConfiguration.defaultRotationSpeedForPreviewGlobes
             globeEntity.components.set(RotationComponent(speed: rotationSpeed))
