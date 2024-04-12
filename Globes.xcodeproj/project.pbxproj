@@ -10,6 +10,8 @@
 		7D1C405D2BC35FBF00EFD84B /* WebViewDecorated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D1C405C2BC35FBF00EFD84B /* WebViewDecorated.swift */; };
 		7D1C405F2BC3621600EFD84B /* GlobesToolbarContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D1C405E2BC3621600EFD84B /* GlobesToolbarContent.swift */; };
 		7D4C40CF2BBF5FFB0041FADD /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C40CE2BBF5FFB0041FADD /* Error.swift */; };
+		7D62945A2BC8ECE1006AB242 /* WorldAeronautical.heic in Resources */ = {isa = PBXBuildFile; fileRef = 7D6294592BC8ECE1006AB242 /* WorldAeronautical.heic */; };
+		7D62945C2BC8ED2D006AB242 /* MoonGeology.heic in Resources */ = {isa = PBXBuildFile; fileRef = 7D62945B2BC8ED2D006AB242 /* MoonGeology.heic */; };
 		7D6E110C2BA6C81C00C2BCD0 /* Pardies_Celestial_6900023.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11072BA6C81B00C2BCD0 /* Pardies_Celestial_6900023.jpg */; };
 		7D6E110D2BA6C81C00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg */; };
 		7D6E110E2BA6C81C00C2BCD0 /* TharpOceanFloor4black.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11092BA6C81B00C2BCD0 /* TharpOceanFloor4black.jpg */; };
@@ -25,7 +27,6 @@
 		7D8CD0E02BA6CC630053B32D /* Cassini_Celestial_5750000.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D8CD0DE2BA6CC630053B32D /* Cassini_Celestial_5750000.jpg */; };
 		7D9614EA2BC66ED500A78DBB /* Coronelli_Terrestrial_10070028.heic in Resources */ = {isa = PBXBuildFile; fileRef = 7D9614E92BC66ED500A78DBB /* Coronelli_Terrestrial_10070028.heic */; };
 		7D9614EB2BC69A6D00A78DBB /* ArrowsmithWorldMercator.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CE92BC639C400A98073 /* ArrowsmithWorldMercator.jpg */; };
-		7D9614EC2BC69A7400A78DBB /* MoonGeology.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CEC2BC63A7000A98073 /* MoonGeology.jpg */; };
 		7D9614ED2BC69F6700A78DBB /* Globe+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE4FACF2BA2AEF600C4B637 /* Globe+Preview.swift */; };
 		7D9614EE2BC69FE500A78DBB /* Globes.json in Resources */ = {isa = PBXBuildFile; fileRef = 7D81B85C2BA123B5004C4477 /* Globes.json */; };
 		7DAF532A2B9D2D2B0037F5DF /* GlobeInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DAF53292B9D2D2B0037F5DF /* GlobeInfoView.swift */; };
@@ -34,7 +35,6 @@
 		7DBE6CE42BC6389E00A98073 /* Mercury_10591.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CE32BC6389E00A98073 /* Mercury_10591.jpg */; };
 		7DBE6CE62BC638EB00A98073 /* Mars_Viking_10594.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CE52BC638EB00A98073 /* Mars_Viking_10594.jpg */; };
 		7DBE6CE82BC6395000A98073 /* Jupiter_IO.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CE72BC6395000A98073 /* Jupiter_IO.jpg */; };
-		7DBE6CEB2BC63A1000A98073 /* WorldAeronautical.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CEA2BC63A1000A98073 /* WorldAeronautical.jpg */; };
 		7DBE6CEE2BC63AEA00A98073 /* Bellerby65cmPrussianBlue.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CED2BC63AEA00A98073 /* Bellerby65cmPrussianBlue.jpg */; };
 		7DBE6CF02BC63B2F00A98073 /* Bellerby65cmYellowOchre.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CEF2BC63B2F00A98073 /* Bellerby65cmYellowOchre.jpg */; };
 		7DBE6CF22BC63BBA00A98073 /* Cassini_Terrestrial_5749000.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CF12BC63BBA00A98073 /* Cassini_Terrestrial_5749000.jpg */; };
@@ -68,6 +68,8 @@
 		7D1C405C2BC35FBF00EFD84B /* WebViewDecorated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewDecorated.swift; sourceTree = "<group>"; };
 		7D1C405E2BC3621600EFD84B /* GlobesToolbarContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobesToolbarContent.swift; sourceTree = "<group>"; };
 		7D4C40CE2BBF5FFB0041FADD /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
+		7D6294592BC8ECE1006AB242 /* WorldAeronautical.heic */ = {isa = PBXFileReference; lastKnownFileType = file; path = WorldAeronautical.heic; sourceTree = "<group>"; };
+		7D62945B2BC8ED2D006AB242 /* MoonGeology.heic */ = {isa = PBXFileReference; lastKnownFileType = file; path = MoonGeology.heic; sourceTree = "<group>"; };
 		7D6E11072BA6C81B00C2BCD0 /* Pardies_Celestial_6900023.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Pardies_Celestial_6900023.jpg; sourceTree = "<group>"; };
 		7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Bellerby65cmSchminkeGagarin.jpg; sourceTree = "<group>"; };
 		7D6E11092BA6C81B00C2BCD0 /* TharpOceanFloor4black.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = TharpOceanFloor4black.jpg; sourceTree = "<group>"; };
@@ -89,8 +91,6 @@
 		7DBE6CE52BC638EB00A98073 /* Mars_Viking_10594.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Mars_Viking_10594.jpg; sourceTree = "<group>"; };
 		7DBE6CE72BC6395000A98073 /* Jupiter_IO.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Jupiter_IO.jpg; sourceTree = "<group>"; };
 		7DBE6CE92BC639C400A98073 /* ArrowsmithWorldMercator.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ArrowsmithWorldMercator.jpg; sourceTree = "<group>"; };
-		7DBE6CEA2BC63A1000A98073 /* WorldAeronautical.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = WorldAeronautical.jpg; sourceTree = "<group>"; };
-		7DBE6CEC2BC63A7000A98073 /* MoonGeology.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = MoonGeology.jpg; sourceTree = "<group>"; };
 		7DBE6CED2BC63AEA00A98073 /* Bellerby65cmPrussianBlue.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Bellerby65cmPrussianBlue.jpg; sourceTree = "<group>"; };
 		7DBE6CEF2BC63B2F00A98073 /* Bellerby65cmYellowOchre.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Bellerby65cmYellowOchre.jpg; sourceTree = "<group>"; };
 		7DBE6CF12BC63BBA00A98073 /* Cassini_Terrestrial_5749000.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Cassini_Terrestrial_5749000.jpg; sourceTree = "<group>"; };
@@ -186,12 +186,12 @@
 				7DBE6CE32BC6389E00A98073 /* Mercury_10591.jpg */,
 				7DBE6CE52BC638EB00A98073 /* Mars_Viking_10594.jpg */,
 				7DBE6CE12BC6387500A98073 /* MoonBW.jpg */,
-				7DBE6CEC2BC63A7000A98073 /* MoonGeology.jpg */,
+				7D62945B2BC8ED2D006AB242 /* MoonGeology.heic */,
 				7D6E11072BA6C81B00C2BCD0 /* Pardies_Celestial_6900023.jpg */,
 				7DBE6CDF2BC637EE00A98073 /* Quingeo.jpg */,
 				7D6E11092BA6C81B00C2BCD0 /* TharpOceanFloor4black.jpg */,
 				7D81B85E2BA13A53004C4477 /* UrbanoMonte_10130093.jpg */,
-				7DBE6CEA2BC63A1000A98073 /* WorldAeronautical.jpg */,
+				7D6294592BC8ECE1006AB242 /* WorldAeronautical.heic */,
 			);
 			path = Textures;
 			sourceTree = "<group>";
@@ -366,7 +366,7 @@
 				7DBE6CE22BC6387500A98073 /* MoonBW.jpg in Resources */,
 				7D6E11102BA6C81C00C2BCD0 /* Behaim_12237025.jpg in Resources */,
 				7DBE6CF22BC63BBA00A98073 /* Cassini_Terrestrial_5749000.jpg in Resources */,
-				7D9614EC2BC69A7400A78DBB /* MoonGeology.jpg in Resources */,
+				7D62945A2BC8ECE1006AB242 /* WorldAeronautical.heic in Resources */,
 				7D8CD0DF2BA6CC630053B32D /* HenzeWorld.jpg in Resources */,
 				7D8CD0E02BA6CC630053B32D /* Cassini_Celestial_5750000.jpg in Resources */,
 				7DBE6CF62BC63C1700A98073 /* BerghausWorld.jpg in Resources */,
@@ -376,6 +376,7 @@
 				7D9614EA2BC66ED500A78DBB /* Coronelli_Terrestrial_10070028.heic in Resources */,
 				7DEAB0522B9B04C4004027B1 /* Assets.xcassets in Resources */,
 				7D81B85F2BA13A53004C4477 /* UrbanoMonte_10130093.jpg in Resources */,
+				7D62945C2BC8ED2D006AB242 /* MoonGeology.heic in Resources */,
 				7D6E110E2BA6C81C00C2BCD0 /* TharpOceanFloor4black.jpg in Resources */,
 				7D6E110D2BA6C81C00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg in Resources */,
 				7D81B85D2BA123B5004C4477 /* Globes.json in Resources */,
@@ -383,7 +384,6 @@
 				7DBE6CF02BC63B2F00A98073 /* Bellerby65cmYellowOchre.jpg in Resources */,
 				7DBE6CE82BC6395000A98073 /* Jupiter_IO.jpg in Resources */,
 				7DBE6CE62BC638EB00A98073 /* Mars_Viking_10594.jpg in Resources */,
-				7DBE6CEB2BC63A1000A98073 /* WorldAeronautical.jpg in Resources */,
 				7DBE6CE02BC637EE00A98073 /* Quingeo.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
