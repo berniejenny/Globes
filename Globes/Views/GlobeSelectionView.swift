@@ -30,17 +30,21 @@ struct GlobeSelectionView: View {
     private let globeRadius: Float = 0.035
     
     var body: some View {
-        let authorAndDate = globe.authorAndDate
         
         ZStack(alignment: .leading) {
-            // name and author
+            // date, name and author
+            let date = globe.date ?? ""
             VStack(alignment: .leading) {
-                Text(globe.name)
-                    .font(.headline)
-                Text(authorAndDate)
+                Text(date)
                     .font(.callout)
                     .foregroundStyle(.secondary)
-                    .opacity(authorAndDate.isEmpty ? 0 : 1)
+                    .opacity(date.isEmpty ? 0 : 1)
+                Text(globe.name)
+                    .font(.headline)
+                Text(globe.author)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .opacity(globe.author.isEmpty ? 0 : 1)
             }
             .padding(.leading)
             
