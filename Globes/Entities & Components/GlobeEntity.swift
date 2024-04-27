@@ -22,17 +22,29 @@ class GlobeEntity: Entity {
         super.init()
     }
     
+    /// Globe entity
+    /// - Parameters:
+    ///   - globe: Globe settings.
+    ///   - loadPreviewTexture: If true, a small image is loaded from the assets; if false, a large image is loaded from the app bundle.
+    ///   - enableGestures: If true gestures for positioning and scaling the globe are added.
+    ///   - castsShadow: If true, the globe casts a grounding shadow.
+    ///   - roughness: A small roughness results in shiny reflection and large roughness results in matte appearance. Between 0 and 1.
+    ///   - clearcoat: Simulate a clear transparent coating between 0 (none) and 1 (max).
+    ///   - radius: A radius that replaces `globe.radius`.
     init(
         globe: Globe,
-        loadPreviewTexture: Bool = false,
-        enableGestures: Bool = true,
+        loadPreviewTexture: Bool,
+        enableGestures: Bool,
+        castsShadow: Bool,
+        roughness: Float,
+        clearcoat: Float,
         radius: Float? = nil
     ) async throws {
         super.init()
         
         let radius = radius ?? globe.radius
         
-        let material = try await Self.loadMaterial(globe: globe, loadPreviewTexture: loadPreviewTexture)
+        let material = try await Self.loadMaterial(globe: globe, loadPreviewTexture: loadPreviewTexture, roughness: roughness, clearcoat: clearcoat)
         let mesh: MeshResource = .generateSphere(radius: radius)
         let modelEntity = ModelEntity(mesh: mesh, materials: [material])
         
@@ -42,6 +54,8 @@ class GlobeEntity: Entity {
             components.set(CollisionComponent(shapes: [.generateSphere(radius: radius)], mode: .trigger))
         }
         
+        modelEntity.components.set(GroundingShadowComponent(castsShadow: castsShadow))
+
         self.addChild(modelEntity)
         self.name = globe.name
     }
@@ -88,12 +102,30 @@ class GlobeEntity: Entity {
     var meanScale: Float { scale.sum() / 3 }
     
     /// Load the globe material, including a texture.
-    static private func loadMaterial(globe: Globe, loadPreviewTexture: Bool) async throws -> RealityKit.Material {
-        let textureResource = try await loadTexture(globe: globe, loadPreviewTexture: loadPreviewTexture)
+    static private func loadMaterial(globe: Globe, loadPreviewTexture: Bool, roughness: Float, clearcoat: Float) async throws -> RealityKit.Material {
         
-        // unlit material looks nice for small globes in selection view. Drop shadows for the large globe would require a lit material.
-        var material = UnlitMaterial()
-        material.color = .init(texture: .init(textureResource))
+        assert(roughness >= 0 && roughness <= 1, "Roughness out of bounds.")
+        assert(clearcoat >= 0 && clearcoat <= 1, "Clearcoat out of bounds.")
+        
+        // highest possible quality for mipmap texture sampling
+        let samplerDescription = MTLSamplerDescriptor()
+        samplerDescription.maxAnisotropy = 16 // 16 is maximum number of samples for anisotropic filtering (default is 1)
+        samplerDescription.minFilter = MTLSamplerMinMagFilter.linear // linear filtering (instead of nearest) when texture pixels are larger than rendered pixels
+        samplerDescription.magFilter = MTLSamplerMinMagFilter.linear // linear filtering (instead of nearest) when texture pixels are smaller than rendered pixels
+        samplerDescription.mipFilter = MTLSamplerMipFilter.linear // linear interpolation between mipmap levels
+        
+        let textureResource = try await loadTexture(globe: globe, loadPreviewTexture: loadPreviewTexture)
+        let textureSampler = MaterialParameters.Texture.Sampler(samplerDescription)
+        
+        var material = PhysicallyBasedMaterial()
+        material.baseColor.texture = MaterialParameters.Texture(textureResource, sampler: textureSampler)
+        
+        // small roughness results in shiny reflection, large roughness results in matte appearance
+        material.roughness = PhysicallyBasedMaterial.Roughness(floatLiteral: roughness)
+
+        // simulate clear transparent coating between 0 (none) and 1
+        material.clearcoat = .init(floatLiteral: clearcoat)
+
         return material
     }
     

@@ -27,6 +27,9 @@ struct ImmersivePreviewGlobeView: View {
                 globe: globe,
                 loadPreviewTexture: true,
                 enableGestures: false,
+                castsShadow: false,
+                roughness: 0.35,
+                clearcoat: 0.15,
                 radius: radius
             ) else {
                 fatalError("The preview for \"\(globe.name)\" by \(globe.author) cannot be created.")
