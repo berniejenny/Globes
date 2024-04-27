@@ -119,7 +119,14 @@ struct GlobeSelectionView: View {
                 }
                 
                 // load the globe
-                let globeEntity = try await GlobeEntity(globe: globe)
+                let globeEntity = try await GlobeEntity(
+                    globe: globe,
+                    loadPreviewTexture: false,
+                    enableGestures: true,
+                    castsShadow: true,
+                    roughness: 0.4,
+                    clearcoat: 0.05
+                )
 
                 await MainActor.run {
                     configuration.globeEntity = globeEntity
