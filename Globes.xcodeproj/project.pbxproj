@@ -16,6 +16,7 @@
 		7D6E110D2BA6C81C00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg */; };
 		7D6E110E2BA6C81C00C2BCD0 /* TharpOceanFloor4black.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11092BA6C81B00C2BCD0 /* TharpOceanFloor4black.jpg */; };
 		7D6E11102BA6C81C00C2BCD0 /* Behaim_12237025.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E110B2BA6C81C00C2BCD0 /* Behaim_12237025.jpg */; };
+		7D7209212BDE61D900B700A5 /* AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7209202BDE61D900B700A5 /* AppStore.swift */; };
 		7D7464382BA3A0A600182871 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7464372BA3A0A600182871 /* ViewModel.swift */; };
 		7D74643A2BA3C16F00182871 /* ViewModel+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7464392BA3C16F00182871 /* ViewModel+Preview.swift */; };
 		7D760A372BB03AA0008DF619 /* CameraTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D760A362BB03AA0008DF619 /* CameraTracker.swift */; };
@@ -74,6 +75,7 @@
 		7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Bellerby65cmSchminkeGagarin.jpg; sourceTree = "<group>"; };
 		7D6E11092BA6C81B00C2BCD0 /* TharpOceanFloor4black.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = TharpOceanFloor4black.jpg; sourceTree = "<group>"; };
 		7D6E110B2BA6C81C00C2BCD0 /* Behaim_12237025.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Behaim_12237025.jpg; sourceTree = "<group>"; };
+		7D7209202BDE61D900B700A5 /* AppStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStore.swift; sourceTree = "<group>"; };
 		7D7464372BA3A0A600182871 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		7D7464392BA3C16F00182871 /* ViewModel+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModel+Preview.swift"; sourceTree = "<group>"; };
 		7D760A362BB03AA0008DF619 /* CameraTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraTracker.swift; sourceTree = "<group>"; };
@@ -248,6 +250,7 @@
 				7D760A362BB03AA0008DF619 /* CameraTracker.swift */,
 				7DE4FACB2BA2989B00C4B637 /* GlobeGesturesModifier.swift */,
 				7D4C40CE2BBF5FFB0041FADD /* Error.swift */,
+				7D7209202BDE61D900B700A5 /* AppStore.swift */,
 				7D487E7B2BAB97CA00F8660A /* Views */,
 				7D487E7C2BAB983200F8660A /* Entities & Components */,
 				7DEAB0512B9B04C4004027B1 /* Assets.xcassets */,
@@ -417,6 +420,7 @@
 				7DAF532A2B9D2D2B0037F5DF /* GlobeInfoView.swift in Sources */,
 				7DFE488F2BAAB76D00DE6DB4 /* AboutView.swift in Sources */,
 				7DE4FACC2BA2989B00C4B637 /* GlobeGesturesModifier.swift in Sources */,
+				7D7209212BDE61D900B700A5 /* AppStore.swift in Sources */,
 				7DE4FAD02BA2AEF600C4B637 /* Globe+Preview.swift in Sources */,
 				7D1C405D2BC35FBF00EFD84B /* WebViewDecorated.swift in Sources */,
 				7D81B86E2BA1C5EC004C4477 /* RotationSystem.swift in Sources */,

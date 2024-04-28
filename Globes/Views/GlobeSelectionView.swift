@@ -87,7 +87,7 @@ struct GlobeSelectionView: View {
             do {
                 await MainActor.run {
                     // avoid loading the globe if it already exists
-                    guard !globeIsSelected else { return }
+                    guard !globeIsSelected else { return } // this exits this closure, but not the entire task
                     
                     // show progress view
                     withAnimation { loadingTexture = true }
@@ -134,6 +134,9 @@ struct GlobeSelectionView: View {
 
                 await MainActor.run {
                     configuration.globeEntity = globeEntity
+                    if !globeIsSelected {
+                        AppStore.increaseGlobesCount(promptReview: false)
+                    }
                     
                     if let oldConfiguration {
                         // Position the new globe relative to the previous globe.
