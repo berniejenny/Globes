@@ -40,9 +40,12 @@ struct IntroView: View {
                         model.showingAboutSheet.toggle()
                     }
                     Divider()
+                    Link(destination: AppStore.writeReviewURL) {
+                        Text("Review Globes on the App Store")
+                    }
+                    Divider()
                     Link(destination: URL(string: "https://www.davidrumsey.com")!) {
-                        Label("Visit David Rumsey Map Collection in Safari", systemImage: "globe")
-                            .labelStyle(.titleOnly)
+                        Text("Visit David Rumsey Map Collection in Safari")
                     }
                 } label: {
                     Label("Options", systemImage: "ellipsis")
