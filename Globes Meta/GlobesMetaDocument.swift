@@ -25,7 +25,9 @@ struct GlobesMetaDocument: FileDocument {
     }
     
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        let data = try JSONEncoder().encode(globes)
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        let data = try jsonEncoder.encode(globes)
         return .init(regularFileWithContents: data)
     }
 }
