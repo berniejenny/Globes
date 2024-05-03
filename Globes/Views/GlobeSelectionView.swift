@@ -51,13 +51,22 @@ struct GlobeSelectionView: View {
             // progress view
             HStack {
                 Spacer()
-                ProgressView()
-                    .padding()
-                    .glassBackgroundEffect()
-                Spacer()
+                
+                ZStack {
+//                    Button(action: { model.deselectGlobe() }) {
+//                        Label("Hide the Globe", systemImage: "arrow.down.forward.and.arrow.up.backward")
+//                            .labelStyle(.iconOnly)
+//                    }
+//                    .opacity(globeIsSelected && !loadingTexture ? 1 : 0)
+                    
+                    ProgressView()
+                        .padding()
+                        .glassBackgroundEffect()
+                        .offset(z: 20)
+                        .opacity(loadingTexture ? 1 : 0)
+                }
+                .padding(.trailing, Self.globeViewSize + 20)
             }
-            .offset(z: 20)
-            .opacity(loadingTexture ? 1 : 0)
             
             // 3D preview globe
             HStack {
