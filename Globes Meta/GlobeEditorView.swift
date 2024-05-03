@@ -38,11 +38,19 @@ struct GlobeEditorView: View {
         
         VStack {
             Form() {
+                Picker("Globe Type", selection: $globe.type) {
+                    ForEach(GlobeType.allCases, id: \.self) { type in
+                        Text(type.label)
+                    }
+                }
+                .frame(maxWidth: 350)
+                
                 Section {
                     TextField("Original", text: $globe.name)
                     TextField("Translated", text: $globe.nameTranslated ?? "")
                 } header: {
                     Text("Name")
+                        .padding(.top, topPadding)
                 }
                 
                 Section {

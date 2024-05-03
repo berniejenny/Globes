@@ -7,9 +7,34 @@
 
 import Foundation
 
+enum GlobeType: String, Codable, CaseIterable {
+    case earth
+    case celestial
+    case moon
+    case planet
+    case moonNonEarth
+    
+    var label: String {
+        switch self {
+        case .earth:
+            return "Earth"
+        case .celestial:
+            return "Celestial"
+        case .moon:
+            return "Moon"
+        case .planet:
+            return "Planet other than Earth"
+        case .moonNonEarth:
+            return "Moon of a planet other than Earth"
+        }
+    }
+}
+
 struct Globe: Identifiable, Equatable, Hashable, Codable {
     
     private(set) var id: UUID
+    
+    var type = GlobeType.earth
     
     /// Name of the globe in original language
     var name: String
@@ -43,6 +68,7 @@ struct Globe: Identifiable, Equatable, Hashable, Codable {
     
     /// Custom coding keys to avoid encoding `id`.
     enum CodingKeys: String, CodingKey {
+        case type
         case name
         case nameTranslated
         case authorSurname
@@ -57,6 +83,7 @@ struct Globe: Identifiable, Equatable, Hashable, Codable {
     init(from decoder:Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         self.id = UUID()
+        self.type = try values.decode(GlobeType.self, forKey: .type)
         self.name = try values.decode(String.self, forKey: .name)
         self.nameTranslated = try? values.decode(String.self, forKey: .nameTranslated)
         self.authorSurname = try? values.decode(String.self, forKey: .authorSurname)
@@ -69,6 +96,7 @@ struct Globe: Identifiable, Equatable, Hashable, Codable {
     }
     
     init(
+        type: GlobeType = .earth,
         name: String = "Unnamed Globe",
         nameTranslated: String? = nil,
         authorSurname: String? = nil,
@@ -80,6 +108,7 @@ struct Globe: Identifiable, Equatable, Hashable, Codable {
         texture: String = ""
     ) {
         self.id = UUID()
+        self.type = type
         self.name = name
         self.nameTranslated = nameTranslated
         self.authorSurname = authorSurname

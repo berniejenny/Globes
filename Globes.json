@@ -8,7 +8,8 @@
     "name" : "Behaim’s Globe (Facsimile)",
     "nameTranslated" : "",
     "radius" : 0.2,
-    "texture" : "Behaim_12237025"
+    "texture" : "Behaim_12237025",
+    "type" : "earth"
   },
   {
     "authorFirstName" : "Edward",
@@ -18,7 +19,8 @@
     "infoURL" : "https:\/\/www.davidrumsey.com\/luna\/servlet\/s\/107x38",
     "name" : "A.D. 1498. The Discovery of America",
     "radius" : 0.15,
-    "texture" : "Quingeo"
+    "texture" : "Quingeo",
+    "type" : "earth"
   },
   {
     "authorFirstName" : "Urbano",
@@ -29,7 +31,8 @@
     "name" : "World Globe",
     "nameTranslated" : "Map of the World (60 sheets joined)",
     "radius" : 0.5,
-    "texture" : "UrbanoMonte_10130093"
+    "texture" : "UrbanoMonte_10130093",
+    "type" : "earth"
   },
   {
     "authorFirstName" : "Vincenzo",
@@ -40,7 +43,8 @@
     "name" : "Globo Della Terra",
     "nameTranslated" : "Terrestrial Globe",
     "radius" : 0.52,
-    "texture" : "Coronelli_Terrestrial_10070028"
+    "texture" : "Coronelli_Terrestrial_10070028",
+    "type" : "earth"
   },
   {
     "authorFirstName" : "Vincenzo",
@@ -51,7 +55,8 @@
     "name" : "Orbis Coelestis Typus",
     "nameTranslated" : "Celestial Globe",
     "radius" : 0.535,
-    "texture" : "Coronelli_Celestial_10570028"
+    "texture" : "Coronelli_Celestial_10570028",
+    "type" : "celestial"
   },
   {
     "authorFirstName" : "Ignace Gaston",
@@ -62,7 +67,8 @@
     "name" : "Globi Coelestis",
     "nameTranslated" : "Celestial Globe",
     "radius" : 0.3,
-    "texture" : "Pardies_Celestial_6900023"
+    "texture" : "Pardies_Celestial_6900023",
+    "type" : "celestial"
   },
   {
     "authorFirstName" : "Giovanni Maria",
@@ -72,7 +78,8 @@
     "infoURL" : "https:\/\/www.davidrumsey.com\/luna\/servlet\/s\/p3kd20",
     "name" : "Globo Terrestre",
     "radius" : 0.2,
-    "texture" : "Cassini_Terrestrial_5749000"
+    "texture" : "Cassini_Terrestrial_5749000",
+    "type" : "earth"
   },
   {
     "authorFirstName" : "Giovanni Maria",
@@ -83,7 +90,8 @@
     "name" : "Globo Celeste",
     "nameTranslated" : "Celestial Globe",
     "radius" : 0.2,
-    "texture" : "Cassini_Celestial_5750000"
+    "texture" : "Cassini_Celestial_5750000",
+    "type" : "celestial"
   },
   {
     "authorFirstName" : "Aaron",
@@ -94,7 +102,8 @@
     "name" : "World Globe",
     "nameTranslated" : "",
     "radius" : 0.32,
-    "texture" : "ArrowsmithWorldMercator"
+    "texture" : "ArrowsmithWorldMercator",
+    "type" : "earth"
   },
   {
     "authorFirstName" : "Hermann",
@@ -104,7 +113,8 @@
     "infoURL" : "https:\/\/www.davidrumsey.com\/luna\/servlet\/s\/sy8cu6",
     "name" : "World Globe",
     "radius" : 0.242,
-    "texture" : "BerghausWorld"
+    "texture" : "BerghausWorld",
+    "type" : "earth"
   },
   {
     "authorFirstName" : "Adolf",
@@ -115,7 +125,8 @@
     "name" : "Henze’s Erd-Globus",
     "nameTranslated" : "Terrestrial Globe",
     "radius" : 0.53,
-    "texture" : "HenzeWorld"
+    "texture" : "HenzeWorld",
+    "type" : "earth"
   },
   {
     "authorSurname" : "U.S. Army Air Forces",
@@ -124,7 +135,8 @@
     "infoURL" : "https:\/\/www.davidrumsey.com\/luna\/servlet\/s\/a915p4",
     "name" : "Aeronautical Planning Charts of the World ",
     "radius" : 1,
-    "texture" : "WorldAeronautical"
+    "texture" : "WorldAeronautical",
+    "type" : "earth"
   },
   {
     "authorFirstName" : "Marie; Bruce C.",
@@ -135,7 +147,8 @@
     "name" : "The Floor of the Oceans",
     "nameTranslated" : "",
     "radius" : 0.28,
-    "texture" : "TharpOceanFloor4black"
+    "texture" : "TharpOceanFloor4black",
+    "type" : "earth"
   },
   {
     "authorSurname" : "U.S. Geological Survey",
@@ -145,7 +158,8 @@
     "name" : "Geologic Globe of the Moon",
     "nameTranslated" : "",
     "radius" : 1,
-    "texture" : "MoonGeology"
+    "texture" : "MoonGeology",
+    "type" : "moon"
   },
   {
     "authorSurname" : "USGS Astrogeology Science Center",
@@ -154,7 +168,8 @@
     "infoURL" : "https:\/\/www.davidrumsey.com\/luna\/servlet\/s\/lb31rx",
     "name" : "Mars Viking Global Mosaic",
     "radius" : 0.3,
-    "texture" : "Mars_Viking_10594"
+    "texture" : "Mars_Viking_10594",
+    "type" : "planet"
   },
   {
     "authorSurname" : "USGS Astrogeology Science Center",
@@ -164,7 +179,8 @@
     "name" : "Jupiter Io Global Mosaic",
     "nameTranslated" : "",
     "radius" : 0.3,
-    "texture" : "Jupiter_IO"
+    "texture" : "Jupiter_IO",
+    "type" : "moonNonEarth"
   },
   {
     "authorSurname" : "Arizona State University LROC Team",
@@ -173,7 +189,8 @@
     "infoURL" : "https:\/\/www.davidrumsey.com\/luna\/servlet\/s\/7e2nxk",
     "name" : "Moon Global Morphology Mosaic",
     "radius" : 0.3,
-    "texture" : "MoonBW"
+    "texture" : "MoonBW",
+    "type" : "moon"
   },
   {
     "authorSurname" : "Johns Hopkins Applied Physics Laboratory",
@@ -182,7 +199,8 @@
     "infoURL" : "https:\/\/www.davidrumsey.com\/luna\/servlet\/s\/44g8e9",
     "name" : "Mercury Messenger Global Mosaic",
     "radius" : 0.3,
-    "texture" : "Mercury_10591"
+    "texture" : "Mercury_10591",
+    "type" : "planet"
   },
   {
     "authorFirstName" : "Peter",
@@ -193,7 +211,8 @@
     "name" : "Bellerby World Globe",
     "nameTranslated" : "",
     "radius" : 0.325,
-    "texture" : "Bellerby65cmSchminkeGagarin"
+    "texture" : "Bellerby65cmSchminkeGagarin",
+    "type" : "earth"
   },
   {
     "authorFirstName" : "Peter",
@@ -203,7 +222,8 @@
     "infoURL" : "https:\/\/www.davidrumsey.com\/luna\/servlet\/s\/l4x5h0",
     "name" : "Bellerby Prussian Blue World Globe",
     "radius" : 0.325,
-    "texture" : "Bellerby65cmPrussianBlue"
+    "texture" : "Bellerby65cmPrussianBlue",
+    "type" : "earth"
   },
   {
     "authorFirstName" : "Peter",
@@ -213,6 +233,7 @@
     "infoURL" : "https:\/\/www.davidrumsey.com\/luna\/servlet\/s\/daqe1k",
     "name" : "Bellerby Yellow Ochre World Globe",
     "radius" : 0.325,
-    "texture" : "Bellerby65cmYellowOchre"
+    "texture" : "Bellerby65cmYellowOchre",
+    "type" : "earth"
   }
 ]
