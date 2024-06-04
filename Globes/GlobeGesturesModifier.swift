@@ -37,6 +37,9 @@ private struct GlobeGesturesModifier: ViewModifier {
         /// Automatic rotation is paused during a gesture. `isRotationPausedAtStartOfGesture` remembers whether the rotation was paused before the gesture started.
         var isRotationPausedAtStartOfGesture: Bool? = nil
         
+        /// Location of drag gesture for rotating the globe around its rotation axis
+        var previousLocation3D: Point3D? = nil
+        
         /// Reset all temporary properties.
         mutating func endGesture() {
             isDragging = false
@@ -45,13 +48,12 @@ private struct GlobeGesturesModifier: ViewModifier {
             orientationAtGestureStart = nil
             cameraPositionAtGestureStart = nil
             isRotationPausedAtStartOfGesture = nil
+            previousLocation3D = nil
         }
     }
     
     /// Configuration of the manipulated globe.
     @Bindable var configuration: GlobeConfiguration
-    
-    @State private var previousTranslationWidth: Double = 0.0
     
     @State private var state = GlobeGestureState()
     
@@ -222,8 +224,7 @@ private struct GlobeGesturesModifier: ViewModifier {
             .targetedToEntity(configuration.globeEntity ?? Entity())
             .updating($yRotationState) { value, yRotationState, _ in
                 guard let entity = value.entity as? GlobeEntity else { return }
-                let value = value.gestureValue
-                switch value {
+                switch value.gestureValue {
                     // Long press begins.
                 case .first(true):
                     yRotationState = .pressing
@@ -235,17 +236,39 @@ private struct GlobeGesturesModifier: ViewModifier {
                     
                     guard let drag = drag else { return }
                     
-                    // Update the previous translation width for the next frame
                     Task { @MainActor in
-                        let deltaTranslation = drag.translation.width - previousTranslationWidth
-                        previousTranslationWidth = drag.translation.width
+                        if state.previousLocation3D == nil {
+                            state.previousLocation3D = drag.location3D
+                        }
+                        guard let previousLocation3D = state.previousLocation3D else { return }
+                        
+                        // Map the horizontal displacement of the hand to a rotation around the rotation axis of the globe.
+                        // Place a temporary entity at the center of the globe and orient its z-axis toward the camera and the
+                        // x-axis in horizontal direction. Then transform the hand gesture movement to the coordinate system
+                        // of the temporary entity and compute the horizontal delta since the last update.
+                        let cameraPosition = CameraTracker.shared.position
+                        var v2 = cameraPosition - entity.position
+                        v2.y = 0 // work in x-z plane
+                        v2 = normalize(v2)
+                        let rotation = simd_quatf(from: [0, 0, 1], to: v2) // have z-axis point at the camera
+                        let rotatedEntity = Entity()
+                        rotatedEntity.position = entity.position
+                        rotatedEntity.orientation = rotation
+                        
+                        // Transform hand gesture coordinates from the globe entity to the temporary entity.
+                        var location = value.convert(drag.location3D, from: .local, to: rotatedEntity)
+                        var previousLocation = value.convert(previousLocation3D, from: .local, to: rotatedEntity)
+                        location.y = 0
+                        previousLocation.y = 0
+                        let deltaTranslation = location.x - previousLocation.x
+                        state.previousLocation3D = drag.location3D
                         
                         // Adjust the amount of rotation per translation delta to the size of the globe.
                         // The angular rotation per translation delta is reduced for enlarged globes.
                         let scaleRadius = max(1, entity.meanScale) * configuration.globe.radius
-                        let rotationAmount = Float(deltaTranslation) * rotationSpeed / scaleRadius
+                        let rotationAmount = Float(deltaTranslation) * rotationSpeed / scaleRadius * 1000
                         
-                        // Create a rotation quaternion around the Y axis
+                        // A rotation quaternion around the globe's rotation axis.
                         configuration.orientation *= simd_quatf(angle: rotationAmount, axis: SIMD3<Float>(0, 1, 0))
                     }
                     
@@ -257,9 +280,6 @@ private struct GlobeGesturesModifier: ViewModifier {
             .onEnded { value in
                 switch value.gestureValue {
                 case .second(true, _):
-                    // Reset the previous translation width at the end of the gesture
-                    previousTranslationWidth = 0.0
-                    
                     // Reset the previous rotation state
                     if let paused = state.isRotationPausedAtStartOfGesture {
                         configuration.isRotationPaused = paused
