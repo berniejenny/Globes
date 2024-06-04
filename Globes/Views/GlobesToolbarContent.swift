@@ -56,7 +56,7 @@ struct GlobesToolbarContent: ToolbarContent {
     @ViewBuilder private var orientButton: some View {
         Button(action: {
             model.selectedGlobeConfiguration?.resetOrientation(animate: true)
-        } ) { @MainActor in
+        }) {
             Label("Orient the Globe", systemImage: "location.north.line")
                 .labelStyle(.iconOnly)
         }
