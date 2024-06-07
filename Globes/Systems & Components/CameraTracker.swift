@@ -36,18 +36,28 @@ public final class CameraTracker {
     
     // MARK: - Camera properties
     
-    /// The current position of the camera in world coordinate space in meter.
-    public var position: SIMD3<Float> {
-        guard let deviceAnchor = worldTrackingProvider.queryDeviceAnchor(atTimestamp: CACurrentMediaTime()) else {
-            return SIMD3<Float>.zero
+    /// The transform from the device to the origin coordinate system.
+    private var cameraTransform: Transform? {
+        guard WorldTrackingProvider.isSupported,
+              worldTrackingProvider.state == .running,
+              let deviceAnchor = worldTrackingProvider.queryDeviceAnchor(atTimestamp: CACurrentMediaTime()) else {
+            return nil
         }
-        let cameraTransform = Transform(matrix: deviceAnchor.originFromAnchorTransform)
-        let cameraPosition = cameraTransform.translation
-        return cameraPosition
+        return Transform(matrix: deviceAnchor.originFromAnchorTransform)
+    }
+    
+    /// The current position of the camera in world coordinate space in meter. Returns nil if there is no open immersive space.
+    public var position: SIMD3<Float>? {
+        cameraTransform?.translation
+    }
+    
+    /// The unary direction vector pointing from the camera in the direction of view in the world coordinate space. Returns nil if there is no open immersive space.
+    public var viewDirection: SIMD3<Float>? {
+        cameraTransform?.rotation.act(SIMD3(0, 0, -1))
     }
     
     // MARK: - Singleton Accessor
     
-    /// Retrieves the shared instance.
+    /// The shared instance.
     static let shared = CameraTracker()
 }

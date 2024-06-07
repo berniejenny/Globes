@@ -2,63 +2,76 @@
 //  GlobesApp.swift
 //  Globes
 //
-//  Created by Bernhard Jenny on 8/3/2024.
+//  Created by Bernhard Jenny on 2/5/2024.
 //
 
 import SwiftUI
 
 @main
 struct GlobesApp: App {
-    
-    /// Globes loaded from Globes.json in the app bundle
-    private let globes: [Globe]
+    @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
+    @Environment(\.openURL) private var openURL
     
     /// View model injected in environment.
     @State private var model = ViewModel()
-    
-    @State private var globeImmersionStyle: ImmersionStyle = .mixed
-    @State private var immersiveSpaceIsShown = false
-    
+        
     init() {
-        // Register custom components and systems
+        // register custom components and systems
         RotationComponent.registerComponent()
         RotationSystem.registerSystem()
+        GlobeBillboardComponent.registerComponent()
+        GlobeBillboardSystem.registerSystem()        
         
-        // load Globes.json
-        do {
-            let url = Bundle.main.url(forResource: "Globes", withExtension: "json")!
-            let data = try Data(contentsOf: url)
-            globes = try JSONDecoder().decode([Globe].self, from: data)
-        } catch {
-            fatalError("An error occurred when loading Globes.json from the bundle: \(error.localizedDescription)")
-        }
-        
-        // start camera tracking 
+        // start camera tracking
         CameraTracker.start()
     }
-        
+    
     var body: some Scene {
-        // window for selecting a globe and displaying information about a globe
         WindowGroup {
-            ContentView(globes: globes, immersiveSpaceIsShown: $immersiveSpaceIsShown)
-                .frame(minWidth: 900, maxWidth: 1300, minHeight: 600) // this defines min and max dimensions of the window
+            ContentView()
+                //.frame(minWidth: 500, minHeight: 330)
                 .environment(model)
         }
         .windowResizability(.contentSize) // window resizability is derived from window content
         
-        // immersive globe space
-        ImmersiveSpace(id: "ImmersiveGlobeSpace") {
-            if let configuration = model.selectedGlobeConfiguration {
-                ImmersiveGlobeView(configuration: configuration)
-                    .environment(model)
-                    .onDisappear {
-                        // Handle home button press that dismisses the immersive view.
-                        // No need to call dismissImmersiveSpace
-                        immersiveSpaceIsShown = false
-                        model.deselectGlobe()
+        WindowGroup(id: "info", for: UUID.self) { $globeId in
+            if let infoURL = model.globes.first(where: { $0.id == globeId })?.infoURL {
+                WebViewDecorated(url: infoURL)
+                    .ornament(attachmentAnchor: .scene(.bottom)) {
+                        Button("Open in Safari") { openURL(infoURL) }
+                        .padding()
+                        .glassBackgroundEffect()
                     }
+                    .frame(minWidth: 500)
             }
         }
-        .immersionStyle(selection: $globeImmersionStyle, in: .mixed)
+        .windowResizability(.contentSize) // window resizability is derived from window content
+                
+        ImmersiveSpace(id: "ImmersiveGlobeSpace") {
+            ImmersiveGlobeView()
+                .environment(model)
+                .onDisappear {
+                    // Handle home button press that dismisses the immersive view.
+                    // No need to call dismissImmersiveSpace
+                    model.immersiveSpaceIsShown = false
+                    model.hideAllGlobes()
+                    model.hidePanorama()
+                }
+        }
+        .immersionStyle(selection: immersionStyleBinding, in: .mixed, .progressive, .full)
+    }
+    
+    @MainActor
+    private var immersionStyleBinding: Binding<any ImmersionStyle> {
+        Binding(get: {
+            let showPanorama = model.showPanorama && model.panoramaEntity != nil
+            if showPanorama {
+                return model.panoramaImmersionStyle.immersionStyle
+            } else {
+                return .mixed
+            }
+        }, set: { _ in
+            // from the documentation: "Even though you provide a binding, the value changes only if you change it."
+        })
     }
 }

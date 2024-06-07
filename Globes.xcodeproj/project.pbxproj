@@ -7,30 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7D1C405D2BC35FBF00EFD84B /* WebViewDecorated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D1C405C2BC35FBF00EFD84B /* WebViewDecorated.swift */; };
-		7D1C405F2BC3621600EFD84B /* GlobesToolbarContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D1C405E2BC3621600EFD84B /* GlobesToolbarContent.swift */; };
-		7D4C40CF2BBF5FFB0041FADD /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4C40CE2BBF5FFB0041FADD /* Error.swift */; };
 		7D62945A2BC8ECE1006AB242 /* WorldAeronautical.heic in Resources */ = {isa = PBXBuildFile; fileRef = 7D6294592BC8ECE1006AB242 /* WorldAeronautical.heic */; };
 		7D62945C2BC8ED2D006AB242 /* MoonGeology.heic in Resources */ = {isa = PBXBuildFile; fileRef = 7D62945B2BC8ED2D006AB242 /* MoonGeology.heic */; };
 		7D6E110C2BA6C81C00C2BCD0 /* Pardies_Celestial_6900023.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11072BA6C81B00C2BCD0 /* Pardies_Celestial_6900023.jpg */; };
 		7D6E110D2BA6C81C00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg */; };
 		7D6E110E2BA6C81C00C2BCD0 /* TharpOceanFloor4black.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11092BA6C81B00C2BCD0 /* TharpOceanFloor4black.jpg */; };
 		7D6E11102BA6C81C00C2BCD0 /* Behaim_12237025.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E110B2BA6C81C00C2BCD0 /* Behaim_12237025.jpg */; };
-		7D7209212BDE61D900B700A5 /* AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7209202BDE61D900B700A5 /* AppStore.swift */; };
-		7D7464382BA3A0A600182871 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7464372BA3A0A600182871 /* ViewModel.swift */; };
 		7D74643A2BA3C16F00182871 /* ViewModel+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7464392BA3C16F00182871 /* ViewModel+Preview.swift */; };
-		7D760A372BB03AA0008DF619 /* CameraTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D760A362BB03AA0008DF619 /* CameraTracker.swift */; };
 		7D81B85D2BA123B5004C4477 /* Globes.json in Resources */ = {isa = PBXBuildFile; fileRef = 7D81B85C2BA123B5004C4477 /* Globes.json */; };
 		7D81B85F2BA13A53004C4477 /* UrbanoMonte_10130093.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D81B85E2BA13A53004C4477 /* UrbanoMonte_10130093.jpg */; };
-		7D81B86C2BA1B6E2004C4477 /* GlobeEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D81B86B2BA1B6E2004C4477 /* GlobeEntity.swift */; };
-		7D81B86E2BA1C5EC004C4477 /* RotationSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D81B86D2BA1C5EC004C4477 /* RotationSystem.swift */; };
 		7D8CD0DF2BA6CC630053B32D /* HenzeWorld.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D8CD0DD2BA6CC630053B32D /* HenzeWorld.jpg */; };
 		7D8CD0E02BA6CC630053B32D /* Cassini_Celestial_5750000.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D8CD0DE2BA6CC630053B32D /* Cassini_Celestial_5750000.jpg */; };
 		7D9614EA2BC66ED500A78DBB /* Coronelli_Terrestrial_10070028.heic in Resources */ = {isa = PBXBuildFile; fileRef = 7D9614E92BC66ED500A78DBB /* Coronelli_Terrestrial_10070028.heic */; };
 		7D9614EB2BC69A6D00A78DBB /* ArrowsmithWorldMercator.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CE92BC639C400A98073 /* ArrowsmithWorldMercator.jpg */; };
 		7D9614ED2BC69F6700A78DBB /* Globe+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE4FACF2BA2AEF600C4B637 /* Globe+Preview.swift */; };
 		7D9614EE2BC69FE500A78DBB /* Globes.json in Resources */ = {isa = PBXBuildFile; fileRef = 7D81B85C2BA123B5004C4477 /* Globes.json */; };
-		7DAF532A2B9D2D2B0037F5DF /* GlobeInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DAF53292B9D2D2B0037F5DF /* GlobeInfoView.swift */; };
 		7DBE6CE02BC637EE00A98073 /* Quingeo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CDF2BC637EE00A98073 /* Quingeo.jpg */; };
 		7DBE6CE22BC6387500A98073 /* MoonBW.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CE12BC6387500A98073 /* MoonBW.jpg */; };
 		7DBE6CE42BC6389E00A98073 /* Mercury_10591.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CE32BC6389E00A98073 /* Mercury_10591.jpg */; };
@@ -41,52 +32,76 @@
 		7DBE6CF22BC63BBA00A98073 /* Cassini_Terrestrial_5749000.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CF12BC63BBA00A98073 /* Cassini_Terrestrial_5749000.jpg */; };
 		7DBE6CF42BC63BEF00A98073 /* Coronelli_Celestial_10570028.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CF32BC63BEF00A98073 /* Coronelli_Celestial_10570028.jpg */; };
 		7DBE6CF62BC63C1700A98073 /* BerghausWorld.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7DBE6CF52BC63C1700A98073 /* BerghausWorld.jpg */; };
-		7DC757332BB24355003E6A53 /* ImmersivePreviewGlobeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC757322BB24355003E6A53 /* ImmersivePreviewGlobeView.swift */; };
+		7DCE1BDE2C12D48300234DB6 /* White.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 7DCE1BDC2C12D48300234DB6 /* White.skybox */; };
+		7DCE1BDF2C12D48300234DB6 /* Lamps.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 7DCE1BDD2C12D48300234DB6 /* Lamps.skybox */; };
+		7DCE1C102C12D50100234DB6 /* GlobeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BE02C12D4FF00234DB6 /* GlobeType.swift */; };
+		7DCE1C112C12D50100234DB6 /* AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BE12C12D50000234DB6 /* AppStore.swift */; };
+		7DCE1C122C12D50100234DB6 /* GlobeGesturesModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BE22C12D50000234DB6 /* GlobeGesturesModifier.swift */; };
+		7DCE1C132C12D50100234DB6 /* PanoramaGesturesModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BE32C12D50000234DB6 /* PanoramaGesturesModifier.swift */; };
+		7DCE1C142C12D50100234DB6 /* PanoramaImmersionStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BE52C12D50000234DB6 /* PanoramaImmersionStyle.swift */; };
+		7DCE1C152C12D50100234DB6 /* Globe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BE62C12D50000234DB6 /* Globe.swift */; };
+		7DCE1C162C12D50100234DB6 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BE72C12D50000234DB6 /* Error.swift */; };
+		7DCE1C172C12D50100234DB6 /* Lighting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BE82C12D50000234DB6 /* Lighting.swift */; };
+		7DCE1C182C12D50100234DB6 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BE92C12D50000234DB6 /* ViewModel.swift */; };
+		7DCE1C192C12D50100234DB6 /* CameraTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BEA2C12D50000234DB6 /* CameraTracker.swift */; };
+		7DCE1C1A2C12D50100234DB6 /* GlobeBillboardSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BEB2C12D50000234DB6 /* GlobeBillboardSystem.swift */; };
+		7DCE1C1B2C12D50100234DB6 /* RotationSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BEC2C12D50000234DB6 /* RotationSystem.swift */; };
+		7DCE1C1C2C12D50100234DB6 /* GlobeAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BEE2C12D50000234DB6 /* GlobeAttachmentView.swift */; };
+		7DCE1C1D2C12D50100234DB6 /* OnboardingAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BEF2C12D50000234DB6 /* OnboardingAttachmentView.swift */; };
+		7DCE1C1E2C12D50100234DB6 /* ButtonImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BF12C12D50000234DB6 /* ButtonImage.swift */; };
+		7DCE1C1F2C12D50100234DB6 /* DismissButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BF22C12D50000234DB6 /* DismissButton.swift */; };
+		7DCE1C202C12D50100234DB6 /* FavoriteGlobeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BF32C12D50000234DB6 /* FavoriteGlobeButton.swift */; };
+		7DCE1C212C12D50100234DB6 /* GlobeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BF42C12D50000234DB6 /* GlobeButton.swift */; };
+		7DCE1C222C12D50100234DB6 /* PanoramaButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BF52C12D50000234DB6 /* PanoramaButton.swift */; };
+		7DCE1C232C12D50100234DB6 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BF72C12D50000234DB6 /* AboutView.swift */; };
+		7DCE1C242C12D50100234DB6 /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BF82C12D50000234DB6 /* FavoritesView.swift */; };
+		7DCE1C252C12D50100234DB6 /* GalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BF92C12D50000234DB6 /* GalleryView.swift */; };
+		7DCE1C262C12D50100234DB6 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BFA2C12D50000234DB6 /* SearchView.swift */; };
+		7DCE1C272C12D50100234DB6 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BFB2C12D50000234DB6 /* SettingsView.swift */; };
+		7DCE1C282C12D50100234DB6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BFD2C12D50000234DB6 /* ContentView.swift */; };
+		7DCE1C292C12D50100234DB6 /* GaugeProgressStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BFE2C12D50000234DB6 /* GaugeProgressStyle.swift */; };
+		7DCE1C2A2C12D50100234DB6 /* GlobeSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BFF2C12D50000234DB6 /* GlobeSelectionView.swift */; };
+		7DCE1C2B2C12D50100234DB6 /* GlobesGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1C002C12D50000234DB6 /* GlobesGridView.swift */; };
+		7DCE1C2C2C12D50100234DB6 /* ImmersiveGlobeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1C012C12D50000234DB6 /* ImmersiveGlobeView.swift */; };
+		7DCE1C2D2C12D50100234DB6 /* ImmersivePreviewGlobeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1C022C12D50000234DB6 /* ImmersivePreviewGlobeView.swift */; };
+		7DCE1C2E2C12D50100234DB6 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1C032C12D50000234DB6 /* WebView.swift */; };
+		7DCE1C2F2C12D50100234DB6 /* WebViewDecorated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1C042C12D50000234DB6 /* WebViewDecorated.swift */; };
+		7DCE1C302C12D50100234DB6 /* GlobesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1C062C12D50000234DB6 /* GlobesApp.swift */; };
+		7DCE1C312C12D50100234DB6 /* CollisionBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1C072C12D50000234DB6 /* CollisionBox.swift */; };
+		7DCE1C322C12D50100234DB6 /* GlobeEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1C082C12D50000234DB6 /* GlobeEntity.swift */; };
+		7DCE1C332C12D50100234DB6 /* HeadEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1C092C12D50000234DB6 /* HeadEntity.swift */; };
+		7DCE1C342C12D50100234DB6 /* ImageBasedLightSourceEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1C0A2C12D50000234DB6 /* ImageBasedLightSourceEntity.swift */; };
+		7DCE1C352C12D50100234DB6 /* PanoramaEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1C0B2C12D50000234DB6 /* PanoramaEntity.swift */; };
+		7DCE1C362C12D50100234DB6 /* PreviewGlobeEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1C0C2C12D50000234DB6 /* PreviewGlobeEntity.swift */; };
+		7DCE1C372C12D50100234DB6 /* ResourceLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1C0D2C12D50000234DB6 /* ResourceLoader.swift */; };
+		7DCE1C382C12D50100234DB6 /* GlobeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1C0F2C12D50100234DB6 /* GlobeConfiguration.swift */; };
+		7DCE1C392C12D50900234DB6 /* Globe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BE62C12D50000234DB6 /* Globe.swift */; };
+		7DCE1C3B2C12DADB00234DB6 /* GlobeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCE1BE02C12D4FF00234DB6 /* GlobeType.swift */; };
 		7DCFBEF92BA4203B00B4F27C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DCFBEF82BA4203B00B4F27C /* Assets.xcassets */; };
 		7DCFBEFC2BA4203B00B4F27C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DCFBEFB2BA4203B00B4F27C /* Preview Assets.xcassets */; };
-		7DCFBF022BA420B100B4F27C /* Globe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DEAB05C2B9B0520004027B1 /* Globe.swift */; };
 		7DCFBF082BA420F400B4F27C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCFBF032BA420F400B4F27C /* ContentView.swift */; };
 		7DCFBF092BA420F400B4F27C /* GlobesMetaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCFBF042BA420F400B4F27C /* GlobesMetaApp.swift */; };
 		7DCFBF0A2BA420F400B4F27C /* GlobesMetaDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCFBF052BA420F400B4F27C /* GlobesMetaDocument.swift */; };
 		7DCFBF0B2BA420F400B4F27C /* GlobeEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCFBF062BA420F400B4F27C /* GlobeEditorView.swift */; };
 		7DCFBF0C2BA420F400B4F27C /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 7DCFBF072BA420F400B4F27C /* Credits.rtf */; };
-		7DE4FACC2BA2989B00C4B637 /* GlobeGesturesModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE4FACB2BA2989B00C4B637 /* GlobeGesturesModifier.swift */; };
-		7DE4FACE2BA2AB1200C4B637 /* GlobeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE4FACD2BA2AB1200C4B637 /* GlobeConfiguration.swift */; };
 		7DE4FAD02BA2AEF600C4B637 /* Globe+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE4FACF2BA2AEF600C4B637 /* Globe+Preview.swift */; };
-		7DEAB04C2B9B04C2004027B1 /* GlobesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DEAB04B2B9B04C2004027B1 /* GlobesApp.swift */; };
-		7DEAB04E2B9B04C2004027B1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DEAB04D2B9B04C2004027B1 /* ContentView.swift */; };
-		7DEAB0502B9B04C2004027B1 /* ImmersiveGlobeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DEAB04F2B9B04C2004027B1 /* ImmersiveGlobeView.swift */; };
 		7DEAB0522B9B04C4004027B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DEAB0512B9B04C4004027B1 /* Assets.xcassets */; };
 		7DEAB0552B9B04C4004027B1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DEAB0542B9B04C4004027B1 /* Preview Assets.xcassets */; };
-		7DEAB05D2B9B0520004027B1 /* Globe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DEAB05C2B9B0520004027B1 /* Globe.swift */; };
-		7DEAB0612B9B1D55004027B1 /* GlobeSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DEAB0602B9B1D55004027B1 /* GlobeSelectionView.swift */; };
-		7DFE488D2BAA957600DE6DB4 /* IntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFE488C2BAA957600DE6DB4 /* IntroView.swift */; };
-		7DFE488F2BAAB76D00DE6DB4 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFE488E2BAAB76D00DE6DB4 /* AboutView.swift */; };
-		7DFE48912BAAF18000DE6DB4 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFE48902BAAF18000DE6DB4 /* WebView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7D1C405C2BC35FBF00EFD84B /* WebViewDecorated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewDecorated.swift; sourceTree = "<group>"; };
-		7D1C405E2BC3621600EFD84B /* GlobesToolbarContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobesToolbarContent.swift; sourceTree = "<group>"; };
-		7D4C40CE2BBF5FFB0041FADD /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		7D6294592BC8ECE1006AB242 /* WorldAeronautical.heic */ = {isa = PBXFileReference; lastKnownFileType = file; path = WorldAeronautical.heic; sourceTree = "<group>"; };
 		7D62945B2BC8ED2D006AB242 /* MoonGeology.heic */ = {isa = PBXFileReference; lastKnownFileType = file; path = MoonGeology.heic; sourceTree = "<group>"; };
 		7D6E11072BA6C81B00C2BCD0 /* Pardies_Celestial_6900023.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Pardies_Celestial_6900023.jpg; sourceTree = "<group>"; };
 		7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Bellerby65cmSchminkeGagarin.jpg; sourceTree = "<group>"; };
 		7D6E11092BA6C81B00C2BCD0 /* TharpOceanFloor4black.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = TharpOceanFloor4black.jpg; sourceTree = "<group>"; };
 		7D6E110B2BA6C81C00C2BCD0 /* Behaim_12237025.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Behaim_12237025.jpg; sourceTree = "<group>"; };
-		7D7209202BDE61D900B700A5 /* AppStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStore.swift; sourceTree = "<group>"; };
-		7D7464372BA3A0A600182871 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		7D7464392BA3C16F00182871 /* ViewModel+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModel+Preview.swift"; sourceTree = "<group>"; };
-		7D760A362BB03AA0008DF619 /* CameraTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraTracker.swift; sourceTree = "<group>"; };
 		7D81B85C2BA123B5004C4477 /* Globes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Globes.json; sourceTree = SOURCE_ROOT; };
 		7D81B85E2BA13A53004C4477 /* UrbanoMonte_10130093.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = UrbanoMonte_10130093.jpg; sourceTree = "<group>"; };
-		7D81B86B2BA1B6E2004C4477 /* GlobeEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobeEntity.swift; sourceTree = "<group>"; };
-		7D81B86D2BA1C5EC004C4477 /* RotationSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RotationSystem.swift; sourceTree = "<group>"; };
 		7D8CD0DD2BA6CC630053B32D /* HenzeWorld.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = HenzeWorld.jpg; sourceTree = "<group>"; };
 		7D8CD0DE2BA6CC630053B32D /* Cassini_Celestial_5750000.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Cassini_Celestial_5750000.jpg; sourceTree = "<group>"; };
 		7D9614E92BC66ED500A78DBB /* Coronelli_Terrestrial_10070028.heic */ = {isa = PBXFileReference; lastKnownFileType = file; path = Coronelli_Terrestrial_10070028.heic; sourceTree = "<group>"; };
-		7DAF53292B9D2D2B0037F5DF /* GlobeInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobeInfoView.swift; sourceTree = "<group>"; };
 		7DBE6CDF2BC637EE00A98073 /* Quingeo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Quingeo.jpg; sourceTree = "<group>"; };
 		7DBE6CE12BC6387500A98073 /* MoonBW.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = MoonBW.jpg; sourceTree = "<group>"; };
 		7DBE6CE32BC6389E00A98073 /* Mercury_10591.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Mercury_10591.jpg; sourceTree = "<group>"; };
@@ -98,7 +113,49 @@
 		7DBE6CF12BC63BBA00A98073 /* Cassini_Terrestrial_5749000.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Cassini_Terrestrial_5749000.jpg; sourceTree = "<group>"; };
 		7DBE6CF32BC63BEF00A98073 /* Coronelli_Celestial_10570028.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Coronelli_Celestial_10570028.jpg; sourceTree = "<group>"; };
 		7DBE6CF52BC63C1700A98073 /* BerghausWorld.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = BerghausWorld.jpg; sourceTree = "<group>"; };
-		7DC757322BB24355003E6A53 /* ImmersivePreviewGlobeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersivePreviewGlobeView.swift; sourceTree = "<group>"; };
+		7DCE1BDC2C12D48300234DB6 /* White.skybox */ = {isa = PBXFileReference; lastKnownFileType = file.skybox; path = White.skybox; sourceTree = "<group>"; };
+		7DCE1BDD2C12D48300234DB6 /* Lamps.skybox */ = {isa = PBXFileReference; lastKnownFileType = file.skybox; path = Lamps.skybox; sourceTree = "<group>"; };
+		7DCE1BE02C12D4FF00234DB6 /* GlobeType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobeType.swift; sourceTree = "<group>"; };
+		7DCE1BE12C12D50000234DB6 /* AppStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStore.swift; sourceTree = "<group>"; };
+		7DCE1BE22C12D50000234DB6 /* GlobeGesturesModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobeGesturesModifier.swift; sourceTree = "<group>"; };
+		7DCE1BE32C12D50000234DB6 /* PanoramaGesturesModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PanoramaGesturesModifier.swift; sourceTree = "<group>"; };
+		7DCE1BE52C12D50000234DB6 /* PanoramaImmersionStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PanoramaImmersionStyle.swift; sourceTree = "<group>"; };
+		7DCE1BE62C12D50000234DB6 /* Globe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Globe.swift; sourceTree = "<group>"; };
+		7DCE1BE72C12D50000234DB6 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
+		7DCE1BE82C12D50000234DB6 /* Lighting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lighting.swift; sourceTree = "<group>"; };
+		7DCE1BE92C12D50000234DB6 /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		7DCE1BEA2C12D50000234DB6 /* CameraTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraTracker.swift; sourceTree = "<group>"; };
+		7DCE1BEB2C12D50000234DB6 /* GlobeBillboardSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobeBillboardSystem.swift; sourceTree = "<group>"; };
+		7DCE1BEC2C12D50000234DB6 /* RotationSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RotationSystem.swift; sourceTree = "<group>"; };
+		7DCE1BEE2C12D50000234DB6 /* GlobeAttachmentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobeAttachmentView.swift; sourceTree = "<group>"; };
+		7DCE1BEF2C12D50000234DB6 /* OnboardingAttachmentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingAttachmentView.swift; sourceTree = "<group>"; };
+		7DCE1BF12C12D50000234DB6 /* ButtonImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonImage.swift; sourceTree = "<group>"; };
+		7DCE1BF22C12D50000234DB6 /* DismissButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DismissButton.swift; sourceTree = "<group>"; };
+		7DCE1BF32C12D50000234DB6 /* FavoriteGlobeButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteGlobeButton.swift; sourceTree = "<group>"; };
+		7DCE1BF42C12D50000234DB6 /* GlobeButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobeButton.swift; sourceTree = "<group>"; };
+		7DCE1BF52C12D50000234DB6 /* PanoramaButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PanoramaButton.swift; sourceTree = "<group>"; };
+		7DCE1BF72C12D50000234DB6 /* AboutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		7DCE1BF82C12D50000234DB6 /* FavoritesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritesView.swift; sourceTree = "<group>"; };
+		7DCE1BF92C12D50000234DB6 /* GalleryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryView.swift; sourceTree = "<group>"; };
+		7DCE1BFA2C12D50000234DB6 /* SearchView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		7DCE1BFB2C12D50000234DB6 /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		7DCE1BFD2C12D50000234DB6 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		7DCE1BFE2C12D50000234DB6 /* GaugeProgressStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GaugeProgressStyle.swift; sourceTree = "<group>"; };
+		7DCE1BFF2C12D50000234DB6 /* GlobeSelectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobeSelectionView.swift; sourceTree = "<group>"; };
+		7DCE1C002C12D50000234DB6 /* GlobesGridView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobesGridView.swift; sourceTree = "<group>"; };
+		7DCE1C012C12D50000234DB6 /* ImmersiveGlobeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImmersiveGlobeView.swift; sourceTree = "<group>"; };
+		7DCE1C022C12D50000234DB6 /* ImmersivePreviewGlobeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImmersivePreviewGlobeView.swift; sourceTree = "<group>"; };
+		7DCE1C032C12D50000234DB6 /* WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
+		7DCE1C042C12D50000234DB6 /* WebViewDecorated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewDecorated.swift; sourceTree = "<group>"; };
+		7DCE1C062C12D50000234DB6 /* GlobesApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobesApp.swift; sourceTree = "<group>"; };
+		7DCE1C072C12D50000234DB6 /* CollisionBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollisionBox.swift; sourceTree = "<group>"; };
+		7DCE1C082C12D50000234DB6 /* GlobeEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobeEntity.swift; sourceTree = "<group>"; };
+		7DCE1C092C12D50000234DB6 /* HeadEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeadEntity.swift; sourceTree = "<group>"; };
+		7DCE1C0A2C12D50000234DB6 /* ImageBasedLightSourceEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageBasedLightSourceEntity.swift; sourceTree = "<group>"; };
+		7DCE1C0B2C12D50000234DB6 /* PanoramaEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PanoramaEntity.swift; sourceTree = "<group>"; };
+		7DCE1C0C2C12D50000234DB6 /* PreviewGlobeEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewGlobeEntity.swift; sourceTree = "<group>"; };
+		7DCE1C0D2C12D50000234DB6 /* ResourceLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceLoader.swift; sourceTree = "<group>"; };
+		7DCE1C0F2C12D50100234DB6 /* GlobeConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobeConfiguration.swift; sourceTree = "<group>"; };
 		7DCFBEF02BA4203900B4F27C /* Globes Meta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Globes Meta.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DCFBEF82BA4203B00B4F27C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7DCFBEFB2BA4203B00B4F27C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -109,21 +166,11 @@
 		7DCFBF052BA420F400B4F27C /* GlobesMetaDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobesMetaDocument.swift; sourceTree = "<group>"; };
 		7DCFBF062BA420F400B4F27C /* GlobeEditorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobeEditorView.swift; sourceTree = "<group>"; };
 		7DCFBF072BA420F400B4F27C /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
-		7DE4FACB2BA2989B00C4B637 /* GlobeGesturesModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobeGesturesModifier.swift; sourceTree = "<group>"; };
-		7DE4FACD2BA2AB1200C4B637 /* GlobeConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobeConfiguration.swift; sourceTree = "<group>"; };
 		7DE4FACF2BA2AEF600C4B637 /* Globe+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Globe+Preview.swift"; sourceTree = "<group>"; };
 		7DEAB0442B9B04C2004027B1 /* Globes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Globes.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		7DEAB04B2B9B04C2004027B1 /* GlobesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobesApp.swift; sourceTree = "<group>"; };
-		7DEAB04D2B9B04C2004027B1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		7DEAB04F2B9B04C2004027B1 /* ImmersiveGlobeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersiveGlobeView.swift; sourceTree = "<group>"; };
 		7DEAB0512B9B04C4004027B1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7DEAB0542B9B04C4004027B1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		7DEAB0562B9B04C4004027B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7DEAB05C2B9B0520004027B1 /* Globe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Globe.swift; sourceTree = "<group>"; };
-		7DEAB0602B9B1D55004027B1 /* GlobeSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobeSelectionView.swift; sourceTree = "<group>"; };
-		7DFE488C2BAA957600DE6DB4 /* IntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroView.swift; sourceTree = "<group>"; };
-		7DFE488E2BAAB76D00DE6DB4 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
-		7DFE48902BAAF18000DE6DB4 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,32 +191,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		7D487E7B2BAB97CA00F8660A /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				7DEAB04D2B9B04C2004027B1 /* ContentView.swift */,
-				7DFE488E2BAAB76D00DE6DB4 /* AboutView.swift */,
-				7DAF53292B9D2D2B0037F5DF /* GlobeInfoView.swift */,
-				7DEAB0602B9B1D55004027B1 /* GlobeSelectionView.swift */,
-				7D1C405E2BC3621600EFD84B /* GlobesToolbarContent.swift */,
-				7DEAB04F2B9B04C2004027B1 /* ImmersiveGlobeView.swift */,
-				7DC757322BB24355003E6A53 /* ImmersivePreviewGlobeView.swift */,
-				7DFE488C2BAA957600DE6DB4 /* IntroView.swift */,
-				7DFE48902BAAF18000DE6DB4 /* WebView.swift */,
-				7D1C405C2BC35FBF00EFD84B /* WebViewDecorated.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		7D487E7C2BAB983200F8660A /* Entities & Components */ = {
-			isa = PBXGroup;
-			children = (
-				7D81B86B2BA1B6E2004C4477 /* GlobeEntity.swift */,
-				7D81B86D2BA1C5EC004C4477 /* RotationSystem.swift */,
-			);
-			path = "Entities & Components";
-			sourceTree = "<group>";
-		};
 		7D81B8602BA13D67004C4477 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
@@ -196,6 +217,103 @@
 				7D6294592BC8ECE1006AB242 /* WorldAeronautical.heic */,
 			);
 			path = Textures;
+			sourceTree = "<group>";
+		};
+		7DCE1BE42C12D50000234DB6 /* Gestures */ = {
+			isa = PBXGroup;
+			children = (
+				7DCE1BE22C12D50000234DB6 /* GlobeGesturesModifier.swift */,
+				7DCE1BE32C12D50000234DB6 /* PanoramaGesturesModifier.swift */,
+			);
+			path = Gestures;
+			sourceTree = "<group>";
+		};
+		7DCE1BED2C12D50000234DB6 /* Systems & Components */ = {
+			isa = PBXGroup;
+			children = (
+				7DCE1BEA2C12D50000234DB6 /* CameraTracker.swift */,
+				7DCE1BEB2C12D50000234DB6 /* GlobeBillboardSystem.swift */,
+				7DCE1BEC2C12D50000234DB6 /* RotationSystem.swift */,
+			);
+			path = "Systems & Components";
+			sourceTree = "<group>";
+		};
+		7DCE1BF02C12D50000234DB6 /* Attachment Views */ = {
+			isa = PBXGroup;
+			children = (
+				7DCE1BEE2C12D50000234DB6 /* GlobeAttachmentView.swift */,
+				7DCE1BEF2C12D50000234DB6 /* OnboardingAttachmentView.swift */,
+			);
+			path = "Attachment Views";
+			sourceTree = "<group>";
+		};
+		7DCE1BF62C12D50000234DB6 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				7DCE1BF12C12D50000234DB6 /* ButtonImage.swift */,
+				7DCE1BF22C12D50000234DB6 /* DismissButton.swift */,
+				7DCE1BF32C12D50000234DB6 /* FavoriteGlobeButton.swift */,
+				7DCE1BF42C12D50000234DB6 /* GlobeButton.swift */,
+				7DCE1BF52C12D50000234DB6 /* PanoramaButton.swift */,
+			);
+			path = Buttons;
+			sourceTree = "<group>";
+		};
+		7DCE1BFC2C12D50000234DB6 /* Tabs */ = {
+			isa = PBXGroup;
+			children = (
+				7DCE1BF72C12D50000234DB6 /* AboutView.swift */,
+				7DCE1BF82C12D50000234DB6 /* FavoritesView.swift */,
+				7DCE1BF92C12D50000234DB6 /* GalleryView.swift */,
+				7DCE1BFA2C12D50000234DB6 /* SearchView.swift */,
+				7DCE1BFB2C12D50000234DB6 /* SettingsView.swift */,
+			);
+			path = Tabs;
+			sourceTree = "<group>";
+		};
+		7DCE1C052C12D50000234DB6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				7DCE1BF02C12D50000234DB6 /* Attachment Views */,
+				7DCE1BF62C12D50000234DB6 /* Buttons */,
+				7DCE1BFC2C12D50000234DB6 /* Tabs */,
+				7DCE1BFD2C12D50000234DB6 /* ContentView.swift */,
+				7DCE1BFE2C12D50000234DB6 /* GaugeProgressStyle.swift */,
+				7DCE1BFF2C12D50000234DB6 /* GlobeSelectionView.swift */,
+				7DCE1C002C12D50000234DB6 /* GlobesGridView.swift */,
+				7DCE1C012C12D50000234DB6 /* ImmersiveGlobeView.swift */,
+				7DCE1C022C12D50000234DB6 /* ImmersivePreviewGlobeView.swift */,
+				7DCE1C032C12D50000234DB6 /* WebView.swift */,
+				7DCE1C042C12D50000234DB6 /* WebViewDecorated.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		7DCE1C0E2C12D50000234DB6 /* Entities & Components */ = {
+			isa = PBXGroup;
+			children = (
+				7DCE1C072C12D50000234DB6 /* CollisionBox.swift */,
+				7DCE1C082C12D50000234DB6 /* GlobeEntity.swift */,
+				7DCE1C092C12D50000234DB6 /* HeadEntity.swift */,
+				7DCE1C0A2C12D50000234DB6 /* ImageBasedLightSourceEntity.swift */,
+				7DCE1C0B2C12D50000234DB6 /* PanoramaEntity.swift */,
+				7DCE1C0C2C12D50000234DB6 /* PreviewGlobeEntity.swift */,
+				7DCE1C0D2C12D50000234DB6 /* ResourceLoader.swift */,
+			);
+			path = "Entities & Components";
+			sourceTree = "<group>";
+		};
+		7DCE1C3A2C12D64900234DB6 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				7DCE1BE62C12D50000234DB6 /* Globe.swift */,
+				7DCE1C0F2C12D50100234DB6 /* GlobeConfiguration.swift */,
+				7DCE1BE02C12D4FF00234DB6 /* GlobeType.swift */,
+				7DCE1BE82C12D50000234DB6 /* Lighting.swift */,
+				7DCE1BE52C12D50000234DB6 /* PanoramaImmersionStyle.swift */,
+				7DCE1BE92C12D50000234DB6 /* ViewModel.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		7DCFBEF12BA4203900B4F27C /* Globes Meta */ = {
@@ -243,16 +361,16 @@
 		7DEAB0462B9B04C2004027B1 /* Globes */ = {
 			isa = PBXGroup;
 			children = (
-				7DEAB05C2B9B0520004027B1 /* Globe.swift */,
-				7DE4FACD2BA2AB1200C4B637 /* GlobeConfiguration.swift */,
-				7D7464372BA3A0A600182871 /* ViewModel.swift */,
-				7DEAB04B2B9B04C2004027B1 /* GlobesApp.swift */,
-				7D760A362BB03AA0008DF619 /* CameraTracker.swift */,
-				7DE4FACB2BA2989B00C4B637 /* GlobeGesturesModifier.swift */,
-				7D4C40CE2BBF5FFB0041FADD /* Error.swift */,
-				7D7209202BDE61D900B700A5 /* AppStore.swift */,
-				7D487E7B2BAB97CA00F8660A /* Views */,
-				7D487E7C2BAB983200F8660A /* Entities & Components */,
+				7DCE1C062C12D50000234DB6 /* GlobesApp.swift */,
+				7DCE1C3A2C12D64900234DB6 /* Model */,
+				7DCE1C0E2C12D50000234DB6 /* Entities & Components */,
+				7DCE1BE42C12D50000234DB6 /* Gestures */,
+				7DCE1BED2C12D50000234DB6 /* Systems & Components */,
+				7DCE1C052C12D50000234DB6 /* Views */,
+				7DCE1BE12C12D50000234DB6 /* AppStore.swift */,
+				7DCE1BE72C12D50000234DB6 /* Error.swift */,
+				7DCE1BDD2C12D48300234DB6 /* Lamps.skybox */,
+				7DCE1BDC2C12D48300234DB6 /* White.skybox */,
 				7DEAB0512B9B04C4004027B1 /* Assets.xcassets */,
 				7DEAB0562B9B04C4004027B1 /* Info.plist */,
 				7D81B85C2BA123B5004C4477 /* Globes.json */,
@@ -379,6 +497,7 @@
 				7D9614EA2BC66ED500A78DBB /* Coronelli_Terrestrial_10070028.heic in Resources */,
 				7DEAB0522B9B04C4004027B1 /* Assets.xcassets in Resources */,
 				7D81B85F2BA13A53004C4477 /* UrbanoMonte_10130093.jpg in Resources */,
+				7DCE1BDF2C12D48300234DB6 /* Lamps.skybox in Resources */,
 				7D62945C2BC8ED2D006AB242 /* MoonGeology.heic in Resources */,
 				7D6E110E2BA6C81C00C2BCD0 /* TharpOceanFloor4black.jpg in Resources */,
 				7D6E110D2BA6C81C00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg in Resources */,
@@ -386,6 +505,7 @@
 				7D9614EB2BC69A6D00A78DBB /* ArrowsmithWorldMercator.jpg in Resources */,
 				7DBE6CF02BC63B2F00A98073 /* Bellerby65cmYellowOchre.jpg in Resources */,
 				7DBE6CE82BC6395000A98073 /* Jupiter_IO.jpg in Resources */,
+				7DCE1BDE2C12D48300234DB6 /* White.skybox in Resources */,
 				7DBE6CE62BC638EB00A98073 /* Mars_Viking_10594.jpg in Resources */,
 				7DBE6CE02BC637EE00A98073 /* Quingeo.jpg in Resources */,
 			);
@@ -401,9 +521,10 @@
 				7D9614ED2BC69F6700A78DBB /* Globe+Preview.swift in Sources */,
 				7DCFBF092BA420F400B4F27C /* GlobesMetaApp.swift in Sources */,
 				7DCFBF0B2BA420F400B4F27C /* GlobeEditorView.swift in Sources */,
+				7DCE1C392C12D50900234DB6 /* Globe.swift in Sources */,
 				7DCFBF0A2BA420F400B4F27C /* GlobesMetaDocument.swift in Sources */,
+				7DCE1C3B2C12DADB00234DB6 /* GlobeType.swift in Sources */,
 				7DCFBF082BA420F400B4F27C /* ContentView.swift in Sources */,
-				7DCFBF022BA420B100B4F27C /* Globe.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,28 +532,49 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D1C405F2BC3621600EFD84B /* GlobesToolbarContent.swift in Sources */,
-				7D81B86C2BA1B6E2004C4477 /* GlobeEntity.swift in Sources */,
-				7DFE48912BAAF18000DE6DB4 /* WebView.swift in Sources */,
-				7DEAB0612B9B1D55004027B1 /* GlobeSelectionView.swift in Sources */,
-				7D760A372BB03AA0008DF619 /* CameraTracker.swift in Sources */,
-				7DEAB04E2B9B04C2004027B1 /* ContentView.swift in Sources */,
-				7DAF532A2B9D2D2B0037F5DF /* GlobeInfoView.swift in Sources */,
-				7DFE488F2BAAB76D00DE6DB4 /* AboutView.swift in Sources */,
-				7DE4FACC2BA2989B00C4B637 /* GlobeGesturesModifier.swift in Sources */,
-				7D7209212BDE61D900B700A5 /* AppStore.swift in Sources */,
+				7DCE1C1D2C12D50100234DB6 /* OnboardingAttachmentView.swift in Sources */,
+				7DCE1C202C12D50100234DB6 /* FavoriteGlobeButton.swift in Sources */,
+				7DCE1C312C12D50100234DB6 /* CollisionBox.swift in Sources */,
+				7DCE1C352C12D50100234DB6 /* PanoramaEntity.swift in Sources */,
+				7DCE1C232C12D50100234DB6 /* AboutView.swift in Sources */,
+				7DCE1C1E2C12D50100234DB6 /* ButtonImage.swift in Sources */,
+				7DCE1C342C12D50100234DB6 /* ImageBasedLightSourceEntity.swift in Sources */,
+				7DCE1C322C12D50100234DB6 /* GlobeEntity.swift in Sources */,
 				7DE4FAD02BA2AEF600C4B637 /* Globe+Preview.swift in Sources */,
-				7D1C405D2BC35FBF00EFD84B /* WebViewDecorated.swift in Sources */,
-				7D81B86E2BA1C5EC004C4477 /* RotationSystem.swift in Sources */,
-				7DFE488D2BAA957600DE6DB4 /* IntroView.swift in Sources */,
-				7DEAB04C2B9B04C2004027B1 /* GlobesApp.swift in Sources */,
-				7DEAB0502B9B04C2004027B1 /* ImmersiveGlobeView.swift in Sources */,
-				7DEAB05D2B9B0520004027B1 /* Globe.swift in Sources */,
-				7D7464382BA3A0A600182871 /* ViewModel.swift in Sources */,
-				7DC757332BB24355003E6A53 /* ImmersivePreviewGlobeView.swift in Sources */,
-				7DE4FACE2BA2AB1200C4B637 /* GlobeConfiguration.swift in Sources */,
+				7DCE1C222C12D50100234DB6 /* PanoramaButton.swift in Sources */,
+				7DCE1C2A2C12D50100234DB6 /* GlobeSelectionView.swift in Sources */,
+				7DCE1C362C12D50100234DB6 /* PreviewGlobeEntity.swift in Sources */,
+				7DCE1C172C12D50100234DB6 /* Lighting.swift in Sources */,
+				7DCE1C252C12D50100234DB6 /* GalleryView.swift in Sources */,
+				7DCE1C102C12D50100234DB6 /* GlobeType.swift in Sources */,
+				7DCE1C332C12D50100234DB6 /* HeadEntity.swift in Sources */,
+				7DCE1C182C12D50100234DB6 /* ViewModel.swift in Sources */,
+				7DCE1C1F2C12D50100234DB6 /* DismissButton.swift in Sources */,
+				7DCE1C302C12D50100234DB6 /* GlobesApp.swift in Sources */,
 				7D74643A2BA3C16F00182871 /* ViewModel+Preview.swift in Sources */,
-				7D4C40CF2BBF5FFB0041FADD /* Error.swift in Sources */,
+				7DCE1C372C12D50100234DB6 /* ResourceLoader.swift in Sources */,
+				7DCE1C242C12D50100234DB6 /* FavoritesView.swift in Sources */,
+				7DCE1C212C12D50100234DB6 /* GlobeButton.swift in Sources */,
+				7DCE1C292C12D50100234DB6 /* GaugeProgressStyle.swift in Sources */,
+				7DCE1C282C12D50100234DB6 /* ContentView.swift in Sources */,
+				7DCE1C2D2C12D50100234DB6 /* ImmersivePreviewGlobeView.swift in Sources */,
+				7DCE1C132C12D50100234DB6 /* PanoramaGesturesModifier.swift in Sources */,
+				7DCE1C262C12D50100234DB6 /* SearchView.swift in Sources */,
+				7DCE1C1C2C12D50100234DB6 /* GlobeAttachmentView.swift in Sources */,
+				7DCE1C382C12D50100234DB6 /* GlobeConfiguration.swift in Sources */,
+				7DCE1C2E2C12D50100234DB6 /* WebView.swift in Sources */,
+				7DCE1C1B2C12D50100234DB6 /* RotationSystem.swift in Sources */,
+				7DCE1C122C12D50100234DB6 /* GlobeGesturesModifier.swift in Sources */,
+				7DCE1C2B2C12D50100234DB6 /* GlobesGridView.swift in Sources */,
+				7DCE1C112C12D50100234DB6 /* AppStore.swift in Sources */,
+				7DCE1C142C12D50100234DB6 /* PanoramaImmersionStyle.swift in Sources */,
+				7DCE1C2F2C12D50100234DB6 /* WebViewDecorated.swift in Sources */,
+				7DCE1C2C2C12D50100234DB6 /* ImmersiveGlobeView.swift in Sources */,
+				7DCE1C162C12D50100234DB6 /* Error.swift in Sources */,
+				7DCE1C1A2C12D50100234DB6 /* GlobeBillboardSystem.swift in Sources */,
+				7DCE1C152C12D50100234DB6 /* Globe.swift in Sources */,
+				7DCE1C192C12D50100234DB6 /* CameraTracker.swift in Sources */,
+				7DCE1C272C12D50100234DB6 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -626,7 +768,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_ASSET_PATHS = "\"Globes/Preview Content\"";
 				DEVELOPMENT_TEAM = MD358F9757;
 				ENABLE_PREVIEWS = YES;
@@ -636,7 +778,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.davidrumseymapcollection.globes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
@@ -653,7 +795,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_ASSET_PATHS = "\"Globes/Preview Content\"";
 				DEVELOPMENT_TEAM = MD358F9757;
 				ENABLE_PREVIEWS = YES;
@@ -663,7 +805,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.davidrumseymapcollection.globes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
