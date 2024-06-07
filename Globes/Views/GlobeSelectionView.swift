@@ -10,187 +10,96 @@ import SwiftUI
 
 /// A view to select a globe displaying name, author and 3D model of a globe.
 struct GlobeSelectionView: View {
-    
-    /// The view model contains the currently selected globe.
-    @Environment(ViewModel.self) private var model
-    
-    /// The globe that can be selected by pinching this view
     let globe: Globe
     
-    /// Flag to show progress view while loading large globe texture
-    @State private var loadingTexture = false
+    @Environment(ViewModel.self) private var model
+    @Environment(\.openWindow) private var openWindow
+    @Environment(\.openImmersiveSpace) var openImmersiveSpaceAction
     
-    private static let globeViewSize: CGFloat = 100
-    private static let viewHeight = 1.1 * globeViewSize
-    private let cornerRadius: CGFloat = 20
+    @State private var editGlobe = false
+    
+    private let globeViewSize: Double = 100
+    private let viewHeight: Double = 130
+    private let viewMinWidth: Double = 300
+    private let cornerRadius: Double = 20
     
     /// Radius of preview globe in meter
 #warning("This could be derived from the view geometry size")
     // https://developer.apple.com/wwdc23/10080 at 14:45
     private let globeRadius: Float = 0.035
+
+    /// Value between 0 and 1 indicting the fraction of the view that is currently visible.
+    /// This is used to sink the preview globe into the view if the view is not fully visible.
+    var visibleFraction: Double
     
     var body: some View {
-        
         ZStack(alignment: .leading) {
-            // date, name and author
-            let date = globe.date ?? ""
             VStack(alignment: .leading) {
-                Text(date)
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                    .opacity(date.isEmpty ? 0 : 1)
                 Text(globe.name)
                     .font(.headline)
-                Text(globe.author)
+                    .padding(.top, 4)
+                Text(globe.authorAndDate)
                     .font(.callout)
                     .foregroundStyle(.secondary)
-                    .opacity(globe.author.isEmpty ? 0 : 1)
+                    .padding(.top, 1)
+                    .opacity(globe.authorAndDate.isEmpty == true ? 0 : 1)
+                Spacer()
             }
+            .padding(.top)
             .padding(.leading)
             
-            // progress view
-            HStack {
+            VStack {
                 Spacer()
-                
-                ZStack {
-//                    Button(action: { model.deselectGlobe() }) {
-//                        Label("Hide the Globe", systemImage: "arrow.down.forward.and.arrow.up.backward")
-//                            .labelStyle(.iconOnly)
-//                    }
-//                    .opacity(globeIsSelected && !loadingTexture ? 1 : 0)
-                    
-                    ProgressView()
-                        .padding()
-                        .glassBackgroundEffect()
-                        .offset(z: 20)
-                        .opacity(loadingTexture ? 1 : 0)
+                HStack {
+                    Spacer()
+                    Group {
+                        GlobeButton(globe: globe)
+                        PanoramaButton(globe: globe)
+                        FavoriteGlobeButton(globeId: globe.id)
+                    }
+                    .padding(8)
+                    Spacer()
                 }
-                .padding(.trailing, Self.globeViewSize + 20)
             }
+            .padding(.trailing, 50)
             
             // 3D preview globe
             HStack {
                 Spacer()
-                ImmersivePreviewGlobeView(globe: globe, radius: globeRadius)
-                .frame(width: Self.globeViewSize, height: Self.globeViewSize)
-                .scaledToFit()
-                .offset(z: Self.globeViewSize / 2)
+                ImmersivePreviewGlobeView(globe: globe, rotate: true, radius: globeRadius)
+                    .frame(width: globeViewSize, height: globeViewSize)
+                    .scaledToFit()
+                    .offset(z: globeZOffset)
+                    .animation(.default, value: model.hidePreviewGlobes)
+                    .padding(.trailing, 10)
+                    .onTapGesture(perform: showGlobe)
             }
         }
-        .frame(height: Self.viewHeight)
-        .background(.regularMaterial.opacity(globeIsSelected ? 0 : 1), in: RoundedRectangle(cornerRadius: cornerRadius))
-        .hoverEffect(isEnabled: !globeIsSelected)
+        .frame(height: viewHeight)
+        .frame(minWidth: viewMinWidth)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: cornerRadius))
         .glassBackgroundEffect(in: RoundedRectangle(cornerRadius: cornerRadius))
-        .onTapGesture(perform: loadGlobe)
     }
     
-    /// True if the globe that can be selected by this view is selected.
     @MainActor
-    private var globeIsSelected: Bool {
-        model.selectedGlobeConfiguration?.globe.id == globe.id
+    private var globeZOffset: Double {
+        if model.hidePreviewGlobes {
+            -globeViewSize * 0.55
+        } else {
+            globeViewSize * 0.5 * (visibleFraction * visibleFraction * visibleFraction * visibleFraction * 2 - 1)
+        }
     }
     
-    /// Load the globe in an async task and run a move-in  animation or an animation that resizes the previous globe.
-    private func loadGlobe() {
-        Task {
-            do {
-                await MainActor.run {
-                    // avoid loading the globe if it already exists
-                    guard !globeIsSelected else { return } // this exits this closure, but not the entire task
-                    
-                    // show progress view
-                    withAnimation { loadingTexture = true }
-                }
-                
-                let oldConfiguration = await model.selectedGlobeConfiguration
-                let configuration = await GlobeConfiguration(
-                    globe: globe,
-                    speed: GlobeConfiguration.defaultRotationSpeed,
-                    adjustRotationSpeedToSize: true,
-                    isRotationPaused: oldConfiguration?.isRotationPaused ?? false
-                )
-                
-                await MainActor.run {
-                    if let oldConfiguration {
-                        // Scale the old globe to the size of the new globe and orient the rotation axis vertically.
-                        // This transformation is animated while the new globe is loading.
-                        oldConfiguration.scaleAndAdjustDistanceToCamera(
-                            newScale: globe.radius / oldConfiguration.globe.radius,
-                            oldScale: oldConfiguration.scale,
-                            oldPosition: oldConfiguration.position,
-                            animate: true
-                        )
-                        if !oldConfiguration.isNorthOriented {
-                            oldConfiguration.resetOrientation(animate: true)
-                        }
-                    } else {
-                        // This is the first globe. Initialize model.selectedGlobeConfiguration, such that
-                        // an ImmersiveGlobeView is created while the globe is loading.
-                        // The view is needed for the move-in animation of the first globe.
-                        model.selectedGlobeConfiguration = configuration
-                    }
-                }
-                
-                // load the globe
-                let globeEntity = try await GlobeEntity(
-                    globe: globe,
-                    loadPreviewTexture: false,
-                    enableGestures: true,
-                    castsShadow: true,
-                    roughness: 0.4,
-                    clearcoat: 0.05
-                )
-
-                await MainActor.run {
-                    configuration.globeEntity = globeEntity
-                    if !globeIsSelected {
-                        AppStore.increaseGlobesCount(promptReview: false)
-                    }
-                    
-                    if let oldConfiguration {
-                        // Position the new globe relative to the previous globe.
-                        configuration.position(relativeTo: oldConfiguration)
-                        
-                        // Align the automatic rotation of the model entities.
-                        configuration.globeEntity?.modelOrientation = oldConfiguration.globeEntity?.modelOrientation
-                        
-                        // Align the manual rotation of the parent entities.
-                        configuration.orientation = oldConfiguration.orientation
-                        
-                        model.selectedGlobeConfiguration = configuration
-                    } else {
-                        // This is the first globe. Set the initial scale and position for a move-in animation.
-                        configuration.scale = 0
-                        configuration.positionRelativeToCamera(distanceToGlobe: 2)
-                        
-                        // Start the move-in animation.
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            configuration.animateTransform = true
-                            configuration.scale = 1
-                            configuration.positionRelativeToCamera(distanceToGlobe: 0.5)
-                        }
-                    }
-                    
-                    withAnimation { loadingTexture = false }
-                }
-                
-            } catch {
-                await MainActor.run {
-                    // Important: do not animate `loadingTexture` before the error dialog is shown.
-                    // As of VisionOS 1.1, animating `loadingTexture` with `withAnimation { loadingTexture = false }`
-                    // results in some preview globes not disappearing when the alert is shown.
-                    // This seems to be a bug in VisionOS; it happens with alerts and sheets.
-                    loadingTexture = false
-                    model.errorToShowInAlert = error
-                }
-            }
+    private func showGlobe() {
+        Task { @MainActor in
+            let _ = await model.show(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
         }
     }
 }
 
 #if DEBUG
 #Preview {
-    GlobeSelectionView(globe: Globe.preview)
+    GlobeSelectionView(globe: Globe.editablePreview, visibleFraction: 1)
         .frame(width: 500)
         .environment(ViewModel.preview)
 }

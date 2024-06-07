@@ -7,14 +7,13 @@
 
 import SwiftUI
 
-/// A `WebView` for displaying a webpage about the currently selected globe.
+/// A `WebView` for displaying a webpage .
 struct WebViewDecorated: View {
-    @Environment(ViewModel.self) var model
+    let url: URL
+    
     @State private var webViewStatus: WebViewStatus = .loading
     
     var body: some View {
-        let url = model.webURL ?? URL(string: "https://www.davidrumsey.com")!
-        
         ZStack {
             WebView(url: url, status: $webViewStatus)
             
@@ -34,28 +33,12 @@ struct WebViewDecorated: View {
                 .glassBackgroundEffect(in: RoundedRectangle(cornerRadius: 20))
             }
         }
-        .ornament(attachmentAnchor: .scene(.bottom)) {
-            HStack {
-                Button(action: {
-                    model.webURL = nil
-                }) {
-                    Label("Go Back to Globes", systemImage: "chevron.left")
-                }
-                .labelStyle(.iconOnly)
-                .help("Go Back to Globes")
-                .padding()
-                
-                Link("Open in Safari", destination: url)
-                    .padding()
-            }
-            .glassBackgroundEffect()
-        }
     }
 }
 
 #if DEBUG
 #Preview(windowStyle: .automatic) {
-    WebViewDecorated()
+    WebViewDecorated(url: URL(string: "https://apple.com")!)
         .environment(ViewModel.preview)
 }
 #endif

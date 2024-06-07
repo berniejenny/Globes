@@ -16,6 +16,12 @@ extension Globe {
         }
         return globe
     }
+    
+    static var editablePreview: Globe {
+        var globe = preview
+        globe.textureURL = Bundle.main.url(forResource: "1024x512", withExtension: "jpg")
+        return globe
+    }
 
     /// Globes loaded from Globes.json
     static var previewGlobes: [Globe] {

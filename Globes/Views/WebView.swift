@@ -7,7 +7,7 @@ enum WebViewStatus {
     case failed(error: Error)
 }
 
-struct WebView: UIViewRepresentable {
+struct WebView: UIViewRepresentable {    
     let url: URL
     @Binding var status: WebViewStatus
     

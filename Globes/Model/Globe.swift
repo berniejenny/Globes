@@ -7,33 +7,11 @@
 
 import Foundation
 
-enum GlobeType: String, Codable, CaseIterable {
-    case earth
-    case celestial
-    case moon
-    case planet
-    case moonNonEarth
-    
-    var label: String {
-        switch self {
-        case .earth:
-            return "Earth"
-        case .celestial:
-            return "Celestial"
-        case .moon:
-            return "Moon"
-        case .planet:
-            return "Planet other than Earth"
-        case .moonNonEarth:
-            return "Moon of a planet other than Earth"
-        }
-    }
-}
-
-struct Globe: Identifiable, Equatable, Hashable, Codable {
+struct Globe: Identifiable, Hashable, Codable {
     
     private(set) var id: UUID
     
+    /// Type of globe.
     var type = GlobeType.earth
     
     /// Name of the globe in original language
@@ -66,8 +44,15 @@ struct Globe: Identifiable, Equatable, Hashable, Codable {
     /// Low resolution texture image without file extension is the texture file name + `_preview`
     var previewTexture: String { texture + "_preview" }
     
-    /// Custom coding keys to avoid encoding `id`.
+    var textureURL: URL?
+    
+    var isCustomGlobe: Bool {
+        textureURL != nil
+    }
+    
+    /// Custom coding keys to avoid
     enum CodingKeys: String, CodingKey {
+        case id
         case type
         case name
         case nameTranslated
@@ -82,7 +67,7 @@ struct Globe: Identifiable, Equatable, Hashable, Codable {
     
     init(from decoder:Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = UUID()
+        self.id = (try? values.decode(Globe.ID.self, forKey: .id)) ?? UUID()
         self.type = try values.decode(GlobeType.self, forKey: .type)
         self.name = try values.decode(String.self, forKey: .name)
         self.nameTranslated = try? values.decode(String.self, forKey: .nameTranslated)
@@ -105,7 +90,8 @@ struct Globe: Identifiable, Equatable, Hashable, Codable {
         description: String? = nil,
         infoURL: URL? = nil,
         radius: Float = 0.3,
-        texture: String = ""
+        texture: String = "",
+        textureURL: URL? = nil
     ) {
         self.id = UUID()
         self.type = type
@@ -118,6 +104,7 @@ struct Globe: Identifiable, Equatable, Hashable, Codable {
         self.infoURL = infoURL
         self.radius = radius
         self.texture = texture
+        self.textureURL = textureURL
     }
     
     /// A string with all authors separated by commas.

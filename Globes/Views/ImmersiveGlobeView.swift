@@ -5,71 +5,202 @@
 //  Created by Bernhard Jenny on 8/3/2024.
 //
 
-import os
 import RealityKit
 import SwiftUI
 
-/// Immersive globe for rendering full-size globes.
+/// Immersive view for rendering full-size globes and a panorama.
 struct ImmersiveGlobeView: View {
+    @Environment(ViewModel.self) private var model
     
-    /// The current configuration of the globe displayed by this view. This is bindable, because gesture handlers can change configuration variables.
-    @Bindable var configuration: GlobeConfiguration
+    /// True if the globe entities displayed by this view need to be updated.
+    @State private var globeEntitiesNeedUpdate = true
     
-    /// True if the `configuration.globeEntity` changed and the entity displayed by this view needs to be replaced.
-    @State private var globeEntityChanged = false
+    /// True if the `configuration.panoramaEntity` changed and the entity displayed by this view needs to be replaced.
+    @State private var panoramaEntityNeedsUpdate = true
+    
+    /// IBL entity if virtual light is used.
+    @State private var lampsIBL: ImageBasedLightSourceEntity? = nil
+    @State private var evenIBL: ImageBasedLightSourceEntity? = nil
+    
+    /// Sphere centered on the camera participating in physics simulation to avoid camera position inside a globe.
+    @State private var headEntity: HeadEntity? = nil
     
     var body: some View {
-        RealityView { content in
-            log("Make", globeName: configuration.globe.name, category: "RealityView.make")
-
-            if let globeEntity = configuration.globeEntity {
-                content.add(globeEntity)
+        RealityView { content, attachments in
+            let root = Entity()
+            root.name = "Globes"
+            content.add(root)
+            
+            // sphere at camera position
+            let headEntity = HeadEntity()
+            root.addChild(headEntity)
+            Task { @MainActor in
+                self.headEntity = headEntity
             }
-        } update: { content in
-            log("Update", globeName: configuration.globe.name, category: "RealityView.update")
-
-            // if the globe changed, remove the old entity and add the new entity
-            if globeEntityChanged {
-                log("Update replacing old globe with", globeName: configuration.globe.name, category: "RealityView.update")
-                
-                if let oldGlobeEntity = content.entities.first(where: { $0 is GlobeEntity }) {
-                    content.remove(oldGlobeEntity)
-                }
-                if let globeEntity = configuration.globeEntity {
-                    content.add(globeEntity)
+            
+            // zero gravity physics simulation
+            var physicsSimulationComponent = PhysicsSimulationComponent()
+            physicsSimulationComponent.gravity = SIMD3.zero
+            root.components.set(physicsSimulationComponent)
+            
+            // image based lighting images shared by all globes and the panorama
+            lampsIBL = await loadImageBaseLightSourceEntity(lighting: .lamps)
+            evenIBL = await loadImageBaseLightSourceEntity(lighting: .even)
+            if let lampsIBL { content.add(lampsIBL) }
+            if let evenIBL { content.add(evenIBL) }
+        } update: { content, attachments in
+            if globeEntitiesNeedUpdate {
+                if let root = content.entities.first(where: { $0.name == "Globes" }) {
+                    addGlobeEntities(to: root, attachments: attachments)
                 }
                 Task { @MainActor in
-                    globeEntityChanged = false
+                    globeEntitiesNeedUpdate = false
                 }
             }
             
-            configuration.globeEntity?.update(configuration: configuration)
-            
-            // Reset the animation flag. Important: only reset when it changed, otherwise the update closure is called on each frame.
-            if configuration.animateTransform {
+            if panoramaEntityNeedsUpdate {
+                addPanoramaEntity(to: content)
                 Task { @MainActor in
-                    configuration.animateTransform = false
+                    panoramaEntityNeedsUpdate = false
+                }
+            }
+        } attachments: {
+            if model.showOnboarding {
+                ForEach(model.globes) { globe in
+                    Attachment(id: globe.id) {
+                       OnboardingAttachmentView()
+                    }
+                }
+            } else {
+                ForEach(model.globes) { globe in
+                    Attachment(id: globe.id) {
+                        GlobeAttachmentView(globe: globe)
+                    }
                 }
             }
         }
-        .globeGestures(configuration: configuration)
-        .onChange(of: configuration.globeEntity) {
+        .onChange(of: model.lighting) {
             Task { @MainActor in
-                globeEntityChanged = true
+                applyImageBasedLighting()
+            }
+        }
+        .onChange(of: model.configurations) {
+            Task { @MainActor in
+                updateGlobeRotations()
+                globeEntitiesNeedUpdate = true
+            }
+        }
+        .onChange(of: model.globeEntities.keys) {
+            Task { @MainActor in
+                applyImageBasedLighting() // only apply IBL once entities exist, not when model.showPanorama changes
+                globeEntitiesNeedUpdate = true
+            }
+        }
+        .onChange(of: model.rotateGlobes) {
+            Task { @MainActor in
+                globeEntitiesNeedUpdate = true
+            }
+        }
+        .onChange(of: model.panoramaEntity) {
+            Task { @MainActor in
+                applyImageBasedLighting() // only apply IBL once the panorama entity exists, not when model.showPanorama changes
+                panoramaEntityNeedsUpdate = true
+            }
+        }
+        .globeGestures(model: model)
+        .panoramaGestures(model: model)
+    }
+    
+    private func updateGlobeRotations() {
+        Task { @MainActor in
+            for id in model.globeEntities.keys {
+                if let configuration = model.configurations[id],
+                   let globeEntity = model.globeEntities[id] {
+                    globeEntity.updateRotation(configuration: configuration)
+                }
             }
         }
     }
     
-    private func log(_ message: String, globeName: String, category: String) {
-#if DEBUG
-        let logger = Logger(subsystem: "Immersive Globe View", category: category)
-        logger.info("\(message) \"\(globeName)\"" )
-#endif
+    @MainActor
+    private func addAttachments(_ attachments: RealityViewAttachments) {
+        for globeEntity in model.globeEntities.values {
+            if let globeConfiguration = model.configurations[globeEntity.globeId],
+               globeConfiguration.showAttachment || model.showOnboarding,
+               let attachmentEntity = attachments.entity(for: globeEntity.globeId) {
+                attachmentEntity.position = [0, 0, globeConfiguration.radius + 0.01]
+                attachmentEntity.components.set(GlobeBillboardComponent(radius: globeConfiguration.radius))
+                globeEntity.addChild(attachmentEntity)
+            } else {
+                for viewAttachmentEntity in globeEntity.children where viewAttachmentEntity is ViewAttachmentEntity {
+                    globeEntity.removeChild(viewAttachmentEntity)
+                }
+            }
+        }
+    }
+    
+    @MainActor
+    private func addGlobeEntities(to root: Entity, attachments: RealityViewAttachments) {
+        // remove current globes
+        root.children.removeAll(where: { $0 is GlobeEntity })
+        
+        // update attachments
+        addAttachments(attachments)
+        
+        for globeEntity in model.globeEntities.values {
+            root.addChild(globeEntity)
+        }        
+    }
+    
+    private func loadImageBaseLightSourceEntity(lighting: Lighting) async -> ImageBasedLightSourceEntity? {
+        return await ImageBasedLightSourceEntity(
+            texture: lighting.imageBasedLightingTexture,
+            intensity: model.imageBasedLightIntensity)
+    }
+    
+    @MainActor
+    private func applyImageBasedLighting() {
+        // natural lighting is not available when a panorama is visible
+        let iblEntity: ImageBasedLightSourceEntity?
+        switch model.lighting {
+        case .even:
+            iblEntity = evenIBL
+        case .lamps:
+            iblEntity = lampsIBL
+        case .natural:
+            iblEntity = model.showPanorama ? evenIBL : nil
+        }
+        
+        for globeEntity in model.globeEntities.values {
+            if let iblEntity {
+                let lightReceiver = ImageBasedLightReceiverComponent(imageBasedLight: iblEntity)
+                globeEntity.components.set(lightReceiver)
+            } else {
+                globeEntity.components.remove(ImageBasedLightReceiverComponent.self)
+            }
+        }
+      
+        if let iblEntity {
+            let lightReceiver = ImageBasedLightReceiverComponent(imageBasedLight: iblEntity)
+            model.panoramaEntity?.components.set(lightReceiver)
+        }
+    }
+    
+    @MainActor
+    private func addPanoramaEntity(to content: RealityViewContent) {
+        // remove current panorama
+        if let oldPanoramaEntity = content.entities.first(where: { $0 is PanoramaEntity }) {
+            content.remove(oldPanoramaEntity)
+            model.panoramaEntity?.orientation = oldPanoramaEntity.orientation
+        }
+        
+        if let panoramaEntity = model.panoramaEntity {
+            // move to camera center
+            if let cameraPosition = CameraTracker.shared.position {
+                panoramaEntity.position = cameraPosition
+            }
+            
+            content.add(panoramaEntity)
+        }
     }
 }
-
-#if DEBUG
-#Preview(immersionStyle: .mixed) {
-    ImmersiveGlobeView(configuration: .init(globe: Globe.preview, adjustRotationSpeedToSize: true))
-}
-#endif

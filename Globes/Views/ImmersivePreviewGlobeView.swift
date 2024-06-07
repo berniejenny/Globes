@@ -14,40 +14,117 @@ struct ImmersivePreviewGlobeView: View {
     @Environment(ViewModel.self) private var model
     
     /// The globe to show.
-    let globe: Globe
+    var globe: Globe
     
-    /// A hack to override the radius of `globe.radius`.
+    /// The globe entity
+    @State var globeEntity: Entity? = nil
+    
+    /// IBL entity if virtual light is used.
+    @State private var imageBasedLightSourceEntity: ImageBasedLightSourceEntity? = nil
+    
+    var rotate: Bool = true
+    
+    var tapOpensGlobe = true
+    
+    /// Override the radius of `globe.radius`.
     let radius: Float
     
     var body: some View {
-        let opacity: Float = model.hidePreviewGlobes ? 0 : 1
-        
-        RealityView { content in
-            guard let globeEntity = try? await GlobeEntity(
-                globe: globe,
-                loadPreviewTexture: true,
-                enableGestures: false,
-                castsShadow: false,
-                roughness: 0.35,
-                clearcoat: 0.15,
-                radius: radius
-            ) else {
-                fatalError("The preview for \"\(globe.name)\" by \(globe.author) cannot be created.")
+        RealityView (make: { content in
+            globeEntity = try? await PreviewGlobeEntity(globe: globe, radius: radius)
+            guard let globeEntity else {
+                Logger().error("Cannot load preview for \(globe.name)")
+                return
             }
+            content.add(globeEntity)
+            
+            applyRotation()
+            
+            // image based lighting
+            self.imageBasedLightSourceEntity = await loadImageBaseLightSourceEntity()
+            applyImageBasedLighting()
+        }, update: { content in
+            // replace the globe entity if it changed
+            if let globeEntity,
+               let oldGlobeEntity = content.entities.first(where: { $0 is PreviewGlobeEntity }) {
+                if oldGlobeEntity != globeEntity {
+                    content.remove(oldGlobeEntity)
+                    content.add(globeEntity)
+                }
+            }
+            
+            applyRotation()
+            applyImageBasedLighting()
+        })
+        .onChange(of: model.lighting) {
+            // load another image based lighting texture
+            Task { @MainActor in
+                imageBasedLightSourceEntity = await loadImageBaseLightSourceEntity()
+            }
+        }
+        .onChange(of: model.showPanorama) {
+            // might have to change image based lighting texture, as natural lighting is not available inside a panorama
+            Task { @MainActor in
+                imageBasedLightSourceEntity = await loadImageBaseLightSourceEntity()
+            }
+        }
+        .onChange(of: globe.id) {
+            // the globe changed, create a new entity
+            Task { @MainActor in
+                globeEntity = try? await PreviewGlobeEntity(globe: globe, radius: radius)
+            }
+        }
+        .onTapGesture {
+            if tapOpensGlobe {
+                ResourceLoader.loadGlobe(globe: globe, model: model)
+            }
+        }
+    }
+    
+    @MainActor
+    private func loadImageBaseLightSourceEntity() async -> ImageBasedLightSourceEntity? {
+        // natural lighting is not available when a panorama is visible
+        var lighting = model.lighting
+        if model.showPanorama && model.lighting == .natural {
+            lighting = Lighting.even
+        }
+        
+        return await ImageBasedLightSourceEntity(
+            texture: lighting.imageBasedLightingTexture,
+            intensity: model.imageBasedLightIntensity)
+    }
+    
+    private func applyRotation() {
+        guard let globeEntity else { return }
+        
+        if rotate {
+            if globeEntity.components.has(RotationComponent.self) { return }
             let rotationSpeed = GlobeConfiguration.defaultRotationSpeedForPreviewGlobes
             globeEntity.components.set(RotationComponent(speed: rotationSpeed))
-            globeEntity.components.set(OpacityComponent(opacity: opacity))
-            content.add(globeEntity)
-        } update: { content in
-            let entity = content.entities.first(where: { $0 is GlobeEntity })
-            entity?.components.set(OpacityComponent(opacity: opacity))
+        } else {
+            globeEntity.components.remove(RotationComponent.self)
+        }
+    }
+    
+    private func applyImageBasedLighting() {
+        guard let globeEntity else { return }
+        
+        if let imageBasedLightSourceEntity {
+            globeEntity.parent?.addChild(imageBasedLightSourceEntity)
+            let receiver = ImageBasedLightReceiverComponent(imageBasedLight: imageBasedLightSourceEntity)
+            globeEntity.components.set(receiver)
+        } else {
+            if let oldIBLEntity = globeEntity.parent?.children.first(where: { $0 is ImageBasedLightSourceEntity }) {
+                globeEntity.parent?.removeChild(oldIBLEntity)
+            }
+            globeEntity.components.remove(ImageBasedLightReceiverComponent.self)
         }
     }
 }
 
 #if DEBUG
 #Preview(immersionStyle: .mixed) {
-    ImmersivePreviewGlobeView(globe: Globe.preview, radius: 0.05)
+    ImmersivePreviewGlobeView(globe: Globe.preview, rotate: true, radius: 0.05)
         .environment(ViewModel.preview)
 }
 #endif
