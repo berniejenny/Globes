@@ -14,18 +14,11 @@ import SwiftUI
     
     // MARK: - Visible Globes
     
-    /// The app is terminated by the operating system when more than 7 or 8 globes (plus a panorama) are loaded, even though Metal is only using a little more than 30% of the available GPU memory.
-#warning("To be fixed: allow for more than 8 globes")
-    private let maxNumberOfGlobes = 8
-    
     @MainActor
     var configurations: [Globe.ID: GlobeConfiguration] = [:]
     
     @MainActor
     var globeEntities: [Globe.ID: GlobeEntity] = [:]
-    
-    @MainActor
-    var canShowAnotherGlobe: Bool { configurations.count <= 7 }
     
     @MainActor
     /// Delete a custom globe.
@@ -54,12 +47,15 @@ import SwiftUI
     ///   - openImmersiveSpaceAction: Action for opening an immersive space.
     /// - Returns: True if successful.
     func show(globe: Globe, openImmersiveSpaceAction: OpenImmersiveSpaceAction) async -> Bool {
-        if canShowAnotherGlobe {
+        if ResourceLoader.canLoadAnotherGlobe {
             await openImmersiveGlobeSpace(openImmersiveSpaceAction)
             ResourceLoader.loadGlobe(globe: globe, model: self)
             return true
         } else {
-            errorToShowInAlert = error("The maximum number of globes is shown.", secondaryMessage: "First hide another globe, then open this globe again.")
+            errorToShowInAlert = error(
+                "There is not enough memory to open another globe.",
+                secondaryMessage: "First hide another globe, then open this globe again."
+            )
             return false
         }
     }
@@ -146,7 +142,7 @@ import SwiftUI
     // MARK: - Visible Panorama
     
     @MainActor
-    var showPanorama: Bool { panoramaGlobe != nil }
+    var isShowingPanorama: Bool { panoramaGlobe != nil }
     
     @MainActor
     var panoramaGlobe: Globe? = nil
@@ -298,7 +294,7 @@ import SwiftUI
         description += "Immersive space is shown: \(immersiveSpaceIsShown)\n"
         
         // globes
-        description += "Can show another globe: \(canShowAnotherGlobe)\n"
+        description += "Can show another globe: \(ResourceLoader.canLoadAnotherGlobe)\n"
         description += "Rotate globes: \(rotateGlobes)\n"
         description += "Globe configurations: \(configurations.count), entities: \(globeEntities.count)\n"
         for (index, configurationKeyValue) in configurations.enumerated() {
@@ -320,7 +316,7 @@ import SwiftUI
         }
         
         // panorama
-        description += "Show panorama: \(showPanorama)\n"
+        description += "Show panorama: \(isShowingPanorama)\n"
         if let panoramaGlobe {
             description += "\tPanorama: \(panoramaGlobe.name)"
             description += panoramaEntity == nil ? ", NOT loaded\n" : ", loaded\n"

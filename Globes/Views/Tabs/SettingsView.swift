@@ -21,7 +21,7 @@ struct SettingsView: View {
                 Picker(selection: Bindable(model).lighting) {
                     ForEach(Lighting.allCases) { lighting in
                         Text(String(describing: lighting))
-                            .disabled(lighting == .natural && model.showPanorama)
+                            .disabled(lighting == .natural && model.isShowingPanorama)
                     }
                 } label: {
                     if let previewGlobe {

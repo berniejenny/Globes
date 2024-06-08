@@ -168,7 +168,7 @@ struct ImmersiveGlobeView: View {
         case .lamps:
             iblEntity = lampsIBL
         case .natural:
-            iblEntity = model.showPanorama ? evenIBL : nil
+            iblEntity = model.isShowingPanorama ? evenIBL : nil
         }
         
         for globeEntity in model.globeEntities.values {

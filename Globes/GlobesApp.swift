@@ -64,7 +64,7 @@ struct GlobesApp: App {
     @MainActor
     private var immersionStyleBinding: Binding<any ImmersionStyle> {
         Binding(get: {
-            let showPanorama = model.showPanorama && model.panoramaEntity != nil
+            let showPanorama = model.isShowingPanorama && model.panoramaEntity != nil
             if showPanorama {
                 return model.panoramaImmersionStyle.immersionStyle
             } else {
