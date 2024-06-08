@@ -8,7 +8,7 @@
 import RealityKit
 import SwiftUI
 
-/// Globe entity with a model child consisting of a mesh and a material, plus optional `InputTargetComponent` and `CollisionComponent` components.
+/// Globe entity with a model child consisting of a mesh and a material, plus  `InputTargetComponent`, `CollisionComponent` and `PhysicsBodyComponent` components.
 /// Gestures mutate the transform of this parent entity, while the optional automatic rotation mutates the transform of the child entity.
 class GlobeEntity: Entity {
     
