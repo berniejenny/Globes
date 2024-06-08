@@ -38,11 +38,11 @@ struct GalleryView: View {
             case .earth:
                 "Terrestrial Globes"
             case .celestial:
-                "Star Constellations in The Sky"
+                "Star Constellations in the Sky"
             case .moon:
                 "Earth’s Moon"
             case .planets:
-                "Planets and Their Moons"
+                "Planets and their Moons"
 //#warning("Custom globes")
 //            case .custom:
 //                "Custom Globes"

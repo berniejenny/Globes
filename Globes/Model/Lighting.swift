@@ -26,7 +26,7 @@ enum Lighting: String, CaseIterable, Identifiable, CustomStringConvertible {
     var info: String {
         switch self {
         case .natural:
-            "The light of the real world illuminates the globes. Not available inside 360°-globes."
+            "The light of the real world illuminates the globes. Not available when a panorama is shown."
         case .lamps:
             "Virtual lamps illuminate the globes."
         case .even:
