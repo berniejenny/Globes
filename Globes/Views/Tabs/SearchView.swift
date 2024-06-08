@@ -49,7 +49,8 @@ struct SearchView: View {
     private var authors: [(String, Int)] {
         var uniqueAuthors: [String: Int] = [:]
         model.globes.forEach {
-            uniqueAuthors[$0.author, default: 0] += 1
+            let surnameFirstName = author(of: $0)
+            uniqueAuthors[surnameFirstName, default: 0] += 1
         }
         return uniqueAuthors.sorted(by: { $0.0 < $1.0 })
     }
