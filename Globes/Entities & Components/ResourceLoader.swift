@@ -11,6 +11,34 @@ import SwiftUI
 struct ResourceLoader {
     private init() {}
     
+    static var canLoadAnotherGlobe: Bool {
+        // 348 MB GPU
+        // 350 to 385 MB PROC
+        // estimated size in bytes of a 16k×8k RGBA texture
+        let textureSize: UInt64 = 16384 * 8192 * 4
+        // texture with mipmap, which increases the size by 1/3
+        let mipmapTextureSize = textureSize * 4 / 3
+        
+        // check available GPU memory
+        if let defaultDevice = MTLCreateSystemDefaultDevice () {
+            let allocatedGPU = UInt64(defaultDevice.currentAllocatedSize)
+            let maxGPU = defaultDevice.recommendedMaxWorkingSetSize
+            let availableGPU = maxGPU - allocatedGPU
+            if availableGPU < mipmapTextureSize {
+                return false
+            }
+        }
+        
+        // Check available process memory
+        // Texture allocation and mipmap generation is wasteful as of visionOS 1.1.
+        // Instruments shows that once the texture is loaded and uncompressed, two additional copies
+        // of the size of the uncompressed texture are created while initializing the texture.
+        // After initialization, the increase in allocated memory is about half of width×height×4,
+        // which indicates that an efficient compression is used for textures.
+        let availableProcMemory = os_proc_available_memory()
+        return availableProcMemory > textureSize * 3
+    }
+    
     @MainActor
     private static func globeIsLoaded(_ globe: Globe, _ model: ViewModel) -> Bool {
         model.configurations[globe.id] != nil
@@ -54,7 +82,6 @@ struct ResourceLoader {
                                         
                     // compute target position before adding configuration and entity
                     let targetPosition = Self.targetPosition(model: model, configuration: configuration)
-                    print(targetPosition)
                     model.configurations[globe.id] = configuration
                     model.globeEntities[globe.id] = globeEntity
                     
@@ -126,6 +153,15 @@ struct ResourceLoader {
     @MainActor
     static func loadPanorama(globe: Globe, model: ViewModel) {
         guard model.panoramaGlobe?.id != globe.id else { return }
+        
+        guard ResourceLoader.canLoadAnotherGlobe else {
+            model.errorToShowInAlert = error(
+                "There is not enough memory to open a panorama.",
+                secondaryMessage: "First hide another globe, then open this panorama again."
+            )
+            return
+        }
+        
         model.isLoadingPanorama = true
         model.panoramaGlobe = globe
         

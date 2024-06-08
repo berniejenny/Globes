@@ -123,7 +123,7 @@ struct ContentView: View {
             Button(action: model.hidePanorama) {
                 Label("Panorama Globe", image: "pano.fill.slash")
             }
-            .disabled(!model.showPanorama)
+            .disabled(!model.isShowingPanorama)
             
             debugButtons
         }

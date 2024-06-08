@@ -62,7 +62,7 @@ struct ImmersivePreviewGlobeView: View {
                 imageBasedLightSourceEntity = await loadImageBaseLightSourceEntity()
             }
         }
-        .onChange(of: model.showPanorama) {
+        .onChange(of: model.isShowingPanorama) {
             // might have to change image based lighting texture, as natural lighting is not available inside a panorama
             Task { @MainActor in
                 imageBasedLightSourceEntity = await loadImageBaseLightSourceEntity()
@@ -85,7 +85,7 @@ struct ImmersivePreviewGlobeView: View {
     private func loadImageBaseLightSourceEntity() async -> ImageBasedLightSourceEntity? {
         // natural lighting is not available when a panorama is visible
         var lighting = model.lighting
-        if model.showPanorama && model.lighting == .natural {
+        if model.isShowingPanorama && model.lighting == .natural {
             lighting = Lighting.even
         }
         
