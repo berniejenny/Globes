@@ -13,7 +13,18 @@ struct GlobeButton: View {
     
     let globe: Globe
     
-    @State private var isSelected = false
+    @MainActor
+    private var globeExists: Bool {
+        model.configurations.keys.contains(globe.id)
+    }
+    
+    @MainActor
+    private var globeBinding: Binding<Bool> { Binding (
+        get: { globeExists },
+        set: { show in
+            showGlobe(show)
+        }
+    )}
     
     @MainActor
     private var showLoadingProgress: Bool {
@@ -22,9 +33,9 @@ struct GlobeButton: View {
     
     var body: some View {
         ZStack {
-            Toggle(isOn: $isSelected, label: {
+            Toggle(isOn: globeBinding, label: {
                 ButtonImage(name: "globe")
-                    .foregroundColor(isSelected ? .accentColor : .primary)
+                    .foregroundColor(globeExists ? .accentColor : .primary)
             })
             .toggleStyle(ButtonToggleStyle())
             .buttonStyle(.plain)
@@ -33,24 +44,16 @@ struct GlobeButton: View {
             ProgressView()
                 .controlSize(.mini)
                 .opacity(showLoadingProgress ? 1 : 0)
-        }        
-        .onChange(of: isSelected) {
-            Task { @MainActor in
-                if isSelected {
-                    isSelected = model.show(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
-                } else {
-                    model.hideGlobe(with: globe.id)
-                }
-            }
         }
-        .onChange(of: model.configurations.keys) {
-            Task { @MainActor in
-                isSelected = model.configurations[globe.id] != nil
-            }
-        }
-        .onChange(of: model.favorites, initial: true) {
-            Task { @MainActor in
-                isSelected = model.configurations[globe.id] != nil
+    }
+    
+    @MainActor
+    private func showGlobe(_ show: Bool) {
+        Task { @MainActor in
+            if show {
+                model.show(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
+            } else {
+                model.hideGlobe(with: globe.id)
             }
         }
     }
