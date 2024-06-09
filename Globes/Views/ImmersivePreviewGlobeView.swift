@@ -25,9 +25,7 @@ struct ImmersivePreviewGlobeView: View {
     var rotate = true
     
     var addHoverEffect = false
-    
-    var tapOpensGlobe = true
-    
+        
     /// Override the radius of `globe.radius`.
     let radius: Float
     
@@ -50,8 +48,7 @@ struct ImmersivePreviewGlobeView: View {
             // image based lighting
             self.imageBasedLightSourceEntity = await loadImageBaseLightSourceEntity()
             applyImageBasedLighting()
-        },
-                     update: { content in
+        }, update: { content in
             // replace the globe entity if it changed
             if let globeEntity,
                let oldGlobeEntity = content.entities.first(where: { $0 is PreviewGlobeEntity }) {
@@ -80,11 +77,6 @@ struct ImmersivePreviewGlobeView: View {
             // the globe changed, create a new entity
             Task { @MainActor in
                 globeEntity = try? await PreviewGlobeEntity(globe: globe, radius: radius)
-            }
-        }
-        .onTapGesture {
-            if tapOpensGlobe {
-                ResourceLoader.loadGlobe(globe: globe, model: model)
             }
         }
     }
