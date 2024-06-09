@@ -17,6 +17,9 @@ struct Globe: Identifiable, Hashable, Codable {
     /// Name of the globe in original language
     var name: String
     
+    /// Short name of the globe in original language
+    var shortName: String?
+    
     /// Name of the globe translated to English if `name` is in another language.
     var nameTranslated: String?
     
@@ -55,6 +58,7 @@ struct Globe: Identifiable, Hashable, Codable {
         case id
         case type
         case name
+        case shortName
         case nameTranslated
         case authorSurname
         case authorFirstName
@@ -70,6 +74,7 @@ struct Globe: Identifiable, Hashable, Codable {
         self.id = (try? values.decode(Globe.ID.self, forKey: .id)) ?? UUID()
         self.type = try values.decode(GlobeType.self, forKey: .type)
         self.name = try values.decode(String.self, forKey: .name)
+        self.shortName = try? values.decode(String.self, forKey: .shortName)
         self.nameTranslated = try? values.decode(String.self, forKey: .nameTranslated)
         self.authorSurname = try? values.decode(String.self, forKey: .authorSurname)
         self.authorFirstName = try? values.decode(String.self, forKey: .authorFirstName)
@@ -83,6 +88,7 @@ struct Globe: Identifiable, Hashable, Codable {
     init(
         type: GlobeType = .earth,
         name: String = "Unnamed Globe",
+        shortname: String? = nil,
         nameTranslated: String? = nil,
         authorSurname: String? = nil,
         authorFirstName: String? = nil,
@@ -96,6 +102,7 @@ struct Globe: Identifiable, Hashable, Codable {
         self.id = UUID()
         self.type = type
         self.name = name
+        self.shortName = shortname
         self.nameTranslated = nameTranslated
         self.authorSurname = authorSurname
         self.authorFirstName = authorFirstName

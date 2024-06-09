@@ -47,6 +47,7 @@ struct GlobeEditorView: View {
                 
                 Section {
                     TextField("Original", text: $globe.name)
+                    TextField("Short", text: $globe.shortName ?? "")
                     TextField("Translated", text: $globe.nameTranslated ?? "")
                 } header: {
                     Text("Name")
