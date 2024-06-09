@@ -37,7 +37,7 @@ struct GlobeButton: View {
         .onChange(of: isSelected) {
             Task { @MainActor in
                 if isSelected {
-                    await isSelected = model.show(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
+                    isSelected = model.show(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
                 } else {
                     model.hideGlobe(with: globe.id)
                 }

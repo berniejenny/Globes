@@ -65,19 +65,22 @@ import SwiftUI
     /// - Parameters:
     ///   - globe: The globe to show.
     ///   - openImmersiveSpaceAction: Action for opening an immersive space.
-    /// - Returns: True if successful.
-    func show(globe: Globe, openImmersiveSpaceAction: OpenImmersiveSpaceAction) async -> Bool {
-        if ResourceLoader.canLoadAnotherGlobe {
-            await openImmersiveGlobeSpace(openImmersiveSpaceAction)
-            ResourceLoader.loadGlobe(globe: globe, model: self)
-            return true
-        } else {
+    /// - Returns: True if there is enough memory to open the globe.
+    @discardableResult func show(globe: Globe, openImmersiveSpaceAction: OpenImmersiveSpaceAction) -> Bool {
+        guard ResourceLoader.canLoadAnotherGlobe else {
             errorToShowInAlert = error(
-                "There is not enough memory to open another globe.",
-                secondaryMessage: "First hide another globe, then open this globe again."
+                "There is not enough memory to show another globe.",
+                secondaryMessage: "First hide a visible globe, then select this globe again."
             )
             return false
         }
+            
+        Task {
+            openImmersiveGlobeSpace(openImmersiveSpaceAction)
+            ResourceLoader.loadGlobe(globe: globe, model: self)
+        }
+        
+        return true
     }
     
     @MainActor
@@ -186,6 +189,26 @@ import SwiftUI
     }
     
     @MainActor
+    /// Open a panorama with the passed globe and open an immersive space if none is currently open.
+    /// - Parameters:
+    ///   - globe: The globe to show on the panorama.
+    ///   - openImmersiveSpaceAction: Action to call to open the immersive space.
+    func showPanorama(globe: Globe, openImmersiveSpaceAction: OpenImmersiveSpaceAction) {
+        guard ResourceLoader.canLoadAnotherGlobe else {
+            errorToShowInAlert = error(
+                "There is not enough memory to show this panorama.",
+                secondaryMessage: "First hide a globe \(isShowingPanorama ? "or the current panorama" : ""), then select the panorama again."
+            )
+            return
+        }
+        
+        Task {
+            openImmersiveGlobeSpace(openImmersiveSpaceAction)
+            ResourceLoader.loadPanorama(globe: globe, model: self)
+        }
+    }
+    
+    @MainActor
     func hidePanorama() {
         panoramaGlobe = nil
         panoramaEntity = nil
@@ -217,24 +240,28 @@ import SwiftUI
     
     @MainActor
     var immersiveSpaceIsShown = false
-    
-    func openImmersiveGlobeSpace(_ action: OpenImmersiveSpaceAction) async {
-        guard await !immersiveSpaceIsShown else { return }
-        switch await action(id: "ImmersiveGlobeSpace") {
-        case .opened:
-            Task { @MainActor in
-                immersiveSpaceIsShown = true
-            }
-        case .error:
-            Task { @MainActor in
-                errorToShowInAlert = error("A globe could not be shown.")
-            }
-            fallthrough
-        case .userCancelled:
-            fallthrough
-        @unknown default:
-            Task { @MainActor in
-                immersiveSpaceIsShown = false
+
+    @MainActor
+    private func openImmersiveGlobeSpace(_ action: OpenImmersiveSpaceAction) {
+        guard !immersiveSpaceIsShown else { return }
+        Task {
+            let result = await action(id: "ImmersiveGlobeSpace")
+            switch result {
+            case .opened:                
+                Task { @MainActor in
+                    immersiveSpaceIsShown = true
+                }
+            case .error:
+                Task { @MainActor in
+                    errorToShowInAlert = error("A globe could not be shown.")
+                }
+                fallthrough
+            case .userCancelled:
+                fallthrough
+            @unknown default:
+                Task { @MainActor in
+                    immersiveSpaceIsShown = false
+                }
             }
         }
     }

@@ -29,10 +29,7 @@ struct PanoramaButton: View {
                 if isSelected  {
                     model.hidePanorama()
                 } else {
-                    Task { @MainActor in
-                        await model.openImmersiveGlobeSpace(openImmersiveSpaceAction)
-                        ResourceLoader.loadPanorama(globe: globe, model: model)
-                    }
+                    model.showPanorama(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
                 }
             }) {
                 ButtonImage(name: isSelected ? "pano.fill" : "pano")
