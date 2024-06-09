@@ -93,10 +93,9 @@ struct GlobeView: View {
         }
     }
     
+    @MainActor
     private func showGlobe() {
-        Task { @MainActor in
-            let _ = await model.show(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
-        }
+        model.show(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
     }
 }
 
