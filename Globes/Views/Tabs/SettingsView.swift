@@ -28,7 +28,6 @@ struct SettingsView: View {
                         ImmersivePreviewGlobeView(
                             globe: previewGlobe,
                             rotate: model.rotateGlobes,
-                            tapOpensGlobe: false,
                             radius: globeRadius
                         )
                             .frame(width: globeViewSize, height: globeViewSize)
