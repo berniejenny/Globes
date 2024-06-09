@@ -12,6 +12,26 @@ import SwiftUI
     @MainActor
     var globes: [Globe] = []
     
+    @MainActor
+    func filteredGlobes(selection: GlobeSelection) -> [Globe] {
+        switch selection {
+        case .all:
+            globes
+        case .favorites:
+            globes.filter { favorites.contains($0.id) }
+        case .earth:
+            globes.filter { $0.type == .earth }
+        case .celestial:
+            globes.filter { $0.type == .celestial }
+        case .moon:
+            globes.filter { $0.type == .moon }
+        case .planets:
+            globes.filter { $0.type == .planet || $0.type == .moonNonEarth }
+        case .custom:
+            globes.filter { $0.isCustomGlobe }
+        }
+    }
+    
     // MARK: - Visible Globes
     
     @MainActor
