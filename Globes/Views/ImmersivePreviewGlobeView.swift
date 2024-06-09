@@ -22,7 +22,9 @@ struct ImmersivePreviewGlobeView: View {
     /// IBL entity if virtual light is used.
     @State private var imageBasedLightSourceEntity: ImageBasedLightSourceEntity? = nil
     
-    var rotate: Bool = true
+    var rotate = true
+    
+    var addHoverEffect = false
     
     var tapOpensGlobe = true
     
@@ -30,8 +32,13 @@ struct ImmersivePreviewGlobeView: View {
     let radius: Float
     
     var body: some View {
-        RealityView (make: { content in
-            globeEntity = try? await PreviewGlobeEntity(globe: globe, radius: radius)
+        RealityView (make: {
+            content in
+            globeEntity = try? await PreviewGlobeEntity(
+                globe: globe,
+                addHoverEffect: addHoverEffect,
+                radius: radius
+            )
             guard let globeEntity else {
                 Logger().error("Cannot load preview for \(globe.name)")
                 return
@@ -43,7 +50,8 @@ struct ImmersivePreviewGlobeView: View {
             // image based lighting
             self.imageBasedLightSourceEntity = await loadImageBaseLightSourceEntity()
             applyImageBasedLighting()
-        }, update: { content in
+        },
+                     update: { content in
             // replace the globe entity if it changed
             if let globeEntity,
                let oldGlobeEntity = content.entities.first(where: { $0 is PreviewGlobeEntity }) {
