@@ -12,6 +12,8 @@ class PreviewGlobeEntity: Entity {
     
     let globeId: Globe.ID
     
+    let addHoverEffect: Bool
+    
     let roughness: Float = 0.35
     
     /// Clear coat gives the material white reflections
@@ -19,11 +21,13 @@ class PreviewGlobeEntity: Entity {
     
     @MainActor required init() {
         self.globeId = UUID()
+        self.addHoverEffect = false
         super.init()
     }
     
-    init(globe: Globe, radius: Float) async throws {
+    init(globe: Globe, addHoverEffect: Bool = false, radius: Float) async throws {
         self.globeId = globe.id
+        self.addHoverEffect = addHoverEffect
         super.init()
         
         let material = try await ResourceLoader.loadMaterial(
@@ -38,6 +42,10 @@ class PreviewGlobeEntity: Entity {
         
         // react to user taps
         self.components.set(InputTargetComponent())
+        
+        if addHoverEffect {
+            self.components.set(HoverEffectComponent())
+        }
         
         // Create a collision component with an empty group and mask, such that it does not participate in physics computations
         // https://developer.apple.com/documentation/realitykit/inputtargetcomponent
