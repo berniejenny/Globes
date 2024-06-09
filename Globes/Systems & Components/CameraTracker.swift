@@ -40,12 +40,8 @@ public final class CameraTracker {
             Logger().error("Camera tracking is not supported.")
             return nil
         }
-        guard worldTrackingProvider.state == .running else {
-            return nil
-        }
-        
-        guard let deviceAnchor = worldTrackingProvider.queryDeviceAnchor(atTimestamp: CACurrentMediaTime()) else {
-            Logger().error("Cannot query camera anchor.")
+        guard worldTrackingProvider.state == .running,
+              let deviceAnchor = worldTrackingProvider.queryDeviceAnchor(atTimestamp: CACurrentMediaTime()) else {
             return nil
         }
         return Transform(matrix: deviceAnchor.originFromAnchorTransform)
