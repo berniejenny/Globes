@@ -57,13 +57,13 @@ struct GlobeView: View {
                     .onTapGesture(perform: showGlobe)
                 
                 ProgressView()
+                    .tint(.black)
                     .controlSize(.small)
-                    .padding(4)
-                    .glassBackgroundEffect()
                     .opacity(showLoadingProgress ? 1 : 0)
                     .offset(z: globeZOffset * 2 + 10)
             }
             .offset(y: -2)
+            
             Spacer(minLength: 0)
             
             name
@@ -73,7 +73,6 @@ struct GlobeView: View {
             Text(globe.date ?? "")
                 .foregroundStyle(.secondary)
                 .opacity(globe.date?.isEmpty == true ? 0 : 1)
-            
         }
         .font(.caption)
         .allowsTightening(true)
