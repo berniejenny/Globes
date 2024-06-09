@@ -65,22 +65,19 @@ import SwiftUI
     /// - Parameters:
     ///   - globe: The globe to show.
     ///   - openImmersiveSpaceAction: Action for opening an immersive space.
-    /// - Returns: True if there is enough memory to open the globe.
-    @discardableResult func show(globe: Globe, openImmersiveSpaceAction: OpenImmersiveSpaceAction) -> Bool {
+    func show(globe: Globe, openImmersiveSpaceAction: OpenImmersiveSpaceAction) {
         guard ResourceLoader.canLoadAnotherGlobe else {
             errorToShowInAlert = error(
                 "There is not enough memory to show another globe.",
                 secondaryMessage: "First hide a visible globe, then select this globe again."
             )
-            return false
+            return
         }
             
         Task {
             openImmersiveGlobeSpace(openImmersiveSpaceAction)
             ResourceLoader.loadGlobe(globe: globe, model: self)
         }
-        
-        return true
     }
     
     @MainActor
