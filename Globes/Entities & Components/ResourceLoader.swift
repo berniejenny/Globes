@@ -12,6 +12,11 @@ struct ResourceLoader {
     private init() {}
     
     static var canLoadAnotherGlobe: Bool {
+
+#if targetEnvironment(simulator)
+        return true
+#endif
+        
         // 348 MB GPU
         // 350 to 385 MB PROC
         // estimated size in bytes of a 16k×8k RGBA texture
