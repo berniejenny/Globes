@@ -9,6 +9,7 @@
     "name" : "Behaim’s Globe (Facsimile)",
     "nameTranslated" : "",
     "radius" : 0.2,
+    "shortName" : "Behaim’s Globe",
     "texture" : "Behaim_12237025",
     "type" : "earth"
   },
@@ -21,6 +22,7 @@
     "infoURL" : "https:\/\/www.davidrumsey.com\/luna\/servlet\/s\/107x38",
     "name" : "A.D. 1498. The Discovery of America",
     "radius" : 0.15,
+    "shortName" : "Discovery of America",
     "texture" : "Quingeo",
     "type" : "earth"
   },
@@ -147,6 +149,7 @@
     "infoURL" : "https:\/\/www.davidrumsey.com\/luna\/servlet\/s\/a915p4",
     "name" : "Aeronautical Planning Charts of the World ",
     "radius" : 1,
+    "shortName" : "Aeronautical Charts",
     "texture" : "WorldAeronautical",
     "type" : "earth"
   },
@@ -172,6 +175,7 @@
     "name" : "Geologic Globe of the Moon",
     "nameTranslated" : "",
     "radius" : 1,
+    "shortName" : "Geology of Moon",
     "texture" : "MoonGeology",
     "type" : "moon"
   },
@@ -183,6 +187,7 @@
     "infoURL" : "https:\/\/www.davidrumsey.com\/luna\/servlet\/s\/lb31rx",
     "name" : "Mars Viking Global Mosaic",
     "radius" : 0.3,
+    "shortName" : "Mars",
     "texture" : "Mars_Viking_10594",
     "type" : "planet"
   },
@@ -195,6 +200,7 @@
     "name" : "Jupiter Io Global Mosaic",
     "nameTranslated" : "",
     "radius" : 0.3,
+    "shortName" : "Jupiter Io",
     "texture" : "Jupiter_IO",
     "type" : "moonNonEarth"
   },
@@ -206,6 +212,7 @@
     "infoURL" : "https:\/\/www.davidrumsey.com\/luna\/servlet\/s\/7e2nxk",
     "name" : "Moon Global Morphology Mosaic",
     "radius" : 0.3,
+    "shortName" : "Morphology of Moon",
     "texture" : "MoonBW",
     "type" : "moon"
   },
@@ -217,6 +224,7 @@
     "infoURL" : "https:\/\/www.davidrumsey.com\/luna\/servlet\/s\/44g8e9",
     "name" : "Mercury Messenger Global Mosaic",
     "radius" : 0.3,
+    "shortName" : "Mercury",
     "texture" : "Mercury_10591",
     "type" : "planet"
   },
@@ -242,6 +250,7 @@
     "infoURL" : "https:\/\/www.davidrumsey.com\/luna\/servlet\/s\/l4x5h0",
     "name" : "Bellerby Prussian Blue World Globe",
     "radius" : 0.325,
+    "shortName" : "Bellerby Prussian Blue",
     "texture" : "Bellerby65cmPrussianBlue",
     "type" : "earth"
   },
@@ -254,6 +263,7 @@
     "infoURL" : "https:\/\/www.davidrumsey.com\/luna\/servlet\/s\/daqe1k",
     "name" : "Bellerby Yellow Ochre World Globe",
     "radius" : 0.325,
+    "shortName" : "Bellerby Yellow Ochre",
     "texture" : "Bellerby65cmYellowOchre",
     "type" : "earth"
   }
