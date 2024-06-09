@@ -16,11 +16,11 @@ struct ContentView: View {
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
 
     private enum Tab {
-        case gallery, favorites, search, createGlobe, settings, about
+        case gallery, favorites, play, search, createGlobe, settings, about
         
         var minWidth: Double {
             switch self {
-            case .gallery, .favorites, .settings:
+            case .gallery, .favorites, .play, .settings:
                 540
             case .search, .createGlobe:
                 800
@@ -35,6 +35,8 @@ struct ContentView: View {
                 330
             case .favorites:
                 316
+            case .play:
+                500
             case .search:
                 500
             case .createGlobe:
@@ -68,9 +70,13 @@ struct ContentView: View {
             FavoritesView()
                 .tabItem { Label("Favorites", systemImage: "heart") }
                 .tag(Tab.favorites)
+            PlayView()
+                .tabItem { Label("Play", systemImage: "play") }
+                .tag(Tab.play)
             SearchView()
                 .tabItem { Label("Search", systemImage: "magnifyingglass") }
                 .tag(Tab.search)
+#warning("Create custom globe")
 //            CreateGlobeView()
 //                .tabItem { Label("Create a Globe", systemImage: "hammer") }
 //                .tag(Tab.createGlobe)
