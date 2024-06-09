@@ -6,6 +6,7 @@
 //
 
 import ARKit
+import os
 import RealityKit
 import SwiftUI
 
@@ -21,14 +22,11 @@ public final class CameraTracker {
         Task {
             do {
                 try await arkitSession.run([worldTrackingProvider])
+                Logger().log("Started ARKitSession")
             } catch {
                 fatalError("Cannot observe camera position: \(error)")
             }
         }
-    }
-    
-    deinit {
-        arkitSession.stop()
     }
     
     private let arkitSession = ARKitSession()
@@ -38,9 +36,16 @@ public final class CameraTracker {
     
     /// The transform from the device to the origin coordinate system.
     private var cameraTransform: Transform? {
-        guard WorldTrackingProvider.isSupported,
-              worldTrackingProvider.state == .running,
-              let deviceAnchor = worldTrackingProvider.queryDeviceAnchor(atTimestamp: CACurrentMediaTime()) else {
+        guard WorldTrackingProvider.isSupported else {
+            Logger().error("Camera tracking is not supported.")
+            return nil
+        }
+        guard worldTrackingProvider.state == .running else {
+            return nil
+        }
+        
+        guard let deviceAnchor = worldTrackingProvider.queryDeviceAnchor(atTimestamp: CACurrentMediaTime()) else {
+            Logger().error("Cannot query camera anchor.")
             return nil
         }
         return Transform(matrix: deviceAnchor.originFromAnchorTransform)
