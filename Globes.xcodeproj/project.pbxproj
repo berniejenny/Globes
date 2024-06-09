@@ -13,6 +13,9 @@
 		7D6E110D2BA6C81C00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg */; };
 		7D6E110E2BA6C81C00C2BCD0 /* TharpOceanFloor4black.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11092BA6C81B00C2BCD0 /* TharpOceanFloor4black.jpg */; };
 		7D6E11102BA6C81C00C2BCD0 /* Behaim_12237025.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E110B2BA6C81C00C2BCD0 /* Behaim_12237025.jpg */; };
+		7D6FEA8B2C14711000725C20 /* PlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D6FEA8A2C14711000725C20 /* PlayView.swift */; };
+		7D6FEA8D2C14815300725C20 /* GlobeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D6FEA8C2C14815300725C20 /* GlobeView.swift */; };
+		7D6FEA8F2C154F0F00725C20 /* GlobeSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D6FEA8E2C154F0F00725C20 /* GlobeSelection.swift */; };
 		7D74643A2BA3C16F00182871 /* ViewModel+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7464392BA3C16F00182871 /* ViewModel+Preview.swift */; };
 		7D81B85D2BA123B5004C4477 /* Globes.json in Resources */ = {isa = PBXBuildFile; fileRef = 7D81B85C2BA123B5004C4477 /* Globes.json */; };
 		7D81B85F2BA13A53004C4477 /* UrbanoMonte_10130093.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D81B85E2BA13A53004C4477 /* UrbanoMonte_10130093.jpg */; };
@@ -96,6 +99,9 @@
 		7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Bellerby65cmSchminkeGagarin.jpg; sourceTree = "<group>"; };
 		7D6E11092BA6C81B00C2BCD0 /* TharpOceanFloor4black.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = TharpOceanFloor4black.jpg; sourceTree = "<group>"; };
 		7D6E110B2BA6C81C00C2BCD0 /* Behaim_12237025.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Behaim_12237025.jpg; sourceTree = "<group>"; };
+		7D6FEA8A2C14711000725C20 /* PlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayView.swift; sourceTree = "<group>"; };
+		7D6FEA8C2C14815300725C20 /* GlobeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobeView.swift; sourceTree = "<group>"; };
+		7D6FEA8E2C154F0F00725C20 /* GlobeSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobeSelection.swift; sourceTree = "<group>"; };
 		7D7464392BA3C16F00182871 /* ViewModel+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModel+Preview.swift"; sourceTree = "<group>"; };
 		7D81B85C2BA123B5004C4477 /* Globes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Globes.json; sourceTree = SOURCE_ROOT; };
 		7D81B85E2BA13A53004C4477 /* UrbanoMonte_10130093.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = UrbanoMonte_10130093.jpg; sourceTree = "<group>"; };
@@ -265,6 +271,7 @@
 				7DCE1BF72C12D50000234DB6 /* AboutView.swift */,
 				7DCE1BF82C12D50000234DB6 /* FavoritesView.swift */,
 				7DCE1BF92C12D50000234DB6 /* GalleryView.swift */,
+				7D6FEA8A2C14711000725C20 /* PlayView.swift */,
 				7DCE1BFA2C12D50000234DB6 /* SearchView.swift */,
 				7DCE1BFB2C12D50000234DB6 /* SettingsView.swift */,
 			);
@@ -285,6 +292,7 @@
 				7DCE1C022C12D50000234DB6 /* ImmersivePreviewGlobeView.swift */,
 				7DCE1C032C12D50000234DB6 /* WebView.swift */,
 				7DCE1C042C12D50000234DB6 /* WebViewDecorated.swift */,
+				7D6FEA8C2C14815300725C20 /* GlobeView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -308,6 +316,7 @@
 			children = (
 				7DCE1BE62C12D50000234DB6 /* Globe.swift */,
 				7DCE1C0F2C12D50100234DB6 /* GlobeConfiguration.swift */,
+				7D6FEA8E2C154F0F00725C20 /* GlobeSelection.swift */,
 				7DCE1BE02C12D4FF00234DB6 /* GlobeType.swift */,
 				7DCE1BE82C12D50000234DB6 /* Lighting.swift */,
 				7DCE1BE52C12D50000234DB6 /* PanoramaImmersionStyle.swift */,
@@ -536,13 +545,16 @@
 				7DCE1C202C12D50100234DB6 /* FavoriteGlobeButton.swift in Sources */,
 				7DCE1C312C12D50100234DB6 /* CollisionBox.swift in Sources */,
 				7DCE1C352C12D50100234DB6 /* PanoramaEntity.swift in Sources */,
+				7D6FEA8F2C154F0F00725C20 /* GlobeSelection.swift in Sources */,
 				7DCE1C232C12D50100234DB6 /* AboutView.swift in Sources */,
 				7DCE1C1E2C12D50100234DB6 /* ButtonImage.swift in Sources */,
 				7DCE1C342C12D50100234DB6 /* ImageBasedLightSourceEntity.swift in Sources */,
 				7DCE1C322C12D50100234DB6 /* GlobeEntity.swift in Sources */,
 				7DE4FAD02BA2AEF600C4B637 /* Globe+Preview.swift in Sources */,
 				7DCE1C222C12D50100234DB6 /* PanoramaButton.swift in Sources */,
+				7D6FEA8B2C14711000725C20 /* PlayView.swift in Sources */,
 				7DCE1C2A2C12D50100234DB6 /* GlobeSelectionView.swift in Sources */,
+				7D6FEA8D2C14815300725C20 /* GlobeView.swift in Sources */,
 				7DCE1C362C12D50100234DB6 /* PreviewGlobeEntity.swift in Sources */,
 				7DCE1C172C12D50100234DB6 /* Lighting.swift in Sources */,
 				7DCE1C252C12D50100234DB6 /* GalleryView.swift in Sources */,
