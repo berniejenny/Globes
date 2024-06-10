@@ -9,6 +9,6 @@ import SwiftUI
 
 extension ViewModel {
     static var preview: ViewModel {
-        ViewModel()
+        ViewModel.shared
     }
 }

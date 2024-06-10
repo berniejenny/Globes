@@ -8,7 +8,12 @@
 import os
 import SwiftUI
 
+/// For the new Observable framework: https://developer.apple.com/documentation/swiftui/migrating-from-the-observable-object-protocol-to-the-observable-macro
 @Observable class ViewModel: CustomDebugStringConvertible {
+    
+    /// Shared singleton that can be accessed by the AppDelegate.
+    static let shared = ViewModel()
+    
     @MainActor
     var globes: [Globe] = []
     
@@ -385,7 +390,7 @@ import SwiftUI
     
     // MARK: - Initializer
     
-    init() {
+    private init() {
         Task { @MainActor in
             // load Globes.json
             do {
