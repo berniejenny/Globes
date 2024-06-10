@@ -5,26 +5,42 @@
 //  Created by Bernhard Jenny on 2/5/2024.
 //
 
+import os
 import SwiftUI
 
-@main
-struct GlobesApp: App {
-    @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
-    @Environment(\.openURL) private var openURL
-    
-    /// View model injected in environment.
-    @State private var model = ViewModel()
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
-    init() {
         // register custom components and systems
         RotationComponent.registerComponent()
         RotationSystem.registerSystem()
         GlobeBillboardComponent.registerComponent()
-        GlobeBillboardSystem.registerSystem()        
+        GlobeBillboardSystem.registerSystem()
         
         // start camera tracking
         CameraTracker.start()
+        
+        return true
     }
+    
+    func applicationDidReceiveMemoryWarning(_ application: UIApplication) {
+        guard let globeID = ViewModel.shared.configurations.keys.first else { return }
+        Task { @MainActor in
+            ViewModel.shared.configurations[globeID] = nil
+            ViewModel.shared.globeEntities[globeID] = nil
+        }
+        Logger().info("Globes received a memory warning and will close one globe.")
+    }
+}
+
+@main
+struct GlobesApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
+    @Environment(\.openURL) private var openURL
+    
+    /// View model injected in environment. @State instead of the old @StateObject is fine with the new Observable framework.
+    @State private var model = ViewModel.shared
     
     var body: some Scene {
         WindowGroup {
