@@ -85,9 +85,11 @@ struct PlayView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     PlayView()
         .environment(ViewModel.preview)
         .frame(width: 800)
         .glassBackgroundEffect()
 }
+#endif
