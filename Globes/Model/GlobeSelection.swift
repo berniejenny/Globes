@@ -8,7 +8,7 @@
 import Foundation
 
 enum GlobeSelection: String, Hashable, CaseIterable, Identifiable {
-    case all, favorites, earth, celestial, moon, planets, custom
+    case all, favorites, earth, celestial, moon, planets, custom, none
     
     var id: Self { self }
     
@@ -28,6 +28,8 @@ enum GlobeSelection: String, Hashable, CaseIterable, Identifiable {
             "circle"
         case .custom:
             "hammer.fill"
+        case .none:
+            "xmark"
         }
     }
     
@@ -47,6 +49,8 @@ enum GlobeSelection: String, Hashable, CaseIterable, Identifiable {
             "Planets and their Moons"
         case .custom:
             "Custom Globes"
+        case .none:
+            "None"
         }
     }
 }

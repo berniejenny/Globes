@@ -15,6 +15,8 @@ struct GlobeConfiguration: Equatable {
     /// If true, a view is attached to the globe
     var showAttachment = false
     
+    var selection = GlobeSelection.none
+    
     // MARK: - Size
     
     /// Maximum diameter of globe when scaled up in meter

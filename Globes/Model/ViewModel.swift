@@ -35,6 +35,8 @@ import SwiftUI
             globes.filter { $0.type == .planet || $0.type == .moonNonEarth }
         case .custom:
             globes.filter { $0.isCustomGlobe }
+        case .none:
+            []
         }
     }
     
