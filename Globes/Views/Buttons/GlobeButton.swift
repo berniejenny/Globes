@@ -51,7 +51,7 @@ struct GlobeButton: View {
     private func showGlobe(_ show: Bool) {
         Task { @MainActor in
             if show {
-                model.show(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
+                model.load(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
             } else {
                 model.hideGlobe(with: globe.id)
             }
