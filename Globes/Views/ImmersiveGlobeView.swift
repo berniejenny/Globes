@@ -48,11 +48,15 @@ struct ImmersiveGlobeView: View {
             evenIBL = await loadImageBaseLightSourceEntity(lighting: .even)
             if let lampsIBL { content.add(lampsIBL) }
             if let evenIBL { content.add(evenIBL) }
+            
+            // Subscribe to add events to trigger move-in animation.
+            // The animation can only start after the immersive space has been created and the entity added.
+            let _ = content.subscribe(to: SceneEvents.DidAddEntity.self) { event in
+                animateMoveIn(of: event.entity)
+            }
         } update: { content, attachments in
             if globeEntitiesNeedUpdate {
-                if let root = content.entities.first(where: { $0.name == "Globes" }) {
-                    addGlobeEntities(to: root, attachments: attachments)
-                }
+                addGlobeEntities(to: content, attachments: attachments)
                 Task { @MainActor in
                     globeEntitiesNeedUpdate = false
                 }
@@ -138,18 +142,44 @@ struct ImmersiveGlobeView: View {
             }
         }
     }
-    
+
     @MainActor
-    private func addGlobeEntities(to root: Entity, attachments: RealityViewAttachments) {
-        // remove current globes
-        root.children.removeAll(where: { $0 is GlobeEntity })
+    /// Add new globe entities, remove globe entities that no longer exist, and update globe view attachments.
+    /// - Parameters:
+    ///   - content: Root of scene content.
+    ///   - attachments: The attachments for the globes.
+    private func addGlobeEntities(to content: RealityViewContent, attachments: RealityViewAttachments) {
+        guard let root = content.entities.first(where: { $0.name == "Globes" }) else { return }
+        
+        func globeExist(_ entity: Entity) -> Bool {
+            guard let globeEntity = entity as? GlobeEntity else { return false }
+            return model.configurations.keys.contains(globeEntity.globeId)
+        }
+        
+        func globeIsAdded(_ id: Globe.ID) -> Bool {
+            root.children.contains(where: { ($0 as? GlobeEntity)?.globeId == id })
+        }
+        
+        // remove globe entities for which no configuration exists
+        root.children.removeAll(where: { !globeExist($0) })
+                                            
+        // add new globe entities
+        for entity in model.globeEntities.values where !globeIsAdded(entity.globeId) {
+            root.addChild(entity)
+        }
         
         // update attachments
         addAttachments(attachments)
-        
-        for globeEntity in model.globeEntities.values {
-            root.addChild(globeEntity)
-        }        
+    }
+    
+    @MainActor
+    /// Move-in animation that changes the position and the scale of a globe.
+    /// - Parameter entity: The globe entity.
+    private func animateMoveIn(of entity: Entity) {
+        if let globeEntity = entity as? GlobeEntity {
+            let targetPosition = model.targetPosition(for: globeEntity.globeId)
+            globeEntity.animateTransform(scale: 1, position: targetPosition)
+        }
     }
     
     private func loadImageBaseLightSourceEntity(lighting: Lighting) async -> ImageBasedLightSourceEntity? {
