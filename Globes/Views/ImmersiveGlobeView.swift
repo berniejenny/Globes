@@ -153,7 +153,7 @@ struct ImmersiveGlobeView: View {
         
         func globeExist(_ entity: Entity) -> Bool {
             guard let globeEntity = entity as? GlobeEntity else { return false }
-            return model.configurations.keys.contains(globeEntity.globeId)
+            return model.hasConfiguration(for: globeEntity.globeId)
         }
         
         func globeIsAdded(_ id: Globe.ID) -> Bool {

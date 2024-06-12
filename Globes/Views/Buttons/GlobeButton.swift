@@ -15,7 +15,7 @@ struct GlobeButton: View {
     
     @MainActor
     private var globeExists: Bool {
-        model.configurations.keys.contains(globe.id)
+        model.hasConfiguration(for: globe.id)
     }
     
     @MainActor

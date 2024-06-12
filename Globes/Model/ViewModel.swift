@@ -44,6 +44,11 @@ import SwiftUI
     var configurations: [Globe.ID: GlobeConfiguration] = [:]
     
     @MainActor
+    func hasConfiguration(for globeId: Globe.ID) -> Bool {
+        configurations.keys.contains(globeId)
+    }
+    
+    @MainActor
     var globeEntities: [Globe.ID: GlobeEntity] = [:]
     
     @MainActor
@@ -72,8 +77,7 @@ import SwiftUI
     ///   - globe: The globe to show.
     ///   - openImmersiveSpaceAction: Action for opening an immersive space.
     func load(globe: Globe, openImmersiveSpaceAction: OpenImmersiveSpaceAction) {
-        let globeIsLoaded = configurations.keys.contains(globe.id)
-        guard !globeIsLoaded else { return }
+        guard !hasConfiguration(for: globe.id) else { return }
         
         var configuration = GlobeConfiguration(
             radius: globe.radius,

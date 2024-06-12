@@ -27,7 +27,7 @@ struct GlobeConfiguration: Equatable {
     
     // MARK: - Position
     
-    /// Position the globe relative to the camera position such that closest point on the globe is at `distanceToGlobe`.
+    /// Position the globe relative to the camera location such that the closest point on the globe is at `distanceToGlobe`.
     /// The direction between the camera and the globe is 30 degrees below the horizon.
     /// - Parameter distanceToGlobe: Distance to globe
     func positionRelativeToCamera(distanceToGlobe: Float) -> SIMD3<Float> {
