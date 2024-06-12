@@ -92,7 +92,7 @@ struct GlobeSelectionView: View {
     
     private func showGlobe() {
         Task { @MainActor in
-            let _ = await model.show(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
+            let _ = await model.load(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
         }
     }
 }

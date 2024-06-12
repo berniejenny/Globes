@@ -94,7 +94,7 @@ struct GlobeView: View {
     
     @MainActor
     private func showGlobe() {
-        model.show(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
+        model.load(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
     }
 }
 

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7D0905CC2C187022008B9513 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 7D0905CB2C187022008B9513 /* AsyncAlgorithms */; };
 		7D62945A2BC8ECE1006AB242 /* WorldAeronautical.heic in Resources */ = {isa = PBXBuildFile; fileRef = 7D6294592BC8ECE1006AB242 /* WorldAeronautical.heic */; };
 		7D62945C2BC8ED2D006AB242 /* MoonGeology.heic in Resources */ = {isa = PBXBuildFile; fileRef = 7D62945B2BC8ED2D006AB242 /* MoonGeology.heic */; };
 		7D6E110C2BA6C81C00C2BCD0 /* Pardies_Celestial_6900023.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11072BA6C81B00C2BCD0 /* Pardies_Celestial_6900023.jpg */; };
@@ -19,6 +20,7 @@
 		7D74643A2BA3C16F00182871 /* ViewModel+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7464392BA3C16F00182871 /* ViewModel+Preview.swift */; };
 		7D81B85D2BA123B5004C4477 /* Globes.json in Resources */ = {isa = PBXBuildFile; fileRef = 7D81B85C2BA123B5004C4477 /* Globes.json */; };
 		7D81B85F2BA13A53004C4477 /* UrbanoMonte_10130093.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D81B85E2BA13A53004C4477 /* UrbanoMonte_10130093.jpg */; };
+		7D87F85E2C19354C00EAC6C7 /* SerialGlobeLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D87F85D2C19354C00EAC6C7 /* SerialGlobeLoader.swift */; };
 		7D8CD0DF2BA6CC630053B32D /* HenzeWorld.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D8CD0DD2BA6CC630053B32D /* HenzeWorld.jpg */; };
 		7D8CD0E02BA6CC630053B32D /* Cassini_Celestial_5750000.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D8CD0DE2BA6CC630053B32D /* Cassini_Celestial_5750000.jpg */; };
 		7D9614EA2BC66ED500A78DBB /* Coronelli_Terrestrial_10070028.heic in Resources */ = {isa = PBXBuildFile; fileRef = 7D9614E92BC66ED500A78DBB /* Coronelli_Terrestrial_10070028.heic */; };
@@ -105,6 +107,7 @@
 		7D7464392BA3C16F00182871 /* ViewModel+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModel+Preview.swift"; sourceTree = "<group>"; };
 		7D81B85C2BA123B5004C4477 /* Globes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Globes.json; sourceTree = SOURCE_ROOT; };
 		7D81B85E2BA13A53004C4477 /* UrbanoMonte_10130093.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = UrbanoMonte_10130093.jpg; sourceTree = "<group>"; };
+		7D87F85D2C19354C00EAC6C7 /* SerialGlobeLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialGlobeLoader.swift; sourceTree = "<group>"; };
 		7D8CD0DD2BA6CC630053B32D /* HenzeWorld.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = HenzeWorld.jpg; sourceTree = "<group>"; };
 		7D8CD0DE2BA6CC630053B32D /* Cassini_Celestial_5750000.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Cassini_Celestial_5750000.jpg; sourceTree = "<group>"; };
 		7D9614E92BC66ED500A78DBB /* Coronelli_Terrestrial_10070028.heic */ = {isa = PBXFileReference; lastKnownFileType = file; path = Coronelli_Terrestrial_10070028.heic; sourceTree = "<group>"; };
@@ -191,6 +194,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D0905CC2C187022008B9513 /* AsyncAlgorithms in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -307,6 +311,7 @@
 				7DCE1C0B2C12D50000234DB6 /* PanoramaEntity.swift */,
 				7DCE1C0C2C12D50000234DB6 /* PreviewGlobeEntity.swift */,
 				7DCE1C0D2C12D50000234DB6 /* ResourceLoader.swift */,
+				7D87F85D2C19354C00EAC6C7 /* SerialGlobeLoader.swift */,
 			);
 			path = "Entities & Components";
 			sourceTree = "<group>";
@@ -433,6 +438,7 @@
 			);
 			name = Globes;
 			packageProductDependencies = (
+				7D0905CB2C187022008B9513 /* AsyncAlgorithms */,
 			);
 			productName = Globes;
 			productReference = 7DEAB0442B9B04C2004027B1 /* Globes.app */;
@@ -446,7 +452,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1530;
-				LastUpgradeCheck = 1530;
+				LastUpgradeCheck = 1540;
 				TargetAttributes = {
 					7DCFBEEF2BA4203900B4F27C = {
 						CreatedOnToolsVersion = 15.3;
@@ -465,6 +471,9 @@
 				Base,
 			);
 			mainGroup = 7DEAB03B2B9B04C2004027B1;
+			packageReferences = (
+				7D0905CA2C187022008B9513 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
+			);
 			productRefGroup = 7DEAB0452B9B04C2004027B1 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -556,6 +565,7 @@
 				7DCE1C2A2C12D50100234DB6 /* GlobeSelectionView.swift in Sources */,
 				7D6FEA8D2C14815300725C20 /* GlobeView.swift in Sources */,
 				7DCE1C362C12D50100234DB6 /* PreviewGlobeEntity.swift in Sources */,
+				7D87F85E2C19354C00EAC6C7 /* SerialGlobeLoader.swift in Sources */,
 				7DCE1C172C12D50100234DB6 /* Lighting.swift in Sources */,
 				7DCE1C252C12D50100234DB6 /* GalleryView.swift in Sources */,
 				7DCE1C102C12D50100234DB6 /* GlobeType.swift in Sources */,
@@ -602,6 +612,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 2;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Globes Meta/Preview Content\"";
 				DEVELOPMENT_TEAM = L8FKNLG3XM;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -633,6 +644,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 2;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Globes Meta/Preview Content\"";
 				DEVELOPMENT_TEAM = L8FKNLG3XM;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -714,7 +726,7 @@
 				SDKROOT = xros;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				XROS_DEPLOYMENT_TARGET = 1.1;
+				XROS_DEPLOYMENT_TARGET = 1.2;
 			};
 			name = Debug;
 		};
@@ -770,7 +782,7 @@
 				SDKROOT = xros;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
-				XROS_DEPLOYMENT_TARGET = 1.1;
+				XROS_DEPLOYMENT_TARGET = 1.2;
 			};
 			name = Release;
 		};
@@ -859,6 +871,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		7D0905CA2C187022008B9513 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-async-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		7D0905CB2C187022008B9513 /* AsyncAlgorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7D0905CA2C187022008B9513 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */;
+			productName = AsyncAlgorithms;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 7DEAB03C2B9B04C2004027B1 /* Project object */;
 }

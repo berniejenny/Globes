@@ -20,7 +20,7 @@ struct PanoramaButton: View {
     
     @MainActor
     private var showLoadingProgress: Bool {
-        model.isLoadingPanorama && isSelected
+        model.isLoadingPanorama && model.panoramaGlobeToLoad?.id == globe.id
     }
     
     var body: some View {
@@ -29,7 +29,7 @@ struct PanoramaButton: View {
                 if isSelected  {
                     model.hidePanorama()
                 } else {
-                    model.showPanorama(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
+                    model.loadPanorama(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
                 }
             }) {
                 ButtonImage(name: isSelected ? "pano.fill" : "pano")

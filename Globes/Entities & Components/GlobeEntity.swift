@@ -5,6 +5,7 @@
 //  Created by Bernhard Jenny on 13/3/2024.
 //
 
+import os
 import RealityKit
 import SwiftUI
 
@@ -51,6 +52,7 @@ class GlobeEntity: Entity {
         
         let mesh: MeshResource = .generateSphere(radius: globe.radius)
         let modelEntity = ModelEntity(mesh: mesh, materials: [material])
+        modelEntity.name = "Sphere"
         modelEntity.components.set(GroundingShadowComponent(castsShadow: true))
         
         // Add InputTargetComponent and CollisionComponent to enable gestures and physics
@@ -92,6 +94,9 @@ class GlobeEntity: Entity {
         position: SIMD3<Float>? = nil,
         duration: Double = 2
     ) {
+        if let scale, abs(scale) < 0.000001 {
+            Logger().warning("Animating the scale of an entity to 0 will cause a subsequent inverse of the entity's transform to return NaN values.")
+        }
         let scale = scale == nil ? self.scale : [scale!, scale!, scale!]
         let orientation = orientation ?? self.orientation
         let position = position ?? self.position
@@ -102,6 +107,10 @@ class GlobeEntity: Entity {
         )
         animationPlaybackController?.stop()
         animationPlaybackController = move(to: transform, relativeTo: nil, duration: duration)
+        if animationPlaybackController?.isPlaying == false {
+            Logger().warning("move(to: relativeTo: duration:) animation not playing for '\(self.name)'.")
+            self.transform = transform
+        }
     }
     
     /// Returns true if the globe axis is vertically oriented.

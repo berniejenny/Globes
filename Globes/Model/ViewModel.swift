@@ -12,6 +12,7 @@ import SwiftUI
 @Observable class ViewModel: CustomDebugStringConvertible {
     
     /// Shared singleton that can be accessed by the AppDelegate.
+    @MainActor
     static let shared = ViewModel()
     
     @MainActor
@@ -66,23 +67,73 @@ import SwiftUI
     }
     
     @MainActor
-    /// Open an immersive space if there is none and show a globe. The globe fades in and is positioned such that it should not touch any existing globe.
+    /// Open an immersive space if there is none and show a globe. Once loaded, the globe fades in and is positioned such that it should not touch any existing globe.
     /// - Parameters:
     ///   - globe: The globe to show.
     ///   - openImmersiveSpaceAction: Action for opening an immersive space.
-    func show(globe: Globe, openImmersiveSpaceAction: OpenImmersiveSpaceAction) {
-        guard ResourceLoader.canLoadAnotherGlobe else {
-            errorToShowInAlert = error(
-                "There is not enough memory to show another globe.",
-                secondaryMessage: "First hide a visible globe, then select this globe again."
-            )
+    func load(globe: Globe, openImmersiveSpaceAction: OpenImmersiveSpaceAction) {
+        let globeIsLoaded = configurations.keys.contains(globe.id)
+        guard !globeIsLoaded else { return }
+        
+        var configuration = GlobeConfiguration(
+            radius: globe.radius,
+            speed: GlobeConfiguration.defaultRotationSpeed,
+            adjustRotationSpeedToSize: true,
+            isRotationPaused: !rotateGlobes
+        )
+        configuration.isLoading = true
+        configurations[globe.id] = configuration
+        
+        Task {
+            openImmersiveGlobeSpace(openImmersiveSpaceAction)            
+            await SerialGlobeLoader.shared.load(globe: globe)
+        }
+    }
+    
+    @MainActor
+    /// Called by `SerialGlobeLoader` when a new globe entity has been loaded.
+    /// - Parameter globeEntity: The globe entity to add.
+    func storeGlobeEntity(_ globeEntity: GlobeEntity) {
+        let id = globeEntity.globeId
+        
+        // toggle the loading flag of the configuration
+        guard var configuration = configurations[id] else {
+            errorToShowInAlert = error("The globe cannot be shown.")
+            Logger().error("The configuration cannot be found for a new globe entity.")
             return
         }
-            
-        Task {
-            openImmersiveGlobeSpace(openImmersiveSpaceAction)
-            ResourceLoader.loadGlobe(globe: globe, model: self)
+        configuration.isLoading = false
+        configurations[id] = configuration
+        
+        // Set the initial scale and position for a move-in animation.
+        // The animation is started by a DidAddEntity event when the immersive space has been created and the globe has been added to the scene.
+        globeEntity.scale = [0.01, 0.01, 0.01]
+        globeEntity.position = configuration.positionRelativeToCamera(distanceToGlobe: 2)
+        
+        // Rotate the central meridian to the camera, to avoid showing the empty hemisphere on the backside of some globes.
+        // The central meridian is at [-1, 0, 0], because the texture u-coordinate with lat = -180° starts at the x-axis.
+        if let viewDirection = CameraTracker.shared.viewDirection {
+            var orientation = simd_quatf(from: [-1, 0, 0], to: -viewDirection)
+            orientation = GlobeEntity.orientToNorth(orientation: globeEntity.orientation)
+            globeEntity.orientation = orientation
         }
+        
+        // store the globe entity
+        globeEntities[id] = globeEntity
+        
+        AppStore.increaseGlobesCount(promptReview: false)
+    }
+    
+    @MainActor
+    /// Called by `SerialGlobeLoader` when a new globe entity could not be loaded.
+    /// - Parameters:
+    ///   - error: Error to display.
+    ///   - id: Globe id.
+    func loadingGlobeFailed(_ error: Error, id: Globe.ID) {
+        configurations.removeValue(forKey: id)
+        globeEntities.removeValue(forKey: id)
+        
+        errorToShowInAlert = error
     }
     
     @MainActor
@@ -149,7 +200,7 @@ import SwiftUI
     ///   - radius: Radius of the globe.
     ///   - spacing: Spacing between globes in meter.
     /// - Returns: True if a globe with `radius` can be positioned at `position`; false otherwise.
-    func canPlaceGlobe(at position: SIMD3<Float>, with radius: Float, spacing: Float = 0.05) -> Bool {
+    private func canPlaceGlobe(at position: SIMD3<Float>, with radius: Float, spacing: Float = 0.05) -> Bool {
         for (globeID, globeEntity) in globeEntities {
             let otherPosition = globeEntity.position(relativeTo: nil)
             guard let otherRadius = globes.first(where: { $0.id == globeID })?.radius else {
@@ -164,12 +215,58 @@ import SwiftUI
         return true
     }
     
+    @MainActor
+    /// Returns a  position for a new globe. Tries to find a position that does not result in intersections with existing globes.
+    /// - Parameters:
+    ///   - configuration: Configuration of the new globe.
+    /// - Returns: Position of the center of the globe.
+    func targetPosition(for globeId: Globe.ID) -> SIMD3<Float> {
+        guard let configuration = configurations[globeId] else {
+            return [0, 1, -1]
+        }
+        
+        let targetPosition = configuration.positionRelativeToCamera(distanceToGlobe: 0.5)
+        if canPlaceGlobe(at: targetPosition, with: configuration.radius) {
+            return targetPosition
+        }
+        
+        // search for a free position
+        // local coordinate system with x-axis perpendicular to the viewing direction
+        guard let cameraViewDirection = CameraTracker.shared.viewDirection else {
+            return SIMD3(0, 1, 0)
+        }
+        let toCamera = cameraViewDirection * -1
+        let rightAxis = SIMD3(toCamera.z, 0, -toCamera.x)
+        let upAxis = cross(toCamera, rightAxis)
+        
+        // a few rotations in an Archimedean spiral
+        let rotations = 10
+        let spacing = configuration.radius + 0.1
+        let b = spacing / (2 * .pi)
+        // stretch the spiral horizontally and compress it vertically to position globes in a landscape format
+        let stretch: Float = 1.5
+        for alphaDeg in stride(from: 3, to: rotations * 360, by: 3) {
+            let omega = Float(alphaDeg) / 180 * .pi
+            let r = b * omega
+            let x = cos(omega) * r * stretch
+            let y = sin(omega) * r / stretch
+            let candidatePosition = targetPosition + x * rightAxis + y * upAxis
+            if canPlaceGlobe(at: candidatePosition, with: configuration.radius) {
+                return candidatePosition
+            }
+        }
+        
+        // could not find an empty spot
+        return targetPosition
+    }
+    
     // MARK: - Visible Panorama
     
     @MainActor
     var isShowingPanorama: Bool { panoramaGlobe != nil }
     
     @MainActor
+    /// The globe that is currently shown as panorama.
     var panoramaGlobe: Globe? = nil
     
     @MainActor
@@ -195,19 +292,37 @@ import SwiftUI
     /// - Parameters:
     ///   - globe: The globe to show on the panorama.
     ///   - openImmersiveSpaceAction: Action to call to open the immersive space.
-    func showPanorama(globe: Globe, openImmersiveSpaceAction: OpenImmersiveSpaceAction) {
-        guard ResourceLoader.canLoadAnotherGlobe else {
-            errorToShowInAlert = error(
-                "There is not enough memory to show this panorama.",
-                secondaryMessage: "First hide a globe \(isShowingPanorama ? "or the current panorama" : ""), then select the panorama again."
-            )
-            return
-        }
+    func loadPanorama(globe: Globe, openImmersiveSpaceAction: OpenImmersiveSpaceAction) {
+        let panoramaIsLoaded = panoramaGlobe?.id == globe.id
+        guard !panoramaIsLoaded else { return }
+        
+        panoramaGlobeToLoad = globe
         
         Task {
-            openImmersiveGlobeSpace(openImmersiveSpaceAction)
-            ResourceLoader.loadPanorama(globe: globe, model: self)
-        }
+            do {
+                openImmersiveGlobeSpace(openImmersiveSpaceAction)
+                await SerialGlobeLoader.shared.load(panorama: globe)
+            }
+        }        
+    }
+    
+    @MainActor
+    /// Called by `SerialGlobeLoader` when a new panorama entity has been loaded.
+    /// - Parameter panoramaEntity: The panorama entity to add.
+    func storePanoramaEntity(_ panoramaEntity: PanoramaEntity) {
+        panoramaGlobe = panoramaGlobeToLoad
+        panoramaGlobeToLoad = nil
+        self.panoramaEntity = panoramaEntity
+        AppStore.increaseGlobesCount(promptReview: false)
+    }
+    
+    @MainActor
+    /// Called by `SerialGlobeLoader` when a new panorama entity could not be loaded.
+    /// - Parameters:
+    ///   - error: Error to display.
+    func loadingPanoramaFailed(_ error: Error) {
+        panoramaGlobeToLoad = nil
+        errorToShowInAlert = error
     }
     
     @MainActor
@@ -217,7 +332,13 @@ import SwiftUI
     }
     
     @MainActor
-    var isLoadingPanorama = false
+    /// The globe that is currently loaded and later shown as a panorama.
+    var panoramaGlobeToLoad: Globe? = nil
+    
+    @MainActor
+    var isLoadingPanorama: Bool {
+        panoramaGlobeToLoad != nil
+    }
     
     // MARK: - Lighting
     
@@ -331,6 +452,10 @@ import SwiftUI
     var debugDescription: String {
         var description = "\(ViewModel.self) with \(globes.count) globes\n"
         
+        // Memory
+        let availableProcMemory = os_proc_available_memory()
+        description += "Available memory: \(availableProcMemory / 1024 / 1024) MB\n"
+        
         // Metal memory
         if let defaultDevice = MTLCreateSystemDefaultDevice () {
             let workingSet = defaultDevice.recommendedMaxWorkingSetSize
@@ -343,7 +468,6 @@ import SwiftUI
         description += "Immersive space is shown: \(immersiveSpaceIsShown)\n"
         
         // globes
-        description += "Can show another globe: \(ResourceLoader.canLoadAnotherGlobe)\n"
         description += "Rotate globes: \(rotateGlobes)\n"
         description += "Globe configurations: \(configurations.count), entities: \(globeEntities.count)\n"
         for (index, configurationKeyValue) in configurations.enumerated() {
