@@ -14,6 +14,8 @@ struct PlayView: View {
     @State private var duration: Double = 5
     @State private var adjustSize = true
     
+    private let selections: [GlobeSelection] = [.all, .favorites, .earth, .celestial, .moon, .planets]
+    
     var body: some View {
         NavigationSplitView {
             VStack {
@@ -59,7 +61,7 @@ struct PlayView: View {
         .navigationSplitViewStyle(.balanced)
         .ornament(attachmentAnchor: .scene(.top), contentAlignment: .bottom) {
             HStack {
-                ForEach(GlobeSelection.allCases.filter { $0 != .custom }) { selection in
+                ForEach(selections) { selection in
                     Toggle(isOn: binding(for: selection)) {
                         Label(selection.rawValue.localizedCapitalized, systemImage: selection.systemImage)
                     }

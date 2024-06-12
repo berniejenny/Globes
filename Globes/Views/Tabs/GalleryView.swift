@@ -12,12 +12,14 @@ struct GalleryView: View {
     
     @State private var globeSelection = GlobeSelection.all
    
+    private let selections: [GlobeSelection] = [.all, .earth, .celestial, .moon, .planets]
+    
     var body: some View {
         GlobesGridView(globes: model.filteredGlobes(selection: globeSelection))
             .animation(.default, value: globeSelection)
             .ornament(attachmentAnchor: .scene(.top), contentAlignment: .bottom) {
                 HStack {
-                    ForEach(GlobeSelection.allCases.filter { $0 != .favorites && $0 != .custom }) { selection in
+                    ForEach(selections) { selection in
                         Toggle(isOn: binding(for: selection)) {
                             Label(selection.rawValue.localizedCapitalized, systemImage: selection.systemImage)
                         }
