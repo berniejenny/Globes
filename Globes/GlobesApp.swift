@@ -25,9 +25,14 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     
     func applicationDidReceiveMemoryWarning(_ application: UIApplication) {
         guard let globeID = ViewModel.shared.configurations.keys.first else { return }
-        Task { @MainActor in
+        if Thread.current.isMainThread {
             ViewModel.shared.configurations[globeID] = nil
             ViewModel.shared.globeEntities[globeID] = nil
+        } else {
+            Task { @MainActor in
+                ViewModel.shared.configurations[globeID] = nil
+                ViewModel.shared.globeEntities[globeID] = nil
+            }
         }
         Logger().info("Globes received a memory warning and will close one globe.")
     }
