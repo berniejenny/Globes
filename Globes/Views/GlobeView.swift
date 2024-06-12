@@ -39,7 +39,7 @@ struct GlobeView: View {
     @ViewBuilder
     private var name: some View {
         let name = Text(globe.shortName ?? globe.name)
-        if model.configurations.keys.contains(globe.id) {
+        if model.hasConfiguration(for: globe.id) {
             Text("● ").foregroundColor(.accentColor) + name
         } else {
             name
