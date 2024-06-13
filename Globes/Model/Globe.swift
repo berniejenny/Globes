@@ -88,7 +88,7 @@ struct Globe: Identifiable, Hashable, Codable {
     init(
         type: GlobeType = .earth,
         name: String = "Unnamed Globe",
-        shortname: String? = nil,
+        shortName: String? = nil,
         nameTranslated: String? = nil,
         authorSurname: String? = nil,
         authorFirstName: String? = nil,
@@ -102,7 +102,7 @@ struct Globe: Identifiable, Hashable, Codable {
         self.id = UUID()
         self.type = type
         self.name = name
-        self.shortName = shortname
+        self.shortName = shortName
         self.nameTranslated = nameTranslated
         self.authorSurname = authorSurname
         self.authorFirstName = authorFirstName
