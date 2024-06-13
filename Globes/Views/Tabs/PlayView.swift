@@ -9,17 +9,20 @@ import SwiftUI
 
 struct PlayView: View {
     @Environment(ViewModel.self) var model
+    @Environment(\.openImmersiveSpace) var openImmersiveSpaceAction
     
     @State private var selection = GlobeSelection.all
-    @State private var duration: Double = 5
-    @State private var adjustSize = true
+    
+    @AppStorage("AnimationAdjustSize")  private var animationAdjustSize = true
+    @AppStorage("AnimationRandomOrder") private var animationRandomOrder = false
+    @AppStorage("AnimationInterval") private var animationInterval: Double = 3
     
     private let selections: [GlobeSelection] = [.all, .favorites, .earth, .celestial, .moon, .planets]
     
     var body: some View {
         NavigationSplitView {
             VStack {
-                Button(action: {}, label: {
+                Button(action: loadAnimatedGlobe, label: {
                     Label("Play", systemImage: "play")
                         .labelStyle(.iconOnly)
                 })
@@ -27,14 +30,20 @@ struct PlayView: View {
                 .controlSize(.large)
                 .padding(.bottom, 40)
                 
-                Text("Change After ^[\(Int(duration.rounded())) Second](inflect: true)")
+                Text("Change After ^[\(Int(animationInterval.rounded())) Second](inflect: true)")
                     .monospacedDigit()
-                Slider(value: $duration, in: 5...60)
+                Slider(value: $animationInterval, in: 2...60)
                     .padding(.bottom, 40)
                 
-                Toggle(isOn: $adjustSize) {
-                    Label("Adjust Globe Size", systemImage: "circle.circle")
+                Toggle(isOn: $animationAdjustSize) {
+                    Label("Adjust Size", systemImage: "circle.circle")
                 }
+                
+                Toggle(isOn: $animationRandomOrder) {
+                    Label("Random Order", systemImage: "dice")
+                        .labelStyle(.titleOnly)
+                }
+                .padding(.vertical)
                 
                 Spacer()
             }
@@ -82,9 +91,23 @@ struct PlayView: View {
                 if selected {
                     self.selection = selection
                 }
-            }
+            })
+    }
+    
+    @MainActor
+    private func loadAnimatedGlobe() {
+        guard var globe = model.filteredGlobes(selection: selection).first else { return }
+        globe = globe.copyWithNewId
+        globe.radius = 1
+#warning("Incomplete for animation")
+        
+        model.load(
+            globe: globe,
+            selection: selection,
+            openImmersiveSpaceAction: openImmersiveSpaceAction
         )
     }
+
 }
 
 #if DEBUG

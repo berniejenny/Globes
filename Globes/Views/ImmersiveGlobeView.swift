@@ -25,6 +25,11 @@ struct ImmersiveGlobeView: View {
     /// Sphere centered on the camera participating in physics simulation to avoid camera position inside a globe.
     @State private var headEntity: HeadEntity? = nil
     
+    @State var animationTimer: Timer? = nil
+    @AppStorage("AnimationAdjustSize")  private var animationAdjustSize = true
+    @AppStorage("AnimationRandomOrder") private var animationRandomOrder = false
+    @AppStorage("AnimationInterval") private var animationInterval: Double = 3
+    
     var body: some View {
         RealityView { content, attachments in
             let root = Entity()
@@ -113,6 +118,20 @@ struct ImmersiveGlobeView: View {
         }
         .globeGestures(model: model)
         .panoramaGestures(model: model)
+        .task(id: animationInterval) {
+            animationTimer?.invalidate()
+            animationTimer = Timer.scheduledTimer(withTimeInterval: animationInterval, repeats: true) { _ in
+                Task { @MainActor in
+                    animateTextures()
+                }
+            }
+        }
+        .onChange(of: animationAdjustSize) {
+            guard animationAdjustSize else { return }
+            for animatedGlobeEntity in model.globeEntities.values {
+#warning("TBD for animation")
+            }
+        }
     }
     
     private func updateGlobeRotations() {
@@ -182,6 +201,64 @@ struct ImmersiveGlobeView: View {
         }
     }
     
+    @MainActor
+    private func addPanoramaEntity(to content: RealityViewContent) {
+        // remove current panorama
+        if let oldPanoramaEntity = content.entities.first(where: { $0 is PanoramaEntity }) {
+            content.remove(oldPanoramaEntity)
+            model.panoramaEntity?.orientation = oldPanoramaEntity.orientation
+        }
+        
+        if let panoramaEntity = model.panoramaEntity {
+            // move to camera center
+            if let cameraPosition = CameraTracker.shared.position {
+                panoramaEntity.position = cameraPosition
+            }
+            
+            content.add(panoramaEntity)
+        }
+    }
+    
+    // MARK: - Animate Globe Textures
+
+    @MainActor
+    private func nextAnimatedGlobe(currentGlobeId: Globe.ID, selection: GlobeSelection) -> Globe? {
+//        if animationRandomOrder {
+#warning("Incomplete for animation")
+            return model.filteredGlobes(selection: selection).randomElement()
+//        } else {
+//            let globes = model.filteredGlobes(selection: selection)
+//            let currentIndex = globes.firstIndex(where: { $0.id == currentGlobeId }) ?? -1
+//            var nextIndex = currentIndex + 1
+//            nextIndex = globes.indices.contains(nextIndex) ? nextIndex : 0
+//            if globes.isEmpty {
+//                return nil
+//            } else {
+//                return globes[nextIndex]
+//            }
+//        }
+    }
+    
+    @MainActor
+    private func animateTextures() {
+        for globeEntity in model.globeEntities.values {
+            if let configuration = model.configurations[globeEntity.globeId],
+               configuration.selection != GlobeSelection.none {
+            
+                guard let nextGlobe = nextAnimatedGlobe(
+                    currentGlobeId: globeEntity.globeId,
+                    selection: configuration.selection
+                ) else { return }
+                
+                Task {
+                    await SerialGlobeLoader.shared.load(globe: nextGlobe, for: globeEntity.id)
+                }
+            }
+        }
+    }
+    
+    // MARK: - Image Based Lighting
+    
     private func loadImageBaseLightSourceEntity(lighting: Lighting) async -> ImageBasedLightSourceEntity? {
         return await ImageBasedLightSourceEntity(
             texture: lighting.imageBasedLightingTexture,
@@ -213,24 +290,6 @@ struct ImmersiveGlobeView: View {
         if let iblEntity {
             let lightReceiver = ImageBasedLightReceiverComponent(imageBasedLight: iblEntity)
             model.panoramaEntity?.components.set(lightReceiver)
-        }
-    }
-    
-    @MainActor
-    private func addPanoramaEntity(to content: RealityViewContent) {
-        // remove current panorama
-        if let oldPanoramaEntity = content.entities.first(where: { $0 is PanoramaEntity }) {
-            content.remove(oldPanoramaEntity)
-            model.panoramaEntity?.orientation = oldPanoramaEntity.orientation
-        }
-        
-        if let panoramaEntity = model.panoramaEntity {
-            // move to camera center
-            if let cameraPosition = CameraTracker.shared.position {
-                panoramaEntity.position = cameraPosition
-            }
-            
-            content.add(panoramaEntity)
         }
     }
 }

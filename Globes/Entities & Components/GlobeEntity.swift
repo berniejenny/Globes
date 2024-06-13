@@ -14,7 +14,7 @@ import SwiftUI
 class GlobeEntity: Entity {
     
     /// Child model entity
-    private var modelEntity: Entity? { children.first(where: { $0 is ModelEntity }) }
+    var modelEntity: Entity? { children.first(where: { $0 is ModelEntity }) }
     
     let globeId: Globe.ID
     
