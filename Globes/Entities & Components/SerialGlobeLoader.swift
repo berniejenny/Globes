@@ -9,7 +9,13 @@ import AsyncAlgorithms
 import RealityKit
 import SwiftUI
 
-/// A loader singleton to load texture resources serially. Serial loading instead of concurrent loading reduces the chances of out-of-memory errors
+enum GlobeDestination: Equatable {
+    case globe
+    case panorama
+    case animation(entityID: UInt64)
+}
+
+/// A singleton to load texture resources serially. Serial loading instead of concurrent loading reduces the chances of out-of-memory errors
 /// when multiple textures are loaded and mipmaps generated. Uses Apple's Async Algorithms package for serializing asynchronous tasks.
 /// Inspired by: https://stackoverflow.com/a/72353209
 actor SerialGlobeLoader {
@@ -18,7 +24,7 @@ actor SerialGlobeLoader {
     static let shared = SerialGlobeLoader()
     
     /// Queue for globes to load.
-    private let queue = AsyncChannel<(globe: Globe, isPanorama: Bool)>()
+    private let queue = AsyncChannel<(globe: Globe, destination: GlobeDestination)>()
     
     private init() {
         Task { await start() }
@@ -27,13 +33,21 @@ actor SerialGlobeLoader {
     /// Add a globe to an internal queue to load serially.
     /// - Parameter globe: The globe to load.
     func load(globe: Globe) async {
-        await queue.send((globe: globe, isPanorama: false))
+        await queue.send((globe: globe, destination: .globe))
+    }
+    
+    /// Add a globe for an animation to an internal queue to load serially.
+    /// - Parameters:
+    ///   - globe: The globe to load.
+    ///   - animatedGlobeID: The id of the globe entity that will be partially replaced by the loaded globe. Not the globeId, because this will change.
+    func load(globe: Globe, for animatedGlobeID: UInt64) async {
+        await queue.send((globe: globe, destination: .animation(entityID: animatedGlobeID)))
     }
     
     /// Add a panorama globe to an internal queue to load serially.
     /// - Parameter panorama: The panorama globe to load.
     func load(panorama: Globe) async {
-        await queue.send((globe: panorama, isPanorama: true))
+        await queue.send((globe: panorama, destination: .panorama))
     }
     
     /// A continuously running function that sequentially loads globes and panoramas in the `queue`.
@@ -43,24 +57,34 @@ actor SerialGlobeLoader {
                 guard hasSufficientMemoryForLoadingGlobe else {
                     throw LoadingError()
                 }
-                if next.isPanorama {
-                    let panoramaEntity = try await PanoramaEntity(globe: next.globe)
-                    Task { @MainActor in
-                        ViewModel.shared.storePanoramaEntity(panoramaEntity)
-                    }
-                } else {
+                switch next.destination {
+                case .globe:
                     let globeEntity = try await GlobeEntity(globe: next.globe)
                     Task { @MainActor in
                         ViewModel.shared.storeGlobeEntity(globeEntity)
                     }
+                case .panorama:
+                    let panoramaEntity = try await PanoramaEntity(globe: next.globe)
+                    Task { @MainActor in
+                        ViewModel.shared.storePanoramaEntity(panoramaEntity)
+                    }
+                case .animation(let entityID):
+                    let globeEntity = try await GlobeEntity(globe: next.globe)
+                    Task { @MainActor in
+                        ViewModel.shared.storeAnimatedGlobe(globeEntity, entityID: entityID)
+                    }
+                    break
                 }
             } catch {
                 Task { @MainActor in
-                    let errorToShow = (error as? LoadingError)?.createError(isPanorama: next.isPanorama) ?? error
-                    if next.isPanorama {
-                        ViewModel.shared.loadingPanoramaFailed(errorToShow)
-                    } else {
+                    let errorToShow = (error as? LoadingError)?.createError(isPanorama: next.destination == .panorama) ?? error
+                    switch next.destination {
+                    case .globe:
                         ViewModel.shared.loadingGlobeFailed(errorToShow, id: next.globe.id)
+                    case .panorama:
+                        ViewModel.shared.loadingPanoramaFailed(errorToShow)
+                    case .animation:
+                        ViewModel.shared.errorToShowInAlert = errorToShow
                     }
                 }
             }

@@ -6,6 +6,7 @@
 //
 
 import os
+import RealityKit
 import SwiftUI
 
 /// For the new Observable framework: https://developer.apple.com/documentation/swiftui/migrating-from-the-observable-object-protocol-to-the-observable-macro
@@ -78,10 +79,15 @@ import SwiftUI
     /// - Parameters:
     ///   - globe: The globe to show.
     ///   - openImmersiveSpaceAction: Action for opening an immersive space.
-    func load(globe: Globe, openImmersiveSpaceAction: OpenImmersiveSpaceAction) {
+    func load(
+        globe: Globe,
+        selection: GlobeSelection = .none,
+        openImmersiveSpaceAction: OpenImmersiveSpaceAction
+    ) {
         guard !hasConfiguration(for: globe.id) else { return }
         
         var configuration = GlobeConfiguration(
+            selection: selection,
             radius: globe.radius,
             speed: GlobeConfiguration.defaultRotationSpeed,
             adjustRotationSpeedToSize: true,
@@ -128,6 +134,30 @@ import SwiftUI
         globeEntities[id] = globeEntity
         
         AppStore.increaseGlobesCount(promptReview: false)
+    }
+    
+    @MainActor
+    func storeAnimatedGlobe(_ globeEntity: GlobeEntity, entityID: UInt64) {
+        if let newMaterial = globeEntity.modelEntity?.components[ModelComponent.self]?.materials.first,
+           let animatedGlobeEntity = globeEntities.values.first(where: { $0.id == entityID }),
+           let animatedModelEntity = animatedGlobeEntity.children.first(where: { $0 is ModelEntity }),
+            var animatedModelComponent = animatedModelEntity.components[ModelComponent.self] {
+        
+            // copy the material from the new globe entity to the animated globe entity
+            animatedModelComponent.materials = [newMaterial]
+            animatedModelEntity.components.set(animatedModelComponent)
+            
+            if let newRadius = globes.first(where: { $0.id == globeEntity.globeId })?.radius {
+                let animationAdjustSize = UserDefaults.standard.bool(forKey: "AnimationAdjustSize")
+                guard animationAdjustSize else { return }
+                animatedGlobeEntity.scaleAndAdjustDistanceToCamera(
+                    newScale: newRadius,
+                    radius: 1,
+                    duration: GlobeEntity.transformAnimationDuration
+                )
+                
+            }
+        }
     }
     
     @MainActor

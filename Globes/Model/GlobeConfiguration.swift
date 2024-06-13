@@ -109,11 +109,13 @@ struct GlobeConfiguration: Equatable {
     // MARK: - Initializer
     
     init(
+        selection: GlobeSelection,
         radius: Float,
         speed: Float = 0,
         adjustRotationSpeedToSize: Bool = true,
         isRotationPaused: Bool = false
     ) {
+        self.selection = selection
         self.radius = radius
         self.rotationSpeed = speed
         self.adjustRotationSpeedToSize = adjustRotationSpeedToSize
