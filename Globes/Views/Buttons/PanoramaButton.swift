@@ -32,8 +32,9 @@ struct PanoramaButton: View {
                     model.loadPanorama(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
                 }
             }) {
-                ButtonImage(name: isSelected ? "pano.fill" : "pano")
-                    .foregroundColor(isSelected ? .accentColor : .primary)
+                ButtonImage(name: isSelected || showLoadingProgress ? "pano.fill" : "pano")
+                    .foregroundColor(isSelected || showLoadingProgress ? .accentColor : .primary)
+                    .contentTransition(.symbolEffect(.replace))
             }
             .buttonStyle(.plain)
             .opacity(showLoadingProgress ? 0.05 : 1) // don't completely hide the button otherwise focus jumps to a neighboring button while the globe is loaded
