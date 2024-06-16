@@ -5,6 +5,7 @@
 //  Created by Bernhard Jenny on 8/3/2024.
 //
 
+import os
 import RealityKit
 import SwiftUI
 
@@ -18,8 +19,10 @@ struct ImmersiveGlobeView: View {
     /// True if the `configuration.panoramaEntity` changed and the entity displayed by this view needs to be replaced.
     @State private var panoramaEntityNeedsUpdate = true
     
-    /// IBL entity if virtual light is used.
+    /// Image based light entity with virtual lamps
     @State private var lampsIBL: ImageBasedLightSourceEntity? = nil
+    
+    /// Image based light entity with even lighting
     @State private var evenIBL: ImageBasedLightSourceEntity? = nil
     
     /// Sphere centered on the camera participating in physics simulation to avoid camera position inside a globe.
@@ -28,10 +31,14 @@ struct ImmersiveGlobeView: View {
     /// Entity to play spatially positioned audio when two globes collide
     @State private var collisionAudioEntity: Entity? = nil
     
+    /// Timer for animating globe textures
     @State var animationTimer: Timer? = nil
-    @AppStorage("AnimationAdjustSize")  private var animationAdjustSize = true
+    
+    /// If true, globe textures have a random order.
     @AppStorage("AnimationRandomOrder") private var animationRandomOrder = false
-    @AppStorage("AnimationInterval") private var animationInterval: Double = 3
+    
+    /// Interval between changes of the texture for animated globes, in seconds.
+    @AppStorage("AnimationInterval") private var animationInterval: Double = 5
     
     var body: some View {
         RealityView { content, attachments in
@@ -52,10 +59,14 @@ struct ImmersiveGlobeView: View {
             root.components.set(physicsSimulationComponent)
             
             // image based lighting images shared by all globes and the panorama
-            lampsIBL = await loadImageBaseLightSourceEntity(lighting: .lamps)
-            evenIBL = await loadImageBaseLightSourceEntity(lighting: .even)
-            if let lampsIBL { content.add(lampsIBL) }
-            if let evenIBL { content.add(evenIBL) }
+            if let lampsIBL = await loadImageBasedLightSourceEntity(lighting: .lamps) {
+                content.add(lampsIBL)
+                self.lampsIBL = lampsIBL
+            }
+            if let evenIBL = await loadImageBasedLightSourceEntity(lighting: .even) {
+                content.add(evenIBL)
+                self.evenIBL = evenIBL
+            }
             
             // entity to play spatially positioned audio when two globes collide
             let collisionAudioEntity = Entity()
@@ -81,22 +92,24 @@ struct ImmersiveGlobeView: View {
             }
         } attachments: {
             if model.showOnboarding {
-                ForEach(model.globes) { globe in
-                    Attachment(id: globe.id) {
-                       OnboardingAttachmentView()
+                ForEach(Array(model.configurations.values)) { configuration in
+                    Attachment(id: configuration.globeId) {
+                        OnboardingAttachmentView()
                     }
                 }
             } else {
-                ForEach(model.globes) { globe in
-                    Attachment(id: globe.id) {
-                        GlobeAttachmentView(globe: globe)
+                ForEach(Array(model.configurations.values)) { configuration in
+                    Attachment(id: configuration.globeId) {
+                        GlobeAttachmentView(globe: configuration.globe, globeId: configuration.globeId)
                     }
                 }
             }
         }
         .onChange(of: model.lighting) {
             Task { @MainActor in
-                applyImageBasedLighting()
+                for globeEntity in model.globeEntities.values {
+                    applyImageBasedLighting(to: globeEntity)
+                }
             }
         }
         .onChange(of: model.configurations) {
@@ -107,7 +120,6 @@ struct ImmersiveGlobeView: View {
         }
         .onChange(of: model.globeEntities.keys) {
             Task { @MainActor in
-                applyImageBasedLighting() // only apply IBL once entities exist, not when model.showPanorama changes
                 globeEntitiesNeedUpdate = true
             }
         }
@@ -118,7 +130,6 @@ struct ImmersiveGlobeView: View {
         }
         .onChange(of: model.panoramaEntity) {
             Task { @MainActor in
-                applyImageBasedLighting() // only apply IBL once the panorama entity exists, not when model.showPanorama changes
                 panoramaEntityNeedsUpdate = true
             }
         }
@@ -133,9 +144,8 @@ struct ImmersiveGlobeView: View {
             }
         }
     }
-    
+
     @MainActor
-    
     /// Subscribe to entity-add events to setup entities.
     ///
     /// Starting the animation and setting up IBL are only possible after the immersive space has been created and all required entities have been added.
@@ -144,11 +154,6 @@ struct ImmersiveGlobeView: View {
         if let globeEntity = event.entity as? GlobeEntity {
             animateMoveIn(of: globeEntity)
             applyImageBasedLighting(to: globeEntity)
-        }
-        if let panoramaEntity = event.entity as? PanoramaEntity, let evenIBL {
-            // setup image based lighting
-            let lightReceiver = ImageBasedLightReceiverComponent(imageBasedLight: evenIBL)
-            panoramaEntity.components.set(lightReceiver)
         }
     }
     
@@ -160,9 +165,8 @@ struct ImmersiveGlobeView: View {
     
     private func updateGlobeRotations() {
         Task { @MainActor in
-            for id in model.globeEntities.keys {
-                if let configuration = model.configurations[id],
-                   let globeEntity = model.globeEntities[id] {
+            for (id, globeEntity) in model.globeEntities {
+                if let configuration = model.configurations[id] {
                     globeEntity.updateRotation(configuration: configuration)
                 }
             }
@@ -174,9 +178,9 @@ struct ImmersiveGlobeView: View {
         for globeEntity in model.globeEntities.values {
             if let globeConfiguration = model.configurations[globeEntity.globeId],
                globeConfiguration.showAttachment || model.showOnboarding,
-               let attachmentEntity = attachments.entity(for: globeEntity.globeId) {
-                attachmentEntity.position = [0, 0, globeConfiguration.radius + 0.01]
-                attachmentEntity.components.set(GlobeBillboardComponent(radius: globeConfiguration.radius))
+               let attachmentEntity = attachments.entity(for: globeConfiguration.globeId) {
+                attachmentEntity.position = [0, 0, globeConfiguration.globe.radius + 0.01]
+                attachmentEntity.components.set(GlobeBillboardComponent(radius: globeConfiguration.globe.radius))
                 globeEntity.addChild(attachmentEntity)
             } else {
                 for viewAttachmentEntity in globeEntity.children where viewAttachmentEntity is ViewAttachmentEntity {
@@ -185,18 +189,18 @@ struct ImmersiveGlobeView: View {
             }
         }
     }
-
+    
     @MainActor
     /// Add new globe entities, remove globe entities that no longer exist, and update globe view attachments.
     /// - Parameters:
     ///   - content: Root of scene content.
     ///   - attachments: The attachments for the globes.
     private func addGlobeEntities(to content: RealityViewContent, attachments: RealityViewAttachments) {
-        guard let root = content.entities.first(where: { $0.name == "Globes" }) else { return }
+        guard let root = content.entities.first?.findEntity(named: "Globes") else { return }
         
-        func globeExist(_ entity: Entity) -> Bool {
+        func noConfigurationForGlobeEntity(_ entity: Entity) -> Bool {
             guard let globeEntity = entity as? GlobeEntity else { return false }
-            return model.hasConfiguration(for: globeEntity.globeId)
+            return !model.hasConfiguration(for: globeEntity.globeId)
         }
         
         func globeIsAdded(_ id: Globe.ID) -> Bool {
@@ -204,8 +208,8 @@ struct ImmersiveGlobeView: View {
         }
         
         // remove globe entities for which no configuration exists
-        root.children.removeAll(where: { !globeExist($0) })
-                                            
+        root.children.removeAll(where: { noConfigurationForGlobeEntity($0) })
+        
         // add new globe entities
         for entity in model.globeEntities.values where !globeIsAdded(entity.globeId) {
             root.addChild(entity)
@@ -239,81 +243,117 @@ struct ImmersiveGlobeView: View {
                 panoramaEntity.position = cameraPosition
             }
             
+            // Setup image based lighting; always use even lighting for panoramas.
+            // Search for the IBL in the reality view content instead of using @State evenIBL, which is nil
+            // when this panorama is the first model entity added to the reality view and the immersive mode
+            // is `full`, i.e. 360 degrees. This seems to be a bug in visionOS 1.2.
+            let evenIBL = find(imageBasedLighting: .even, in: content)
+            if let evenIBL {
+                let lightReceiver = ImageBasedLightReceiverComponent(imageBasedLight: evenIBL)
+                panoramaEntity.components.set(lightReceiver)
+            } else {
+                Logger().error("No image based lighting texture for panorama.")
+            }
+            
             content.add(panoramaEntity)
         }
     }
     
     // MARK: - Animate Globe Textures
-
+    
     @MainActor
+    /// Returns the next globe to load and display by an animated globe.
+    /// - Parameters:
+    ///   - currentGlobeId: The currently displayed globe.
+    ///   - selection: The globes to select the next globe from.
+    /// - Returns: The next globe, or nil if there is no next globe.
     private func nextAnimatedGlobe(currentGlobeId: Globe.ID, selection: GlobeSelection) -> Globe? {
-//        if animationRandomOrder {
-#warning("Incomplete for animation")
+        if animationRandomOrder {
             return model.filteredGlobes(selection: selection).randomElement()
-//        } else {
-//            let globes = model.filteredGlobes(selection: selection)
-//            let currentIndex = globes.firstIndex(where: { $0.id == currentGlobeId }) ?? -1
-//            var nextIndex = currentIndex + 1
-//            nextIndex = globes.indices.contains(nextIndex) ? nextIndex : 0
-//            if globes.isEmpty {
-//                return nil
-//            } else {
-//                return globes[nextIndex]
-//            }
-//        }
+        } else {
+            let globes = model.filteredGlobes(selection: selection)
+            let currentIndex = globes.firstIndex(where: { $0.id == currentGlobeId }) ?? -1
+            var nextIndex = currentIndex + 1
+            nextIndex = globes.indices.contains(nextIndex) ? nextIndex : 0
+            if globes.isEmpty {
+                return nil
+            } else {
+                return globes[nextIndex]
+            }
+        }
     }
     
     @MainActor
+    /// Change the texture of all animated globes.
     private func animateTextures() {
         for globeEntity in model.globeEntities.values {
             if let configuration = model.configurations[globeEntity.globeId],
-               configuration.selection != GlobeSelection.none {
-            
+               configuration.selection != GlobeSelection.none,
+               !configuration.isAnimationPaused {
+                // find the next globe to show
                 guard let nextGlobe = nextAnimatedGlobe(
-                    currentGlobeId: globeEntity.globeId,
+                    currentGlobeId: configuration.globe.id,
                     selection: configuration.selection
                 ) else { return }
-                
+                // Load the entire globe. Once loaded, the texture and mesh will be replaced.
                 Task {
                     await SerialGlobeLoader.shared.load(globe: nextGlobe, for: globeEntity.id)
                 }
             }
         }
+        
+        // rotation speed varies with radius and scale
+        updateGlobeRotations()
+        globeEntitiesNeedUpdate = true
     }
     
     // MARK: - Image Based Lighting
     
-    private func loadImageBaseLightSourceEntity(lighting: Lighting) async -> ImageBasedLightSourceEntity? {
-        return await ImageBasedLightSourceEntity(
+    @MainActor
+    /// Load and return an image based lighting texture.
+    /// - Parameter lighting: The type of IBL to load.
+    /// - Returns: A new IBL entity.
+    private func loadImageBasedLightSourceEntity(lighting: Lighting) async -> ImageBasedLightSourceEntity? {
+        let iblEntity = await ImageBasedLightSourceEntity(
             texture: lighting.imageBasedLightingTexture,
             intensity: model.imageBasedLightIntensity)
+        iblEntity?.name = lighting.description
+        return iblEntity
+    }
+    
+    /// Returns an IBL entity in the reality view content. This needs to be used when a new reality view is opened and a panorama is immediately added.
+    /// In this case, the @State evenIBL has not been stored yet in SwiftUI and will be nil.
+    /// - Parameters:
+    ///   - imageBasedLighting: Type of IBL.
+    ///   - content: Reality view content
+    /// - Returns: IBL entity.
+    private func find(imageBasedLighting: Lighting, in content: RealityViewContent) -> ImageBasedLightSourceEntity? {
+        let entity = content.entities.first(where: { $0.name == imageBasedLighting.description })
+        return entity as? ImageBasedLightSourceEntity
     }
     
     @MainActor
-    private func applyImageBasedLighting() {
-        // natural lighting is not available when a panorama is visible
-        let iblEntity: ImageBasedLightSourceEntity?
-        switch model.lighting {
-        case .even:
-            iblEntity = evenIBL
-        case .lamps:
-            iblEntity = lampsIBL
-        case .natural:
-            iblEntity = model.isShowingPanorama ? evenIBL : nil
-        }
-        
-        for globeEntity in model.globeEntities.values {
-            if let iblEntity {
-                let lightReceiver = ImageBasedLightReceiverComponent(imageBasedLight: iblEntity)
-                globeEntity.components.set(lightReceiver)
-            } else {
-                globeEntity.components.remove(ImageBasedLightReceiverComponent.self)
-            }
-        }
-      
+    /// Add an IBL receiver component to a globe entity.
+    /// - Parameter globeEntity: The entity
+    private func applyImageBasedLighting(to globeEntity: GlobeEntity) {
         if let iblEntity {
             let lightReceiver = ImageBasedLightReceiverComponent(imageBasedLight: iblEntity)
-            model.panoramaEntity?.components.set(lightReceiver)
+            globeEntity.components.set(lightReceiver)
+        } else {
+            globeEntity.components.remove(ImageBasedLightReceiverComponent.self)
+        }
+    }
+    
+    @MainActor
+    /// The IBL entity to use. Natural lighting is not available when a panorama is visible.
+    private var iblEntity: ImageBasedLightSourceEntity? {
+        switch model.lighting {
+        case .even:
+            evenIBL
+        case .lamps:
+            lampsIBL
+        case .natural:
+            model.isShowingPanorama ? evenIBL : nil
         }
     }
 }

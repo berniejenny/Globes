@@ -12,15 +12,16 @@ struct GlobeAttachmentView: View {
     @Environment(\.openWindow) private var openWindow
     
     let globe: Globe
+    let globeId: Globe.ID
     
     @MainActor
     private var globeEntity: GlobeEntity? {
-        model.globeEntities[globe.id]
+        model.globeEntities[globeId]
     }
     
     @MainActor
     private var configuration: GlobeConfiguration? {
-        model.configurations[globe.id]
+        model.configurations[globeId]
     }
     
     // MARK: - Timer
@@ -63,7 +64,7 @@ struct GlobeAttachmentView: View {
     private func hideAttachmentView() {
         if var configuration {
             configuration.showAttachment = false
-            model.configurations[globe.id] = configuration
+            model.configurations[globeId] = configuration
         }
     }
     
@@ -108,6 +109,8 @@ struct GlobeAttachmentView: View {
             }
         }
         .controlSize(.small)
+        .animation(.default, value: globe)
+        .animation(.default, value: show)
         .fixedSize()
         .onChange(of: configuration?.showAttachment, initial: true) {_, showAttachment in
             if showAttachment == true, show == .controls {
@@ -134,8 +137,9 @@ struct GlobeAttachmentView: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(16)
+        .padding()
         .glassBackgroundEffect(in: RoundedRectangle(cornerRadius: cornerRadius))
+        .allowsHitTesting(false)
     }
     
     @MainActor
@@ -161,6 +165,10 @@ struct GlobeAttachmentView: View {
         HStack(spacing: 16) {
             switch show {
             case .controls:
+                if configuration?.canAnimateTexture == true {
+                    playPauseButton
+                }
+                
                 if globe.description != nil || globe.infoURL != nil {
                     Button(action: {
                         show = .info
@@ -220,7 +228,7 @@ struct GlobeAttachmentView: View {
             .glassBackgroundEffect()
             
             Button(action: {
-                model.hideGlobe(with: globe.id)
+                model.hideGlobe(with: globeId)
             }) {
                 Label("Hide Globe", image: "globe.slash")
             }
@@ -231,24 +239,20 @@ struct GlobeAttachmentView: View {
     
     @MainActor
     @ViewBuilder var infoView: some View {
+        let textWidth: Double = 370
         VStack {
             if let description = globe.description {
-                ViewThatFits {
-                    ScrollView(.vertical, showsIndicators: true) {
+                ScrollView(.vertical, showsIndicators: true) {
+                    HStack {
                         Text(description)
                             .multilineTextAlignment(.leading)
                             .font(.callout)
                             .foregroundStyle(.secondary)
+                        Spacer(minLength: 0)
                     }
-                    .scrollIndicators(.visible, axes: .vertical)
-                    .frame(maxWidth: 400)
-                    
-                    Text(description)
-                        .multilineTextAlignment(.leading)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .frame(maxWidth: 400)
                 }
+                .scrollIndicators(.visible, axes: .vertical)
+                .frame(width: textWidth)                
                 .frame(maxHeight: 400)
                 .padding()
                 .glassBackgroundEffect(in: RoundedRectangle(cornerRadius: cornerRadius))
@@ -265,6 +269,17 @@ struct GlobeAttachmentView: View {
     }
     
     // MARK: - Buttons
+    
+    @MainActor
+    @ViewBuilder private var playPauseButton: some View {
+        Button(action: togglePlayPause) {
+            let paused = configuration?.isAnimationPaused == true
+            ButtonImage(name: paused ? "play" : "pause")
+                .contentTransition(.symbolEffect(.replace))
+        }
+        .buttonStyle(.plain)
+        .buttonBorderShape(.circle)
+    }
     
     @MainActor
     @ViewBuilder private var rotationButton: some View {
@@ -287,7 +302,7 @@ struct GlobeAttachmentView: View {
             set: {
                 if var configuration {
                     configuration.isRotationPaused = $0
-                    model.configurations[globe.id] = configuration
+                    model.configurations[globeId] = configuration
                     resetAttachmentTimer()
                 }
             }
@@ -305,10 +320,19 @@ struct GlobeAttachmentView: View {
     }
     
     @MainActor
+    private func togglePlayPause() {
+        if var configuration {
+            configuration.isAnimationPaused.toggle()
+            model.configurations[globeId] = configuration
+            resetAttachmentTimer()
+        }
+    }
+    
+    @MainActor
     private func toggleRotation() {
         if var configuration {
             configuration.isRotationPaused.toggle()
-            model.configurations[globe.id] = configuration
+            model.configurations[globeId] = configuration
             resetAttachmentTimer()
         }
     }
@@ -339,7 +363,7 @@ struct GlobeAttachmentView: View {
     @MainActor
     @ViewBuilder private var orientButton: some View {
         Button(action: {
-            globeEntity?.orientToNorth(radius: configuration?.radius)
+            globeEntity?.orientToNorth(radius: configuration?.globe.radius)
             resetAttachmentTimer()
         }) {
             ButtonImage(name: "location.north.line")
@@ -353,7 +377,7 @@ struct GlobeAttachmentView: View {
     @MainActor
     @ViewBuilder private var northPoleButton: some View {
         Button(action: {
-            globeEntity?.rotate(to: [0, 1, 0], radius: configuration?.radius)
+            globeEntity?.rotate(to: [0, 1, 0], radius: configuration?.globe.radius)
             resetAttachmentTimer()
         }) {
             ButtonImage(name: "n.circle")
@@ -366,7 +390,7 @@ struct GlobeAttachmentView: View {
     @MainActor
     @ViewBuilder private var southPoleButton: some View {
         Button(action: {
-            globeEntity?.rotate(to: [0, -1, 0], radius: configuration?.radius)
+            globeEntity?.rotate(to: [0, -1, 0], radius: configuration?.globe.radius)
             resetAttachmentTimer()
         }) {
             ButtonImage(name: "s.circle")
@@ -379,7 +403,7 @@ struct GlobeAttachmentView: View {
 
 #if DEBUG
 #Preview {
-    GlobeAttachmentView(globe: Globe.preview)
+    GlobeAttachmentView(globe: Globe.preview, globeId: Globe.preview.id)
         .environment(ViewModel.preview)
 }
 #endif

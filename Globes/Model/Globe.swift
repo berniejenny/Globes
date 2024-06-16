@@ -114,13 +114,13 @@ struct Globe: Identifiable, Hashable, Codable {
         self.textureURL = textureURL
     }
     
-#warning("Hack for animation")
+    /// Returns a copy of this globe that has a different ID.
     var copyWithNewId: Globe {
         var copy = self
         copy.id = UUID()
         return copy
     }
-    
+     
     /// A string with all authors separated by commas.
     var author: String {
         let firstNames = (authorFirstName ?? "").components(separatedBy: ";").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }

@@ -8,14 +8,26 @@
 import SwiftUI
 
 /// Configuration information for globe entities.
-struct GlobeConfiguration: Equatable {
-
+struct GlobeConfiguration: Equatable, Identifiable {
+    var id: UUID { globeId }
+    
+    let globeId: Globe.ID
+    
     var isLoading = false
     
     /// If true, a view is attached to the globe
     var showAttachment = false
     
+    // MARK: - Texture Animation
+    
+    /// Iterate through the globes in this selection
     var selection = GlobeSelection.none
+    
+    var canAnimateTexture: Bool {
+        selection != .none
+    }
+    
+    var isAnimationPaused = false
     
     // MARK: - Size
     
@@ -25,7 +37,7 @@ struct GlobeConfiguration: Equatable {
     /// Minimum diameter of globe when scaled down in meter
     private let minDiameter: Float = 0.05
     
-    let radius: Float
+    var globe: Globe
     
     // MARK: - Position
     
@@ -39,7 +51,7 @@ struct GlobeConfiguration: Equatable {
         }
         
         // oblique distance between camera and globe center
-        let d = (radius + distanceToGlobe)
+        let d = (globe.radius + distanceToGlobe)
         
         // position relative to camera position
         var position = cameraViewDirection * d + cameraPosition
@@ -53,16 +65,16 @@ struct GlobeConfiguration: Equatable {
     }
     
     // MARK: - Scale
-    
+            
     /// Minimum scale factor
     var minScale: Float {
-        let d = 2 * radius
+        let d = 2 * globe.radius
         return minDiameter / d
     }
     
     /// Maximum scale factor
     var maxScale: Float {
-        let d = 2 * radius
+        let d = 2 * globe.radius
         return max(1, maxDiameter / d)
     }
     
@@ -99,7 +111,7 @@ struct GlobeConfiguration: Equatable {
     /// - Returns: Angular speed.
     func currentRotationSpeed(scale: Float) -> Float {
         if adjustRotationSpeedToSize {
-            let currentRadius = max(1, scale) * radius
+            let currentRadius = max(0.25, scale) * globe.radius
             return currentRotationSpeed / currentRadius
         } else {
             return currentRotationSpeed
@@ -110,13 +122,14 @@ struct GlobeConfiguration: Equatable {
     
     init(
         selection: GlobeSelection,
-        radius: Float,
+        globe: Globe,
         speed: Float = 0,
         adjustRotationSpeedToSize: Bool = true,
         isRotationPaused: Bool = false
     ) {
+        self.globeId = globe.id
         self.selection = selection
-        self.radius = radius
+        self.globe = globe
         self.rotationSpeed = speed
         self.adjustRotationSpeedToSize = adjustRotationSpeedToSize
         self.isRotationPaused = isRotationPaused
