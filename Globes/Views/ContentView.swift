@@ -42,7 +42,7 @@ struct ContentView: View {
             case .createGlobe:
                 600
             case .settings:
-                715
+                725
             case .about:
                 700
             }

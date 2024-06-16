@@ -10,6 +10,10 @@
 		7D0905CC2C187022008B9513 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 7D0905CB2C187022008B9513 /* AsyncAlgorithms */; };
 		7D62945A2BC8ECE1006AB242 /* WorldAeronautical.heic in Resources */ = {isa = PBXBuildFile; fileRef = 7D6294592BC8ECE1006AB242 /* WorldAeronautical.heic */; };
 		7D62945C2BC8ED2D006AB242 /* MoonGeology.heic in Resources */ = {isa = PBXBuildFile; fileRef = 7D62945B2BC8ED2D006AB242 /* MoonGeology.heic */; };
+		7D6CAB602C1D97F600AE4ECA /* Plastic_Fabric_2.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 7D6CAB5D2C1D97F500AE4ECA /* Plastic_Fabric_2.aiff */; };
+		7D6CAB612C1D97F600AE4ECA /* Plastic_Glass_3.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 7D6CAB5E2C1D97F500AE4ECA /* Plastic_Glass_3.aiff */; };
+		7D6CAB622C1D97F600AE4ECA /* Plastic_Wood_1.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 7D6CAB5F2C1D97F600AE4ECA /* Plastic_Wood_1.aiff */; };
+		7D6CAB642C1E7FC900AE4ECA /* CollisionSound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D6CAB632C1E7FC900AE4ECA /* CollisionSound.swift */; };
 		7D6E110C2BA6C81C00C2BCD0 /* Pardies_Celestial_6900023.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11072BA6C81B00C2BCD0 /* Pardies_Celestial_6900023.jpg */; };
 		7D6E110D2BA6C81C00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg */; };
 		7D6E110E2BA6C81C00C2BCD0 /* TharpOceanFloor4black.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11092BA6C81B00C2BCD0 /* TharpOceanFloor4black.jpg */; };
@@ -89,6 +93,7 @@
 		7DCFBF0A2BA420F400B4F27C /* GlobesMetaDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCFBF052BA420F400B4F27C /* GlobesMetaDocument.swift */; };
 		7DCFBF0B2BA420F400B4F27C /* GlobeEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCFBF062BA420F400B4F27C /* GlobeEditorView.swift */; };
 		7DCFBF0C2BA420F400B4F27C /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 7DCFBF072BA420F400B4F27C /* Credits.rtf */; };
+		7DD9C2582C1C777D00D00593 /* ViewModel+Audio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DD9C2572C1C777D00D00593 /* ViewModel+Audio.swift */; };
 		7DE4FAD02BA2AEF600C4B637 /* Globe+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE4FACF2BA2AEF600C4B637 /* Globe+Preview.swift */; };
 		7DEAB0522B9B04C4004027B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DEAB0512B9B04C4004027B1 /* Assets.xcassets */; };
 		7DEAB0552B9B04C4004027B1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DEAB0542B9B04C4004027B1 /* Preview Assets.xcassets */; };
@@ -97,6 +102,10 @@
 /* Begin PBXFileReference section */
 		7D6294592BC8ECE1006AB242 /* WorldAeronautical.heic */ = {isa = PBXFileReference; lastKnownFileType = file; path = WorldAeronautical.heic; sourceTree = "<group>"; };
 		7D62945B2BC8ED2D006AB242 /* MoonGeology.heic */ = {isa = PBXFileReference; lastKnownFileType = file; path = MoonGeology.heic; sourceTree = "<group>"; };
+		7D6CAB5D2C1D97F500AE4ECA /* Plastic_Fabric_2.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = Plastic_Fabric_2.aiff; sourceTree = "<group>"; };
+		7D6CAB5E2C1D97F500AE4ECA /* Plastic_Glass_3.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = Plastic_Glass_3.aiff; sourceTree = "<group>"; };
+		7D6CAB5F2C1D97F600AE4ECA /* Plastic_Wood_1.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = Plastic_Wood_1.aiff; sourceTree = "<group>"; };
+		7D6CAB632C1E7FC900AE4ECA /* CollisionSound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollisionSound.swift; sourceTree = "<group>"; };
 		7D6E11072BA6C81B00C2BCD0 /* Pardies_Celestial_6900023.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Pardies_Celestial_6900023.jpg; sourceTree = "<group>"; };
 		7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Bellerby65cmSchminkeGagarin.jpg; sourceTree = "<group>"; };
 		7D6E11092BA6C81B00C2BCD0 /* TharpOceanFloor4black.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = TharpOceanFloor4black.jpg; sourceTree = "<group>"; };
@@ -175,6 +184,7 @@
 		7DCFBF052BA420F400B4F27C /* GlobesMetaDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobesMetaDocument.swift; sourceTree = "<group>"; };
 		7DCFBF062BA420F400B4F27C /* GlobeEditorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobeEditorView.swift; sourceTree = "<group>"; };
 		7DCFBF072BA420F400B4F27C /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
+		7DD9C2572C1C777D00D00593 /* ViewModel+Audio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModel+Audio.swift"; sourceTree = "<group>"; };
 		7DE4FACF2BA2AEF600C4B637 /* Globe+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Globe+Preview.swift"; sourceTree = "<group>"; };
 		7DEAB0442B9B04C2004027B1 /* Globes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Globes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DEAB0512B9B04C4004027B1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -201,6 +211,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7D6CAB5C2C1D97E400AE4ECA /* Collisions */ = {
+			isa = PBXGroup;
+			children = (
+				7D6CAB5D2C1D97F500AE4ECA /* Plastic_Fabric_2.aiff */,
+				7D6CAB5E2C1D97F500AE4ECA /* Plastic_Glass_3.aiff */,
+				7D6CAB5F2C1D97F600AE4ECA /* Plastic_Wood_1.aiff */,
+			);
+			path = Collisions;
+			sourceTree = "<group>";
+		};
 		7D81B8602BA13D67004C4477 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
@@ -301,7 +321,7 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		7DCE1C0E2C12D50000234DB6 /* Entities & Components */ = {
+		7DCE1C0E2C12D50000234DB6 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
 				7DCE1C072C12D50000234DB6 /* CollisionBox.swift */,
@@ -313,12 +333,13 @@
 				7DCE1C0D2C12D50000234DB6 /* ResourceLoader.swift */,
 				7D87F85D2C19354C00EAC6C7 /* SerialGlobeLoader.swift */,
 			);
-			path = "Entities & Components";
+			path = Entities;
 			sourceTree = "<group>";
 		};
 		7DCE1C3A2C12D64900234DB6 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				7D6CAB632C1E7FC900AE4ECA /* CollisionSound.swift */,
 				7DCE1BE62C12D50000234DB6 /* Globe.swift */,
 				7DCE1C0F2C12D50100234DB6 /* GlobeConfiguration.swift */,
 				7D6FEA8E2C154F0F00725C20 /* GlobeSelection.swift */,
@@ -326,6 +347,7 @@
 				7DCE1BE82C12D50000234DB6 /* Lighting.swift */,
 				7DCE1BE52C12D50000234DB6 /* PanoramaImmersionStyle.swift */,
 				7DCE1BE92C12D50000234DB6 /* ViewModel.swift */,
+				7DD9C2572C1C777D00D00593 /* ViewModel+Audio.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -354,6 +376,14 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		7DD9C2592C1C819E00D00593 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				7D6CAB5C2C1D97E400AE4ECA /* Collisions */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
 		7DEAB03B2B9B04C2004027B1 = {
 			isa = PBXGroup;
 			children = (
@@ -377,7 +407,7 @@
 			children = (
 				7DCE1C062C12D50000234DB6 /* GlobesApp.swift */,
 				7DCE1C3A2C12D64900234DB6 /* Model */,
-				7DCE1C0E2C12D50000234DB6 /* Entities & Components */,
+				7DCE1C0E2C12D50000234DB6 /* Entities */,
 				7DCE1BE42C12D50000234DB6 /* Gestures */,
 				7DCE1BED2C12D50000234DB6 /* Systems & Components */,
 				7DCE1C052C12D50000234DB6 /* Views */,
@@ -389,6 +419,7 @@
 				7DEAB0562B9B04C4004027B1 /* Info.plist */,
 				7D81B85C2BA123B5004C4477 /* Globes.json */,
 				7D81B8602BA13D67004C4477 /* Textures */,
+				7DD9C2592C1C819E00D00593 /* Audio */,
 				7DEAB0532B9B04C4004027B1 /* Preview Content */,
 			);
 			path = Globes;
@@ -504,6 +535,7 @@
 				7DEAB0552B9B04C4004027B1 /* Preview Assets.xcassets in Resources */,
 				7DBE6CE22BC6387500A98073 /* MoonBW.jpg in Resources */,
 				7D6E11102BA6C81C00C2BCD0 /* Behaim_12237025.jpg in Resources */,
+				7D6CAB602C1D97F600AE4ECA /* Plastic_Fabric_2.aiff in Resources */,
 				7DBE6CF22BC63BBA00A98073 /* Cassini_Terrestrial_5749000.jpg in Resources */,
 				7D62945A2BC8ECE1006AB242 /* WorldAeronautical.heic in Resources */,
 				7D8CD0DF2BA6CC630053B32D /* HenzeWorld.jpg in Resources */,
@@ -511,6 +543,7 @@
 				7DBE6CF62BC63C1700A98073 /* BerghausWorld.jpg in Resources */,
 				7DBE6CF42BC63BEF00A98073 /* Coronelli_Celestial_10570028.jpg in Resources */,
 				7DBE6CEE2BC63AEA00A98073 /* Bellerby65cmPrussianBlue.jpg in Resources */,
+				7D6CAB612C1D97F600AE4ECA /* Plastic_Glass_3.aiff in Resources */,
 				7D6E110C2BA6C81C00C2BCD0 /* Pardies_Celestial_6900023.jpg in Resources */,
 				7D9614EA2BC66ED500A78DBB /* Coronelli_Terrestrial_10070028.heic in Resources */,
 				7DEAB0522B9B04C4004027B1 /* Assets.xcassets in Resources */,
@@ -522,6 +555,7 @@
 				7D81B85D2BA123B5004C4477 /* Globes.json in Resources */,
 				7D9614EB2BC69A6D00A78DBB /* ArrowsmithWorldMercator.jpg in Resources */,
 				7DBE6CF02BC63B2F00A98073 /* Bellerby65cmYellowOchre.jpg in Resources */,
+				7D6CAB622C1D97F600AE4ECA /* Plastic_Wood_1.aiff in Resources */,
 				7DBE6CE82BC6395000A98073 /* Jupiter_IO.jpg in Resources */,
 				7DCE1BDE2C12D48300234DB6 /* White.skybox in Resources */,
 				7DBE6CE62BC638EB00A98073 /* Mars_Viking_10594.jpg in Resources */,
@@ -575,6 +609,7 @@
 				7DCE1C302C12D50100234DB6 /* GlobesApp.swift in Sources */,
 				7D74643A2BA3C16F00182871 /* ViewModel+Preview.swift in Sources */,
 				7DCE1C372C12D50100234DB6 /* ResourceLoader.swift in Sources */,
+				7DD9C2582C1C777D00D00593 /* ViewModel+Audio.swift in Sources */,
 				7DCE1C242C12D50100234DB6 /* FavoritesView.swift in Sources */,
 				7DCE1C212C12D50100234DB6 /* GlobeButton.swift in Sources */,
 				7DCE1C292C12D50100234DB6 /* GaugeProgressStyle.swift in Sources */,
@@ -596,6 +631,7 @@
 				7DCE1C1A2C12D50100234DB6 /* GlobeBillboardSystem.swift in Sources */,
 				7DCE1C152C12D50100234DB6 /* Globe.swift in Sources */,
 				7DCE1C192C12D50100234DB6 /* CameraTracker.swift in Sources */,
+				7D6CAB642C1E7FC900AE4ECA /* CollisionSound.swift in Sources */,
 				7DCE1C272C12D50100234DB6 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

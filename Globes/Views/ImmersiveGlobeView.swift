@@ -25,6 +25,9 @@ struct ImmersiveGlobeView: View {
     /// Sphere centered on the camera participating in physics simulation to avoid camera position inside a globe.
     @State private var headEntity: HeadEntity? = nil
     
+    /// Entity to play spatially positioned audio when two globes collide
+    @State private var collisionAudioEntity: Entity? = nil
+    
     @State var animationTimer: Timer? = nil
     @AppStorage("AnimationAdjustSize")  private var animationAdjustSize = true
     @AppStorage("AnimationRandomOrder") private var animationRandomOrder = false
@@ -54,11 +57,14 @@ struct ImmersiveGlobeView: View {
             if let lampsIBL { content.add(lampsIBL) }
             if let evenIBL { content.add(evenIBL) }
             
-            // Subscribe to add events to trigger move-in animation.
-            // The animation can only start after the immersive space has been created and the entity added.
-            let _ = content.subscribe(to: SceneEvents.DidAddEntity.self) { event in
-                animateMoveIn(of: event.entity)
-            }
+            // entity to play spatially positioned audio when two globes collide
+            let collisionAudioEntity = Entity()
+            collisionAudioEntity.name = "Collision Audio"
+            content.add(collisionAudioEntity)
+            self.collisionAudioEntity = collisionAudioEntity
+            
+            _ = content.subscribe(to: SceneEvents.DidAddEntity.self, handleDidAddEntity(_:))
+            _ = content.subscribe(to: CollisionEvents.Began.self, handleCollisionBegan(_:))
         } update: { content, attachments in
             if globeEntitiesNeedUpdate {
                 addGlobeEntities(to: content, attachments: attachments)
@@ -126,11 +132,29 @@ struct ImmersiveGlobeView: View {
                 }
             }
         }
-        .onChange(of: animationAdjustSize) {
-            guard animationAdjustSize else { return }
-            for animatedGlobeEntity in model.globeEntities.values {
-#warning("TBD for animation")
-            }
+    }
+    
+    @MainActor
+    
+    /// Subscribe to entity-add events to setup entities.
+    ///
+    /// Starting the animation and setting up IBL are only possible after the immersive space has been created and all required entities have been added.
+    /// - Parameter event: The event.
+    private func handleDidAddEntity(_ event: SceneEvents.DidAddEntity) {
+        if let globeEntity = event.entity as? GlobeEntity {
+            animateMoveIn(of: globeEntity)
+            applyImageBasedLighting(to: globeEntity)
+        }
+        if let panoramaEntity = event.entity as? PanoramaEntity, let evenIBL {
+            // setup image based lighting
+            let lightReceiver = ImageBasedLightReceiverComponent(imageBasedLight: evenIBL)
+            panoramaEntity.components.set(lightReceiver)
+        }
+    }
+    
+    private func handleCollisionBegan(_ collision: CollisionEvents.Began) {
+        if let collisionAudioEntity {
+            model.playAudio(for: collision, collisionAudioEntity: collisionAudioEntity)
         }
     }
     
