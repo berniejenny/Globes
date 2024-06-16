@@ -111,7 +111,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                     model.showOnboarding = false
                     // if the attachment view is newly shown and the globe is too far from the camera, move it closer to the camera.
                     if configuration.showAttachment {
-                        let scaledRadius = configuration.radius * globeEntity.meanScale
+                        let scaledRadius = configuration.globe.radius * globeEntity.meanScale
                         if let distance = try? globeEntity.distanceToCamera(radius: scaledRadius),
                            distance > maxDistanceToCameraWhenTapped {
                             globeEntity.moveTowardCamera(distance: maxDistanceToCameraWhenTapped, radius: scaledRadius, duration: 1)
@@ -218,7 +218,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                                 oldScale: globeScaleAtGestureStart,
                                 oldPosition: globePositionAtGestureStart,
                                 cameraPosition: cameraPositionAtGestureStart, 
-                                radius: configuration.radius,
+                                radius: configuration.globe.radius,
                                 duration: animationDuration // animate the transformation to reduce jitter, as in the Apple EntityGestures sample project
                             )
                         }
@@ -343,7 +343,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                             
                             // Adjust the amount of rotation per translation delta to the size of the globe.
                             // The angular rotation per translation delta is reduced for enlarged globes.
-                            let scaleRadius = max(1, entity.meanScale) * configuration.radius
+                            let scaleRadius = max(1, entity.meanScale) * configuration.globe.radius
                             let rotationAmount = Float(deltaTranslation) * rotationSpeed / scaleRadius * 1000
                             
                             // A rotation quaternion around the globe's rotation axis.

@@ -11,6 +11,44 @@ import SwiftUI
 struct ResourceLoader {
     private init() {}
     
+    /// Test whether there is sufficient process memory and GPU memory for loading an ARGB texture image with the load functions of `TextureResource` and creating a mipmap.
+    /// - Parameters:
+    ///   - width: Width of the texture.
+    ///   - height: Height of the texture.
+    ///   - reservedMemory: Amount of memory in bytes that is not currently allocated but should be considered allocated. This test always considers a 250 MB reserve; `reservedMemory` is added to this reserve.
+    /// - Returns: True if a texture with the passed dimensions can be loaded using the load functions of `TextureResource` with the currently available memory.
+    static func hasSufficientMemoryToLoadTexture(width: Int = 16384, height: Int = 8192, reservedMemory: UInt64 = 0) -> Bool {
+#if targetEnvironment(simulator)
+        return true
+#else
+        // estimated size in bytes of the RGBA texture
+        let textureSize = UInt64(width * height * 4)
+        // mipmap increases the size by 1/3
+        let mipmapTextureSize = textureSize * 4 / 3
+        
+        // check available GPU memory
+        if let defaultDevice = MTLCreateSystemDefaultDevice () {
+            let allocatedGPU = UInt64(defaultDevice.currentAllocatedSize)
+            let maxGPU = defaultDevice.recommendedMaxWorkingSetSize
+            let availableGPU = maxGPU - allocatedGPU
+            if availableGPU < mipmapTextureSize {
+                return false
+            }
+        }
+        
+        // Check available process memory
+        // Texture allocation and mipmap generation is wasteful as of visionOS 1.2.
+        // Instruments shows that once the texture is loaded and uncompressed, two additional copies
+        // of the size of the uncompressed texture are created while initializing the texture.
+        // After initialization, the increase in allocated memory is about half of width×height×4,
+        // which indicates that an efficient compression is used for textures.
+        // 250 MB memory reserve
+        let memoryReserve: UInt64 = 250 * 1024 * 1024 + reservedMemory
+        let availableProcMemory = os_proc_available_memory()
+        return availableProcMemory > textureSize * 3 + memoryReserve
+#endif
+    }
+    
     @MainActor
     /// Load a globe material, including a texture, and create a high-quality mipmap.
     ///

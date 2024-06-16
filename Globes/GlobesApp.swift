@@ -50,7 +50,6 @@ struct GlobesApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                //.frame(minWidth: 500, minHeight: 330)
                 .environment(model)
         }
         .windowResizability(.contentSize) // window resizability is derived from window content
@@ -72,7 +71,7 @@ struct GlobesApp: App {
             ImmersiveGlobeView()
                 .environment(model)
                 .onDisappear {
-                    // Handle home button press that dismisses the immersive view.
+                    // Handle home button press that dismisses the immersive view, or the system closing the immersive space.
                     // No need to call dismissImmersiveSpace
                     model.immersiveSpaceIsShown = false
                     model.hideAllGlobes()

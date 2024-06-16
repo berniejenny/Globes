@@ -88,7 +88,7 @@ import SwiftUI
         
         var configuration = GlobeConfiguration(
             selection: selection,
-            radius: globe.radius,
+            globe: globe,
             speed: GlobeConfiguration.defaultRotationSpeed,
             adjustRotationSpeedToSize: true,
             isRotationPaused: !rotateGlobes
@@ -137,39 +137,62 @@ import SwiftUI
     }
     
     @MainActor
+    /// Called by `SerialGlobeLoader` when a new globe entity for an animated globe has been loaded.
+    /// - Parameters:
+    ///   - globeEntity: The loaded globe entity.
+    ///   - entityID: The id of the animated globe entity.
     func storeAnimatedGlobe(_ globeEntity: GlobeEntity, entityID: UInt64) {
-        if let newMaterial = globeEntity.modelEntity?.components[ModelComponent.self]?.materials.first,
+        let transformDuration = GlobeEntity.transformAnimationDuration / 2
+        if let newModelComponent = globeEntity.modelEntity?.components[ModelComponent.self],
+           let newGlobe = globes.first(where: { $0.id == globeEntity.globeId }),
            let animatedGlobeEntity = globeEntities.values.first(where: { $0.id == entityID }),
            let animatedModelEntity = animatedGlobeEntity.children.first(where: { $0 is ModelEntity }),
-            var animatedModelComponent = animatedModelEntity.components[ModelComponent.self] {
-        
-            // copy the material from the new globe entity to the animated globe entity
-            animatedModelComponent.materials = [newMaterial]
-            animatedModelEntity.components.set(animatedModelComponent)
+           var animatedModelComponent = animatedModelEntity.components[ModelComponent.self],
+           var animatedConfiguration = configurations[animatedGlobeEntity.globeId] {
             
-            if let newRadius = globes.first(where: { $0.id == globeEntity.globeId })?.radius {
-                let animationAdjustSize = UserDefaults.standard.bool(forKey: "AnimationAdjustSize")
-                guard animationAdjustSize else { return }
+            // scale and adjust the position before showing the new texture
+            let uniformSize = UserDefaults.standard.bool(forKey: "AnimationUniformSize")
+            let oldScale = animatedGlobeEntity.scale
+            let newScale = newGlobe.radius / animatedConfiguration.globe.radius * oldScale.x
+#warning("Make sure newScale is not too large here")
+            if !uniformSize {
                 animatedGlobeEntity.scaleAndAdjustDistanceToCamera(
-                    newScale: newRadius,
-                    radius: 1,
-                    duration: GlobeEntity.transformAnimationDuration
-                )
+                    newScale: newScale,
+                    radius: animatedConfiguration.globe.radius,
+                    duration: transformDuration)
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + transformDuration) {
+                if let mc = globeEntity.modelEntity?.components[ModelComponent.self] {
+                    animatedGlobeEntity.modelEntity?.components.set(mc)
+                }
                 
+                // adjust the scale
+                if uniformSize {
+                    let newScale = animatedConfiguration.globe.radius / newGlobe.radius
+                    animatedGlobeEntity.scale = [newScale, newScale, newScale] * oldScale
+                } else {
+                    animatedGlobeEntity.scale = oldScale
+                }
+                
+                // store the loaded globe in the configuration for display of meta info
+                animatedConfiguration.globe = newGlobe
+                self.configurations[animatedGlobeEntity.globeId] = animatedConfiguration
             }
         }
     }
     
     @MainActor
-    /// Called by `SerialGlobeLoader` when a new globe entity could not be loaded.
+    /// A new globe entity could not be loaded.
     /// - Parameters:
-    ///   - error: Error to display.
-    ///   - id: Globe id.
-    func loadingGlobeFailed(_ error: Error, id: Globe.ID) {
-        configurations.removeValue(forKey: id)
-        globeEntities.removeValue(forKey: id)
-        
-        errorToShowInAlert = error
+    ///   - id: The id of the globe that could not be loaded.
+    func loadingGlobeFailed(id: Globe.ID?) {
+        if let id {
+            configurations.removeValue(forKey: id)
+            globeEntities.removeValue(forKey: id)
+        }
+        errorToShowInAlert = error("There is not enough memory to show another globe.",
+                                   secondaryMessage: "First hide a visible globe, then select this globe again.")
     }
     
     @MainActor
@@ -191,6 +214,8 @@ import SwiftUI
         // remove the globe from this model
         Task { @MainActor in
             try? await Task.sleep(for: .seconds(duration))
+            assert(configurations.keys.contains(id), "No configuration for \(id)")
+            assert(globeEntities.keys.contains(id), "No globe entity for \(id)")
             configurations[id] = nil
             globeEntities[id] = nil
         }
@@ -262,7 +287,7 @@ import SwiftUI
         }
         
         let targetPosition = configuration.positionRelativeToCamera(distanceToGlobe: 0.5)
-        if canPlaceGlobe(at: targetPosition, with: configuration.radius) {
+        if canPlaceGlobe(at: targetPosition, with: configuration.globe.radius) {
             return targetPosition
         }
         
@@ -277,7 +302,7 @@ import SwiftUI
         
         // a few rotations in an Archimedean spiral
         let rotations = 10
-        let spacing = configuration.radius + 0.1
+        let spacing = configuration.globe.radius + 0.1
         let b = spacing / (2 * .pi)
         // stretch the spiral horizontally and compress it vertically to position globes in a landscape format
         let stretch: Float = 1.5
@@ -287,7 +312,7 @@ import SwiftUI
             let x = cos(omega) * r * stretch
             let y = sin(omega) * r / stretch
             let candidatePosition = targetPosition + x * rightAxis + y * upAxis
-            if canPlaceGlobe(at: candidatePosition, with: configuration.radius) {
+            if canPlaceGlobe(at: candidatePosition, with: configuration.globe.radius) {
                 return candidatePosition
             }
         }
@@ -353,12 +378,11 @@ import SwiftUI
     }
     
     @MainActor
-    /// Called by `SerialGlobeLoader` when a new panorama entity could not be loaded.
-    /// - Parameters:
-    ///   - error: Error to display.
-    func loadingPanoramaFailed(_ error: Error) {
+    /// A new panorama entity could not be loaded.
+    func loadingPanoramaFailed() {
         panoramaGlobeToLoad = nil
-        errorToShowInAlert = error
+        errorToShowInAlert = error("There is not enough memory to show this panorama.",
+                                   secondaryMessage: "First hide a globe \(isShowingPanorama ? "or the current panorama" : ""), then select the panorama again.")
     }
     
     @MainActor
@@ -482,6 +506,11 @@ import SwiftUI
     /// If non-nil, show the gallery view and scroll its list such that this globe is visible.
     var scrollGalleryToGlobe: Globe.ID? = nil
     
+    // MARK: - Collisions
+    
+    /// Time of last detected collision
+    var lastCollisionTime = -TimeInterval.infinity
+    
     // MARK: - Debug Description
     
     @MainActor
@@ -506,20 +535,13 @@ import SwiftUI
         // globes
         description += "Rotate globes: \(rotateGlobes)\n"
         description += "Globe configurations: \(configurations.count), entities: \(globeEntities.count)\n"
-        for (index, configurationKeyValue) in configurations.enumerated() {
-            let globeId = configurationKeyValue.key
-            guard let globe = globes.first(where: { $0.id == globeId }) else {
-                description += "*** Cannot find globe for \(globeId)"
-                continue
-            }
-            let entity = globeEntities[globeId]
-            description += "\t\(index + 1): \(globe.name)"
+        for (index, configuration) in configurations.values.enumerated() {
+            let entity = globeEntities[configuration.globeId]
+            description += "\t\(index + 1): \(configuration.globe.name)"
             description += entity == nil ? ", NOT loaded\n" : ", loaded"
             if let entity {
                 description += ", pos=\(entity.position.x),\(entity.position.y),\(entity.position.z)"
                 description += ", scale=\(entity.scale.x),\(entity.scale.y),\(entity.scale.z)"
-//                description += ", orientation=\(entity.orientation)"
-                print(entity)
             }
             description += "\n"
         }
