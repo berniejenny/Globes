@@ -8,11 +8,11 @@
 import Foundation
 
 enum CollisionSound: String, CaseIterable, Identifiable {
-    case none, fabric, glass, wood
+    case none, glass, fabric, wood
     
     var id: Self { self }
     
-    static var defaultCollisionSound: CollisionSound { .glass }
+    static var defaultSound: CollisionSound { .glass }
     
     /// Files are from Apple's 'Creating a Spaceship game' sample project
     /// https://developer.apple.com/documentation/realitykit/creating-a-spaceship-game
@@ -20,10 +20,10 @@ enum CollisionSound: String, CaseIterable, Identifiable {
         switch self {
         case .none:
             nil
-        case .fabric:
-            "Plastic_Fabric_2"
         case .glass:
             "Plastic_Glass_3"
+        case .fabric:
+            "Plastic_Fabric_2"
         case .wood:
             "Plastic_Wood_1"
         }

@@ -9,9 +9,6 @@ import Foundation
 import QuartzCore
 import RealityKit
 
-var debounce: [Entity: TimeInterval] = [:]
-var lastCollisionTime = -TimeInterval.infinity
-
 extension ViewModel {
     
     /// Don't play a collision sound if the last sound was played less than `debounceThreshold` seconds ago.
@@ -40,7 +37,7 @@ extension ViewModel {
     /// Load a collision sound to play.
     /// - Returns: An audio file to play.
     func collisionSoundResource() async throws -> AudioFileResource? {
-        let collisionSoundName = UserDefaults.standard.string(forKey: "CollisionSound") ?? CollisionSound.defaultCollisionSound.rawValue
+        let collisionSoundName = UserDefaults.standard.string(forKey: "CollisionSound") ?? CollisionSound.defaultSound.rawValue
         guard let fileName = CollisionSound(rawValue: collisionSoundName)?.soundFileName else { return nil }
         return try await AudioFileResource(named: fileName)
     }
