@@ -70,9 +70,9 @@ struct ContentView: View {
             FavoritesView()
                 .tabItem { Label("Favorites", systemImage: "heart") }
                 .tag(Tab.favorites)
-//            PlayView()
-//                .tabItem { Label("Play", systemImage: "play") }
-//                .tag(Tab.play)
+            AnimateView()
+                .tabItem { Label("Animate", systemImage: "play") }
+                .tag(Tab.play)
             SearchView()
                 .tabItem { Label("Search", systemImage: "magnifyingglass") }
                 .tag(Tab.search)
