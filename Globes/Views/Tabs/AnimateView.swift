@@ -1,5 +1,5 @@
 //
-//  PlayView.swift
+//  AnimateView.swift
 //  Globes
 //
 //  Created by Bernhard Jenny on 8/6/2024.
@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-struct PlayView: View {
+struct AnimateView: View {
     @Environment(ViewModel.self) var model
     @Environment(\.openImmersiveSpace) var openImmersiveSpaceAction
     
     @State private var selection = GlobeSelection.all
     
-    @AppStorage("AnimationAdjustSize")  private var animationAdjustSize = true
+    @AppStorage("AnimationUniformSize")  private var animationUniformSize = true
     @AppStorage("AnimationRandomOrder") private var animationRandomOrder = false
     @AppStorage("AnimationInterval") private var animationInterval: Double = 3
     
@@ -23,33 +23,37 @@ struct PlayView: View {
         NavigationSplitView {
             VStack {
                 Button(action: loadAnimatedGlobe, label: {
-                    Label("Play", systemImage: "play")
-                        .labelStyle(.iconOnly)
+                    Image(systemName: "play")
                 })
                 .buttonBorderShape(.circle)
                 .controlSize(.large)
                 .padding(.bottom, 40)
                 
-                Text("Change After ^[\(Int(animationInterval.rounded())) Second](inflect: true)")
-                    .monospacedDigit()
-                Slider(value: $animationInterval, in: 2...60)
-                    .padding(.bottom, 40)
-                
-                Toggle(isOn: $animationAdjustSize) {
-                    Label("Adjust Size", systemImage: "circle.circle")
+                HStack {
+                    Text("Change After \(Int(animationInterval.rounded())) Seconds")
+                        .monospacedDigit()
+                        .padding(.leading)
+                    Spacer(minLength: 0)
                 }
                 
-                Toggle(isOn: $animationRandomOrder) {
-                    Label("Random Order", systemImage: "dice")
-                        .labelStyle(.titleOnly)
+                Slider(value: $animationInterval, in: 3...30)
+                    .padding(.bottom, 20)
+                
+                Group {
+                    Toggle(isOn: $animationUniformSize) {
+                        Label("Uniform Size", systemImage: "circle.circle")
+                    }
+                    
+                    Toggle("Random Order", isOn: $animationRandomOrder)
+                        .padding(.vertical)
                 }
-                .padding(.vertical)
+                .padding(.horizontal)
                 
                 Spacer()
             }
             .navigationSplitViewColumnWidth(260)
             .padding()
-            .navigationTitle("Play Sequence")
+            .navigationTitle("Animate")
         } detail: {
             ScrollView(.vertical, showsIndicators: false) {
                 let columns = [GridItem(.adaptive(minimum: 150))]
@@ -96,13 +100,16 @@ struct PlayView: View {
     
     @MainActor
     private func loadAnimatedGlobe() {
-        guard var globe = model.filteredGlobes(selection: selection).first else { return }
-        globe = globe.copyWithNewId
-        globe.radius = 1
-#warning("Incomplete for animation")
-        
+        // Once loaded, a large texture will occupy about 350+ MB of memory.
+        // Make sure there is sufficient memory to load the following texture.
+        let reserve: UInt64 = 380 * 1024 * 1024
+        guard ResourceLoader.hasSufficientMemoryToLoadTexture(reservedMemory: reserve) else {
+            model.loadingGlobeFailed(id: nil)
+            return
+        }
+        guard let globe = model.filteredGlobes(selection: selection).first else { return }
         model.load(
-            globe: globe,
+            globe: globe.copyWithNewId,
             selection: selection,
             openImmersiveSpaceAction: openImmersiveSpaceAction
         )
@@ -112,7 +119,7 @@ struct PlayView: View {
 
 #if DEBUG
 #Preview {
-    PlayView()
+    AnimateView()
         .environment(ViewModel.preview)
         .frame(width: 800)
         .glassBackgroundEffect()
