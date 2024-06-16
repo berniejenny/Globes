@@ -5,6 +5,7 @@
 //  Created by Bernhard Jenny on 23/5/2024.
 //
 
+import AVFoundation
 import SwiftUI
 
 struct SettingsView: View {
@@ -14,6 +15,10 @@ struct SettingsView: View {
     private let immersionStyles: [PanoramaImmersionStyle] = [.progressive, .full]
     private let globeViewSize: Double = 120
     private let globeRadius: Float = 0.05
+    
+    @State private var player: AVAudioPlayer?
+    
+    @AppStorage("CollisionSound") private var collisionSound = CollisionSound.fabric
     
     var body: some View {
         Form {
@@ -43,31 +48,59 @@ struct SettingsView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 
-                Toggle("Rotate Globes", systemImage: "rotate.3d", isOn: Bindable(model).rotateGlobes)
+                Toggle(isOn: Bindable(model).rotateGlobes) {
+                    VStack(alignment: .leading) {
+                        Label(title: { Text("Rotate Globes") },
+                              icon: {
+                                Image(model.rotateGlobes ? "rotate.3d" : "rotate.3d.slash")
+                        })
+                        .contentTransition(.symbolEffect(.replace))
+                        
+                        Text("Double-pinch a globe to start and stop its rotation.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.vertical, 3)
+                }
                 
-                Text("Double-pinch a globe to start and stop its rotation.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .offset(y: -20)
-                    .listRowSeparator(.hidden)
+                Picker(selection: $collisionSound) {
+                    ForEach(CollisionSound.allCases) { collisionSound in
+                        Text(collisionSound.rawValue.localizedCapitalized)
+                        if collisionSound == .none {
+                            Divider()
+                        }
+                    }
+                } label: {
+                    Label(
+                        "Sound When Globes Touch",
+                        systemImage: collisionSound == .none ? "speaker.slash" : "speaker.wave.2"
+                    )
+                    .contentTransition(.symbolEffect(.replace))
+                }
+                .padding(.vertical, 3)
+                .onChange(of: collisionSound) {
+                   playSound()
+                }
             } header: {
                 Text("Globes")
             }
             
             Section {
-                Text("Immersion Mode")
-                
-                Picker("Panorama Immersion Mode", selection: Bindable(model).panoramaImmersionStyle) {
-                    ForEach(immersionStyles, id: \.self) { immersionStyle in
-                        Text(String(describing: immersionStyle))
+                VStack {
+                    Text("Immersion Mode")
+                    
+                    Picker("Panorama Immersion Mode", selection: Bindable(model).panoramaImmersionStyle) {
+                        ForEach(immersionStyles, id: \.self) { immersionStyle in
+                            Text(String(describing: immersionStyle))
+                        }
                     }
+                    .pickerStyle(.segmented)
+                    
+                    Text(model.panoramaImmersionStyle.info)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2, reservesSpace: true)
                 }
-                .pickerStyle(.segmented)
-                
-                Text(model.panoramaImmersionStyle.info)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2, reservesSpace: true)
             } header: {
                 Text("Panorama")
             }
@@ -93,6 +126,28 @@ struct SettingsView: View {
             -globeViewSize * 0.55
         } else {
             globeViewSize * 0.5
+        }
+    }
+    
+    func playSound() {
+        guard let fileName = collisionSound.soundFileName else {
+            // without this test, the first sound in the bundle is loaded
+            return
+        }
+        guard let url = Bundle.main.url(forResource: fileName, withExtension: "aiff") else { return }
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+            try AVAudioSession.sharedInstance().setActive(true)
+            player = try AVAudioPlayer(contentsOf: url)
+            Task { @MainActor in
+                // wait until default sound effect of the picker is played
+                try await Task.sleep(for: .seconds(0.4))
+                player?.play()
+            }
+        } catch {
+            Task { @MainActor in
+                model.errorToShowInAlert = error
+            }
         }
     }
 }
