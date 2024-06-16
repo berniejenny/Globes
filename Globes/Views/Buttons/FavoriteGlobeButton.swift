@@ -15,6 +15,7 @@ struct FavoriteGlobeButton: View {
     var body: some View {
         Toggle(isOn: favoriteBinding) {
             ButtonImage(name: favoriteBinding.wrappedValue ? "heart.fill" : "heart")
+                .contentTransition(.symbolEffect(.replace))
         }
         .buttonStyle(.plain)
         .toggleStyle(.button)
