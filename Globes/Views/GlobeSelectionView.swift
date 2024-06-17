@@ -20,7 +20,7 @@ struct GlobeSelectionView: View {
     
     private let globeViewSize: Double = 100
     private let viewHeight: Double = 130
-    private let viewMinWidth: Double = 300
+    private let viewMinWidth: Double = 280
     private let cornerRadius: Double = 20
     
     /// Radius of preview globe in meter
@@ -34,15 +34,15 @@ struct GlobeSelectionView: View {
     
     var body: some View {
         ZStack(alignment: .leading) {
-            VStack(alignment: .leading) {
-                Text(globe.name)
-                    .font(.headline)
-                    .padding(.top, 4)
-                Text(globe.authorAndDate)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(globe.date ?? "")
                     .font(.callout)
                     .foregroundStyle(.secondary)
-                    .padding(.top, 1)
-                    .opacity(globe.authorAndDate.isEmpty == true ? 0 : 1)
+                Text(globe.name)
+                    .font(.headline)
+                Text(globe.author)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
                 Spacer()
             }
             .padding(.top)
@@ -77,6 +77,7 @@ struct GlobeSelectionView: View {
         }
         .frame(height: viewHeight)
         .frame(minWidth: viewMinWidth)
+        .allowsTightening(true)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: cornerRadius))
         .glassBackgroundEffect(in: RoundedRectangle(cornerRadius: cornerRadius))
     }
