@@ -310,13 +310,13 @@
 				7DCE1BFC2C12D50000234DB6 /* Tabs */,
 				7DCE1BFD2C12D50000234DB6 /* ContentView.swift */,
 				7DCE1BFE2C12D50000234DB6 /* GaugeProgressStyle.swift */,
-				7DCE1BFF2C12D50000234DB6 /* GlobeSelectionView.swift */,
 				7DCE1C002C12D50000234DB6 /* GlobesGridView.swift */,
+				7DCE1BFF2C12D50000234DB6 /* GlobeSelectionView.swift */,
+				7D6FEA8C2C14815300725C20 /* GlobeView.swift */,
 				7DCE1C012C12D50000234DB6 /* ImmersiveGlobeView.swift */,
 				7DCE1C022C12D50000234DB6 /* ImmersivePreviewGlobeView.swift */,
 				7DCE1C032C12D50000234DB6 /* WebView.swift */,
 				7DCE1C042C12D50000234DB6 /* WebViewDecorated.swift */,
-				7D6FEA8C2C14815300725C20 /* GlobeView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
