@@ -21,56 +21,36 @@ struct AnimateView: View {
     
     var body: some View {
         NavigationSplitView {
-            VStack {
-                Button(action: loadAnimatedGlobe, label: {
-                    Image(systemName: "play")
-                })
-                .buttonBorderShape(.circle)
-                .controlSize(.large)
-                .padding(.bottom, 40)
-                
-                HStack {
-                    Text("Change After \(Int(animationInterval.rounded())) Seconds")
-                        .monospacedDigit()
-                        .padding(.leading)
-                    Spacer(minLength: 0)
-                }
-                
-                Slider(value: $animationInterval, in: 3...30)
-                    .padding(.bottom, 20)
-                
-                Group {
-                    Toggle(isOn: $animationUniformSize) {
-                        Label("Uniform Size", systemImage: "circle.circle")
-                    }
-                    
-                    Toggle("Random Order", isOn: $animationRandomOrder)
-                        .padding(.vertical)
-                }
-                .padding(.horizontal)
-                
-                Spacer()
-            }
+            sidebar
             .navigationSplitViewColumnWidth(260)
             .padding()
             .navigationTitle("Animate")
         } detail: {
-            ScrollView(.vertical, showsIndicators: false) {
-                let columns = [GridItem(.adaptive(minimum: 150))]
-                LazyVGrid(columns: columns) {
-                    ForEach(model.filteredGlobes(selection: selection)) { globe in
-                        GlobeView(globe: globe)
+            let columns = [GridItem(.adaptive(minimum: GlobeView.viewWidth))]
+            
+            GeometryReader { outer in
+                ScrollViewReader { value in
+                    ScrollView(.vertical, showsIndicators: false) {
+                        LazyVGrid(columns: columns) {
+                            ForEach(model.filteredGlobes(selection: selection)) { globe in
+                                GeometryReader { inner in
+                                    let visibleFraction = CGRect.verticalInsideFraction(inner.frame(in: .global), outer.frame(in: .global))
+                                    GlobeView(globe: globe, visibleFraction: visibleFraction)
+                                }
+                                .frame(height: GlobeView.viewHeight)
+                            }
+                        }
+                        .scrollTargetLayout() // for scrollTargetBehavior
                     }
+                    .padding()
+                    .navigationBarHidden(true)
+                    .clipped()
+                    .scrollTargetBehavior(.viewAligned) // align views with border of scroll view
+                    .scrollIndicators(.never)
+                    .animation(.default, value: selection)
                 }
-                .scrollTargetLayout() // for scrollTargetBehavior
             }
-            .padding()
-            .navigationBarHidden(true)
-            .clipped()
-            .scrollTargetBehavior(.viewAligned) // align views with border of scroll view
-            .scrollIndicators(.never)
-            .animation(.default, value: selection)
-        }       
+        }
         .navigationSplitViewStyle(.balanced)
         .ornament(attachmentAnchor: .scene(.top), contentAlignment: .bottom) {
             HStack {
@@ -85,6 +65,40 @@ struct AnimateView: View {
             .padding()
             .glassBackgroundEffect()
             .padding()
+        }
+    }
+    
+    @MainActor
+    @ViewBuilder private var sidebar: some View {
+        VStack {
+            Button(action: loadAnimatedGlobe, label: {
+                Image(systemName: "play")
+            })
+            .buttonBorderShape(.circle)
+            .controlSize(.large)
+            .padding(.bottom, 40)
+            
+            HStack {
+                Text("Change After \(Int(animationInterval.rounded())) Seconds")
+                    .monospacedDigit()
+                    .padding(.leading)
+                Spacer(minLength: 0)
+            }
+            
+            Slider(value: $animationInterval, in: 3...30)
+                .padding(.bottom, 20)
+            
+            Group {
+                Toggle(isOn: $animationUniformSize) {
+                    Label("Uniform Size", systemImage: "circle.circle")
+                }
+                
+                Toggle("Random Order", isOn: $animationRandomOrder)
+                    .padding(.vertical)
+            }
+            .padding(.horizontal)
+            
+            Spacer()
         }
     }
     
