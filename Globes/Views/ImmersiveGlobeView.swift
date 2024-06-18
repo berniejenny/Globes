@@ -46,7 +46,7 @@ struct ImmersiveGlobeView: View {
             root.name = "Globes"
             content.add(root)
             
-            // sphere at camera position
+            // a sphere at the camera position to avoid globes intersecting with the viewer's head
             let headEntity = HeadEntity()
             root.addChild(headEntity)
             Task { @MainActor in
@@ -76,7 +76,7 @@ struct ImmersiveGlobeView: View {
             
             _ = content.subscribe(to: SceneEvents.DidAddEntity.self, handleDidAddEntity(_:))
             _ = content.subscribe(to: CollisionEvents.Began.self, handleCollisionBegan(_:))
-        } update: { content, attachments in
+        } update: { content, attachments in // synchronous on MainActor
             if globeEntitiesNeedUpdate {
                 addGlobeEntities(to: content, attachments: attachments)
                 Task { @MainActor in
@@ -90,7 +90,7 @@ struct ImmersiveGlobeView: View {
                     panoramaEntityNeedsUpdate = false
                 }
             }
-        } attachments: {
+        } attachments: { // synchronous on MainActor
             if model.showOnboarding {
                 ForEach(Array(model.configurations.values)) { configuration in
                     Attachment(id: configuration.globeId) {
@@ -301,10 +301,6 @@ struct ImmersiveGlobeView: View {
                 }
             }
         }
-        
-        // rotation speed varies with radius and scale
-        updateGlobeRotations()
-        globeEntitiesNeedUpdate = true
     }
     
     // MARK: - Image Based Lighting

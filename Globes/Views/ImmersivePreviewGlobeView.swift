@@ -100,7 +100,8 @@ struct ImmersivePreviewGlobeView: View {
         if rotate {
             if globeEntity.components.has(RotationComponent.self) { return }
             let rotationSpeed = GlobeConfiguration.defaultRotationSpeedForPreviewGlobes
-            globeEntity.components.set(RotationComponent(speed: rotationSpeed))
+            let rotationComponent = RotationComponent(speed: rotationSpeed)
+            globeEntity.components.set(rotationComponent)
         } else {
             globeEntity.components.remove(RotationComponent.self)
         }

@@ -14,6 +14,7 @@
 		7D6CAB612C1D97F600AE4ECA /* Plastic_Glass_3.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 7D6CAB5E2C1D97F500AE4ECA /* Plastic_Glass_3.aiff */; };
 		7D6CAB622C1D97F600AE4ECA /* Plastic_Wood_1.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 7D6CAB5F2C1D97F600AE4ECA /* Plastic_Wood_1.aiff */; };
 		7D6CAB642C1E7FC900AE4ECA /* CollisionSound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D6CAB632C1E7FC900AE4ECA /* CollisionSound.swift */; };
+		7D6CAB662C21B50400AE4ECA /* CGRect+verticalInsideFraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D6CAB652C21B50400AE4ECA /* CGRect+verticalInsideFraction.swift */; };
 		7D6E110C2BA6C81C00C2BCD0 /* Pardies_Celestial_6900023.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11072BA6C81B00C2BCD0 /* Pardies_Celestial_6900023.jpg */; };
 		7D6E110D2BA6C81C00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg */; };
 		7D6E110E2BA6C81C00C2BCD0 /* TharpOceanFloor4black.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7D6E11092BA6C81B00C2BCD0 /* TharpOceanFloor4black.jpg */; };
@@ -106,6 +107,7 @@
 		7D6CAB5E2C1D97F500AE4ECA /* Plastic_Glass_3.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = Plastic_Glass_3.aiff; sourceTree = "<group>"; };
 		7D6CAB5F2C1D97F600AE4ECA /* Plastic_Wood_1.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = Plastic_Wood_1.aiff; sourceTree = "<group>"; };
 		7D6CAB632C1E7FC900AE4ECA /* CollisionSound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollisionSound.swift; sourceTree = "<group>"; };
+		7D6CAB652C21B50400AE4ECA /* CGRect+verticalInsideFraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+verticalInsideFraction.swift"; sourceTree = "<group>"; };
 		7D6E11072BA6C81B00C2BCD0 /* Pardies_Celestial_6900023.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Pardies_Celestial_6900023.jpg; sourceTree = "<group>"; };
 		7D6E11082BA6C81B00C2BCD0 /* Bellerby65cmSchminkeGagarin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Bellerby65cmSchminkeGagarin.jpg; sourceTree = "<group>"; };
 		7D6E11092BA6C81B00C2BCD0 /* TharpOceanFloor4black.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = TharpOceanFloor4black.jpg; sourceTree = "<group>"; };
@@ -412,6 +414,7 @@
 				7DCE1BED2C12D50000234DB6 /* Systems & Components */,
 				7DCE1C052C12D50000234DB6 /* Views */,
 				7DCE1BE12C12D50000234DB6 /* AppStore.swift */,
+				7D6CAB652C21B50400AE4ECA /* CGRect+verticalInsideFraction.swift */,
 				7DCE1BE72C12D50000234DB6 /* Error.swift */,
 				7DCE1BDD2C12D48300234DB6 /* Lamps.skybox */,
 				7DCE1BDC2C12D48300234DB6 /* White.skybox */,
@@ -625,6 +628,7 @@
 				7DCE1C2B2C12D50100234DB6 /* GlobesGridView.swift in Sources */,
 				7DCE1C112C12D50100234DB6 /* AppStore.swift in Sources */,
 				7DCE1C142C12D50100234DB6 /* PanoramaImmersionStyle.swift in Sources */,
+				7D6CAB662C21B50400AE4ECA /* CGRect+verticalInsideFraction.swift in Sources */,
 				7DCE1C2F2C12D50100234DB6 /* WebViewDecorated.swift in Sources */,
 				7DCE1C2C2C12D50100234DB6 /* ImmersiveGlobeView.swift in Sources */,
 				7DCE1C162C12D50100234DB6 /* Error.swift in Sources */,

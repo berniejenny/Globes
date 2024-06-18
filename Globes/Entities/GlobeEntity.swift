@@ -70,14 +70,11 @@ class GlobeEntity: Entity {
     /// - Parameter configuration: Configuration with rotation speed information.
     func updateRotation(configuration: GlobeConfiguration) {
         if let modelEntity {
-            let currentSpeed = configuration.currentRotationSpeed(scale: meanScale)
             if var rotation: RotationComponent = modelEntity.components[RotationComponent.self] {
-                if configuration.adjustRotationSpeedToSize {
-                    rotation.speed = currentSpeed
-                    modelEntity.components[RotationComponent.self] = rotation
-                }
+                rotation.speed = configuration.currentRotationSpeed
+                modelEntity.components[RotationComponent.self] = rotation
             } else {
-                modelEntity.components.set(RotationComponent(speed: currentSpeed))
+                modelEntity.components.set(RotationComponent(speed: configuration.currentRotationSpeed))
             }
         }        
     }
