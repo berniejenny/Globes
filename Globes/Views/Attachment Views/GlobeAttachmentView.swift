@@ -274,7 +274,7 @@ struct GlobeAttachmentView: View {
     @ViewBuilder private var playPauseButton: some View {
         Button(action: togglePlayPause) {
             let paused = configuration?.isAnimationPaused == true
-            ButtonImage(name: paused ? "play" : "pause")
+            ButtonImage(name: paused ? "play.circle" : "pause.circle")
                 .contentTransition(.symbolEffect(.replace))
         }
         .buttonStyle(.plain)
