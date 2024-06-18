@@ -83,10 +83,12 @@ struct GlobeConfiguration: Equatable, Identifiable {
     /// Speed of rotation used
     var rotationSpeed: Float
     
-    /// Duration in seconds for full rotation of a spinning globe.
-    static private let rotationDuration: Float = 48
+    /// Duration in seconds for full rotation of a spinning globe with a radius of 1 meter.
+    static private let rotationDuration: Float = 120
     
-    /// Angular speed in radians per second for a spinning globe.
+    /// Angular speed in radians per second for a spinning globe with a radius of 1 meter.
+    /// Globes with a smaller radius rotate faster, and globes with a larger radius rotate slower.
+    /// Globes with a scale factor greater than 1 rotate slower, and globes with a scale factor smaller than 1 rotate faster.
     static let defaultRotationSpeed: Float = 2 * .pi / rotationDuration
     
     /// Angular speed in radians per second for a small preview globe.

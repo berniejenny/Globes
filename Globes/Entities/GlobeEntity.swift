@@ -70,11 +70,16 @@ class GlobeEntity: Entity {
     /// - Parameter configuration: Configuration with rotation speed information.
     func updateRotation(configuration: GlobeConfiguration) {
         if let modelEntity {
-            if var rotation: RotationComponent = modelEntity.components[RotationComponent.self] {
-                rotation.speed = configuration.currentRotationSpeed
-                modelEntity.components[RotationComponent.self] = rotation
+            if var rotationComponent: RotationComponent = modelEntity.components[RotationComponent.self] {
+                rotationComponent.speed = configuration.currentRotationSpeed
+                rotationComponent.globeRadius = configuration.globe.radius
+                modelEntity.components[RotationComponent.self] = rotationComponent
             } else {
-                modelEntity.components.set(RotationComponent(speed: configuration.currentRotationSpeed))
+                let rotationComponent = RotationComponent(
+                    speed: configuration.currentRotationSpeed,
+                    globeRadius: configuration.globe.radius
+                )
+                modelEntity.components.set(rotationComponent)
             }
         }        
     }
