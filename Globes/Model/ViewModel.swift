@@ -78,6 +78,7 @@ import SwiftUI
     /// Open an immersive space if there is none and show a globe. Once loaded, the globe fades in and is positioned such that it should not touch any existing globe.
     /// - Parameters:
     ///   - globe: The globe to show.
+    ///   - selection: When selection is not `none`, the texture is replaced periodically with a texture of one of the globes in the selection.
     ///   - openImmersiveSpaceAction: Action for opening an immersive space.
     func load(
         globe: Globe,
@@ -162,8 +163,12 @@ import SwiftUI
             }
             
             DispatchQueue.main.asyncAfter(deadline: .now() + transformDuration) {
-                if let mc = globeEntity.modelEntity?.components[ModelComponent.self] {
-                    animatedGlobeEntity.modelEntity?.components.set(mc)
+                if let modelComponent = globeEntity.modelEntity?.components[ModelComponent.self] {
+                    animatedGlobeEntity.modelEntity?.components.set(modelComponent)
+                    
+                    // update collision shape
+                    let collisionSphere = ShapeResource.generateSphere(radius: newGlobe.radius)
+                    animatedGlobeEntity.components.set(CollisionComponent(shapes: [collisionSphere], mode: .trigger))
                 }
                 
                 // adjust the scale
