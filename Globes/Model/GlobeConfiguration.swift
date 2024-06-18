@@ -84,16 +84,13 @@ struct GlobeConfiguration: Equatable, Identifiable {
     var rotationSpeed: Float
     
     /// Duration in seconds for full rotation of a spinning globe.
-    static private let rotationDuration: Float = 120
+    static private let rotationDuration: Float = 48
     
     /// Angular speed in radians per second for a spinning globe.
     static let defaultRotationSpeed: Float = 2 * .pi / rotationDuration
     
     /// Angular speed in radians per second for a small preview globe.
-    static let defaultRotationSpeedForPreviewGlobes: Float = defaultRotationSpeed * 5
-    
-    /// If true, the angular rotation speed is proportional to the size of a globe, taking the current scale factor (if greater than 1) into account.
-    var adjustRotationSpeedToSize: Bool
+    static let defaultRotationSpeedForPreviewGlobes: Float = 2 * .pi / 24
     
     /// Pause rotation by `RotationSystem`
     var isRotationPaused: Bool
@@ -103,35 +100,18 @@ struct GlobeConfiguration: Equatable, Identifiable {
         isRotationPaused ? 0 : rotationSpeed
     }
     
-    /// Current angular speed of rotation taking `isRotationPaused` flag into account.
-    ///
-    /// If `adjustRotationSpeedToSize` is true, the angular speed is inversely proportional to the radius of the globe and also inversely proportional to the passed `scale` factor.
-    /// If `adjustRotationSpeedToSize` is false, `currentSpeed` is returned.
-    /// - Parameter scale: The current scale of the globe. Values smaller than 1 are ignored.
-    /// - Returns: Angular speed.
-    func currentRotationSpeed(scale: Float) -> Float {
-        if adjustRotationSpeedToSize {
-            let currentRadius = max(0.25, scale) * globe.radius
-            return currentRotationSpeed / currentRadius
-        } else {
-            return currentRotationSpeed
-        }
-    }
-    
     // MARK: - Initializer
     
     init(
         selection: GlobeSelection,
         globe: Globe,
         speed: Float = 0,
-        adjustRotationSpeedToSize: Bool = true,
         isRotationPaused: Bool = false
     ) {
         self.globeId = globe.id
         self.selection = selection
         self.globe = globe
         self.rotationSpeed = speed
-        self.adjustRotationSpeedToSize = adjustRotationSpeedToSize
         self.isRotationPaused = isRotationPaused
     }
 }

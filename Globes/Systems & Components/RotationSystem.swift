@@ -11,9 +11,16 @@ import RealityKit
 
 /// Rotation information for an entity.
 struct RotationComponent: Component {
+    
+    /// Angular speed of the rotation in radians per second
     var speed: Float
+    
+    /// Axis of rotation
     var axis: SIMD3<Float>
-
+    
+    /// Maximum angular speed: full rotation in 2 seconds
+    static let maxSpeed: Float = .pi
+    
     init(speed: Float = 1.0, axis: SIMD3<Float> = [0, 1, 0]) {
         self.speed = speed
         self.axis = axis
@@ -29,8 +36,18 @@ struct RotationSystem: System {
     func update(context: SceneUpdateContext) {
         for entity in context.entities(matching: Self.query, updatingSystemWhen: .rendering) {
             guard let component: RotationComponent = entity.components[RotationComponent.self] else { continue }
-            entity.setOrientation(.init(angle: component.speed * Float(context.deltaTime), axis: component.axis), relativeTo: entity)
+            
+            var scale = entity.scale.sum() / 3
+
+            #warning("hack: fix needed")
+            if let parent = entity.parent {
+                scale = parent.scale.sum() / 3
+            }
+            let scaledSpeed = min(RotationComponent.maxSpeed, component.speed / scale)
+            
+            entity.setOrientation(.init(angle: scaledSpeed * Float(context.deltaTime), axis: component.axis), relativeTo: entity)
         }
     }
+
 }
 

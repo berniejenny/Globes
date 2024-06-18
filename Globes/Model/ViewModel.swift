@@ -90,7 +90,6 @@ import SwiftUI
             selection: selection,
             globe: globe,
             speed: GlobeConfiguration.defaultRotationSpeed,
-            adjustRotationSpeedToSize: true,
             isRotationPaused: !rotateGlobes
         )
         configuration.isLoading = true
@@ -490,7 +489,7 @@ import SwiftUI
     @MainActor
     /// Hide small preview globes when an alert, a confirmation dialog or a sheet is shown to avoid intersections between these views and the globes.
     var hidePreviewGlobes: Bool { errorToShowInAlert != nil }
-       
+    
     /// Error to show in an alert dialog.
     @MainActor
     var errorToShowInAlert: Error? = nil {
