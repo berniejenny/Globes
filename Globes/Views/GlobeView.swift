@@ -19,8 +19,8 @@ struct GlobeView: View {
     @State private var editGlobe = false
     
     private let globeViewSize: Double = 90
-    private let viewHeight: Double = 160
-    private let viewWidth: Double = 155
+    static let viewHeight: Double = 160
+    static let viewWidth: Double = 155
     private let cornerRadius: Double = 20
     
     /// Radius of preview globe in meter
@@ -28,7 +28,7 @@ struct GlobeView: View {
     
     /// Value between 0 and 1 indicting the fraction of the view that is currently visible.
     /// This is used to sink the preview globe into the view if the view is not fully visible.
-    var visibleFraction: Double = 1
+    var visibleFraction: Double
     
     @MainActor
     private var showLoadingProgress: Bool {
@@ -77,8 +77,8 @@ struct GlobeView: View {
         .font(.caption)
         .allowsTightening(true)
         .padding(4)
-        .frame(height: viewHeight)
-        .frame(width: viewWidth)
+        .frame(height: Self.viewHeight)
+        .frame(width: Self.viewWidth)
 //        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: cornerRadius))
         .glassBackgroundEffect(in: RoundedRectangle(cornerRadius: cornerRadius))
     }
@@ -100,7 +100,7 @@ struct GlobeView: View {
 
 #if DEBUG
 #Preview {
-    GlobeView(globe: Globe.preview)
+    GlobeView(globe: Globe.preview, visibleFraction: 1)
         .environment(ViewModel.preview)
 }
 #endif

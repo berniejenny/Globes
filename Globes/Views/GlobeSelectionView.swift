@@ -19,8 +19,8 @@ struct GlobeSelectionView: View {
     @State private var editGlobe = false
     
     private let globeViewSize: Double = 100
-    private let viewHeight: Double = 130
-    private let viewMinWidth: Double = 280
+    static let viewHeight: Double = 136
+    static let viewMinWidth: Double = 380
     private let cornerRadius: Double = 20
     
     /// Radius of preview globe in meter
@@ -38,11 +38,18 @@ struct GlobeSelectionView: View {
                 Text(globe.date ?? "")
                     .font(.callout)
                     .foregroundStyle(.secondary)
-                Text(globe.name)
-                    .font(.headline)
+                
+                ViewThatFits {
+                    Text(globe.name)
+                    Text(globe.shortName ?? globe.name)
+                }
+                .font(.headline)
+                .padding(.trailing, globeViewSize)
+                
                 Text(globe.author)
                     .font(.callout)
                     .foregroundStyle(.secondary)
+                
                 Spacer()
             }
             .padding(.top)
@@ -75,8 +82,8 @@ struct GlobeSelectionView: View {
                     .onTapGesture(perform: showGlobe)
             }
         }
-        .frame(height: viewHeight)
-        .frame(minWidth: viewMinWidth)
+        .frame(height: Self.viewHeight)
+        .frame(minWidth: Self.viewMinWidth)
         .allowsTightening(true)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: cornerRadius))
         .glassBackgroundEffect(in: RoundedRectangle(cornerRadius: cornerRadius))
@@ -91,17 +98,16 @@ struct GlobeSelectionView: View {
         }
     }
     
+    @MainActor
     private func showGlobe() {
-        Task { @MainActor in
-            let _ = await model.load(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
-        }
+        model.load(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
     }
 }
 
 #if DEBUG
 #Preview {
     GlobeSelectionView(globe: Globe.editablePreview, visibleFraction: 1)
-        .frame(width: 500)
+        .frame(width: 350)
         .environment(ViewModel.preview)
 }
 #endif
