@@ -41,7 +41,12 @@ struct ImmersiveGlobeView: View {
     @AppStorage("AnimationInterval") private var animationInterval: Double = 5
     
     var body: some View {
-        RealityView { content, attachments in
+        RealityView { content, attachments in // async on MainActor
+            // Important: Any @State properties initialized in this closure are not available
+            // on the first call of the update closure (optionals will still be nil).
+            // Therefore do not defer initialization of entities to the update closure, but instead
+            // pass loaded IBLs and other resources to the initializing functions.
+            
             let root = Entity()
             root.name = "Globes"
             content.add(root)
@@ -58,14 +63,24 @@ struct ImmersiveGlobeView: View {
             physicsSimulationComponent.gravity = SIMD3.zero
             root.components.set(physicsSimulationComponent)
             
-            // image based lighting images shared by all globes and the panorama
-            if let lampsIBL = await loadImageBasedLightSourceEntity(lighting: .lamps) {
+            // load image based lighting images shared by all globes and the panorama
+            let lampsIBL = await loadImageBasedLightSourceEntity(lighting: .lamps)
+            let evenIBL = await loadImageBasedLightSourceEntity(lighting: .even)
+            if let lampsIBL {
                 content.add(lampsIBL)
                 self.lampsIBL = lampsIBL
             }
-            if let evenIBL = await loadImageBasedLightSourceEntity(lighting: .even) {
+            if let evenIBL {
                 content.add(evenIBL)
                 self.evenIBL = evenIBL
+            }
+            
+            // initialize the globes
+            addGlobeEntities(to: content, attachments: attachments, imageBasedLight: evenIBL)
+            
+            // initialize the panorama
+            if let evenIBL {
+                addPanoramaEntity(to: content, with: evenIBL)
             }
             
             // entity to play spatially positioned audio when two globes collide
@@ -78,14 +93,14 @@ struct ImmersiveGlobeView: View {
             _ = content.subscribe(to: CollisionEvents.Began.self, handleCollisionBegan(_:))
         } update: { content, attachments in // synchronous on MainActor
             if globeEntitiesNeedUpdate {
-                addGlobeEntities(to: content, attachments: attachments)
+                addGlobeEntities(to: content, attachments: attachments, imageBasedLight: evenIBL)
                 Task { @MainActor in
                     globeEntitiesNeedUpdate = false
                 }
             }
             
-            if panoramaEntityNeedsUpdate {
-                addPanoramaEntity(to: content)
+            if panoramaEntityNeedsUpdate, let evenIBL {
+                addPanoramaEntity(to: content, with: evenIBL)
                 Task { @MainActor in
                     panoramaEntityNeedsUpdate = false
                 }
@@ -108,7 +123,7 @@ struct ImmersiveGlobeView: View {
         .onChange(of: model.lighting) {
             Task { @MainActor in
                 for globeEntity in model.globeEntities.values {
-                    applyImageBasedLighting(to: globeEntity)
+                    globeEntity.applyImageBasedLight(iblEntity)
                 }
             }
         }
@@ -130,6 +145,13 @@ struct ImmersiveGlobeView: View {
         }
         .onChange(of: model.panoramaEntity) {
             Task { @MainActor in
+                // If a panorama appears and the current lighting is natural light, then change the lighting for globes
+                if model.lighting == .natural {
+                    for globeEntity in model.globeEntities.values {
+                        globeEntity.applyImageBasedLight(iblEntity)
+                    }
+                }
+                
                 panoramaEntityNeedsUpdate = true
             }
         }
@@ -153,7 +175,6 @@ struct ImmersiveGlobeView: View {
     private func handleDidAddEntity(_ event: SceneEvents.DidAddEntity) {
         if let globeEntity = event.entity as? GlobeEntity {
             animateMoveIn(of: globeEntity)
-            applyImageBasedLighting(to: globeEntity)
         }
     }
     
@@ -195,7 +216,11 @@ struct ImmersiveGlobeView: View {
     /// - Parameters:
     ///   - content: Root of scene content.
     ///   - attachments: The attachments for the globes.
-    private func addGlobeEntities(to content: RealityViewContent, attachments: RealityViewAttachments) {
+    private func addGlobeEntities(
+        to content: RealityViewContent,
+        attachments: RealityViewAttachments,
+        imageBasedLight: ImageBasedLightSourceEntity?
+    ) {
         guard let root = content.entities.first?.findEntity(named: "Globes") else { return }
         
         func noConfigurationForGlobeEntity(_ entity: Entity) -> Bool {
@@ -211,8 +236,9 @@ struct ImmersiveGlobeView: View {
         root.children.removeAll(where: { noConfigurationForGlobeEntity($0) })
         
         // add new globe entities
-        for entity in model.globeEntities.values where !globeIsAdded(entity.globeId) {
-            root.addChild(entity)
+        for globeEntity in model.globeEntities.values where !globeIsAdded(globeEntity.globeId) {
+            globeEntity.applyImageBasedLight(iblEntity)
+            root.addChild(globeEntity)
         }
         
         // update attachments
@@ -230,7 +256,7 @@ struct ImmersiveGlobeView: View {
     }
     
     @MainActor
-    private func addPanoramaEntity(to content: RealityViewContent) {
+    private func addPanoramaEntity(to content: RealityViewContent, with imageBasedLight: ImageBasedLightSourceEntity) {
         // remove current panorama
         if let oldPanoramaEntity = content.entities.first(where: { $0 is PanoramaEntity }) {
             content.remove(oldPanoramaEntity)
@@ -244,16 +270,8 @@ struct ImmersiveGlobeView: View {
             }
             
             // Setup image based lighting; always use even lighting for panoramas.
-            // Search for the IBL in the reality view content instead of using @State evenIBL, which is nil
-            // when this panorama is the first model entity added to the reality view and the immersive mode
-            // is `full`, i.e. 360 degrees. This seems to be a bug in visionOS 1.2.
-            let evenIBL = find(imageBasedLighting: .even, in: content)
-            if let evenIBL {
-                let lightReceiver = ImageBasedLightReceiverComponent(imageBasedLight: evenIBL)
-                panoramaEntity.components.set(lightReceiver)
-            } else {
-                Logger().error("No image based lighting texture for panorama.")
-            }
+            assert(imageBasedLight.name == Lighting.even.description)
+            panoramaEntity.applyImageBasedLight(imageBasedLight)
             
             content.add(panoramaEntity)
         }
@@ -316,30 +334,7 @@ struct ImmersiveGlobeView: View {
         iblEntity?.name = lighting.description
         return iblEntity
     }
-    
-    /// Returns an IBL entity in the reality view content. This needs to be used when a new reality view is opened and a panorama is immediately added.
-    /// In this case, the @State evenIBL has not been stored yet in SwiftUI and will be nil.
-    /// - Parameters:
-    ///   - imageBasedLighting: Type of IBL.
-    ///   - content: Reality view content
-    /// - Returns: IBL entity.
-    private func find(imageBasedLighting: Lighting, in content: RealityViewContent) -> ImageBasedLightSourceEntity? {
-        let entity = content.entities.first(where: { $0.name == imageBasedLighting.description })
-        return entity as? ImageBasedLightSourceEntity
-    }
-    
-    @MainActor
-    /// Add an IBL receiver component to a globe entity.
-    /// - Parameter globeEntity: The entity
-    private func applyImageBasedLighting(to globeEntity: GlobeEntity) {
-        if let iblEntity {
-            let lightReceiver = ImageBasedLightReceiverComponent(imageBasedLight: iblEntity)
-            globeEntity.components.set(lightReceiver)
-        } else {
-            globeEntity.components.remove(ImageBasedLightReceiverComponent.self)
-        }
-    }
-    
+        
     @MainActor
     /// The IBL entity to use. Natural lighting is not available when a panorama is visible.
     private var iblEntity: ImageBasedLightSourceEntity? {
