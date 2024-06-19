@@ -8,6 +8,8 @@
 import SwiftUI
 
 extension ViewModel {
+    
+    @MainActor
     static var preview: ViewModel {
         ViewModel.shared
     }
