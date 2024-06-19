@@ -184,7 +184,7 @@ struct ContentView: View {
     @ViewBuilder
     @MainActor
     private var debugButtons: some View {
-//#if DEBUG
+#if DEBUG
             Button(action: {
                 model.errorToShowInAlert = error("Debug Info", secondaryMessage: String(reflecting: model))
                 print(model)
@@ -201,7 +201,7 @@ struct ContentView: View {
                 Label("Debug Info", systemImage: "eraser")
             }
             .foregroundColor(.red)
-//#endif
+#endif
     }
 }
 
