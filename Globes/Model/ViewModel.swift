@@ -9,6 +9,17 @@ import os
 import RealityKit
 import SwiftUI
 
+/// A singleton model that can be accessed via `ViewModel.shared`, for example, by the app delegate. For SwiftUI, use the new Observable framework instead of accessing the shared singleton.
+///
+/// The `Globe` struct is a static description of a globe containing all metadata and a texture name. A globe has an id (i.e. Globe.ID), which is used as keys for dictionaries to associate globes with a configuration and a 3D entity.
+///
+/// `globes` is an array of Globe structs that are loaded from Globes.json. This array does not change, except when custom globes are added (this is yet to be implemented).
+///
+/// `configurations` is a dictionary of `GlobeConfiguration` structs using `Globe.ID` keys. A configuration stores non-static properties of a globe, such as the rotation, the loading status, whether an attachment is visible, etc.  A configuration has a `globe` property, which changes for animated globes. A configuration also has `globeId` property of type `Globe.ID`, which is identical to the key of  the `configurations` dictionary. The `globeId` allows for looking up the `Globe` struct and `GlobeEntity` belonging to the configuration. `globeId` does not change, while `GlobeConfiguration.globe.id` changes when a globe texture is animated.
+///
+/// `globeEntities` is a dictionary of `GlobeEntity` classes using `Globe.ID` keys. After a globe is loaded, a `GlobeEntity` is initialized and added to this dictionary. SwiftUI observes this dictionary and synchronises the content of the `ImmersiveGlobeView` (a `RealityView`) with `globeEntities`. Identical to `GlobeConfiguration`, a `GlobeEntity` also has `globeId` property of type `Globe.ID`, which is identical to the key used by the `globeEntities` dictionary. The `globeId` allows for looking up the `Globe` struct and the `GlobeConfiguration` belonging to the entity.
+///
+///
 /// For the new Observable framework: https://developer.apple.com/documentation/swiftui/migrating-from-the-observable-object-protocol-to-the-observable-macro
 @Observable class ViewModel: CustomDebugStringConvertible {
     
@@ -17,9 +28,14 @@ import SwiftUI
     static let shared = ViewModel()
     
     @MainActor
+    /// The `Globe` struct is a static description of a globe containing all metadata and a texture name. A globe has an id (i.e. Globe.ID), which is used as keys for dictionaries to associate globes with a configuration and a 3D entity.
     var globes: [Globe] = []
     
     @MainActor
+    
+    /// An array of Globe structs of all available globes that are part of a selection.
+    /// - Parameter selection: The selection
+    /// - Returns: Filtered globes.
     func filteredGlobes(selection: GlobeSelection) -> [Globe] {
         switch selection {
         case .all:
@@ -44,6 +60,7 @@ import SwiftUI
     // MARK: - Visible Globes
     
     @MainActor
+    /// `configurations` is a dictionary of `GlobeConfiguration` structs using `Globe.ID` keys. A configuration stores non-static properties of a globe, such as the rotation, the loading status, whether an attachment is visible, etc.  A configuration has a `globe` property, which changes for animated globes. A configuration also has `globeId` property of type `Globe.ID`, which is identical to the key of  the `configurations` dictionary. The `globeId` allows for looking up the `Globe` struct and `GlobeEntity` belonging to the configuration. `globeId` does not change, while `GlobeConfiguration.globe.id` changes when a globe texture is animated.
     var configurations: [Globe.ID: GlobeConfiguration] = [:]
     
     @MainActor
@@ -52,6 +69,7 @@ import SwiftUI
     }
     
     @MainActor
+    /// `globeEntities` is a dictionary of `GlobeEntity` classes using `Globe.ID` keys. After a globe is loaded, a `GlobeEntity` is initialized and added to this dictionary. SwiftUI observes this dictionary and synchronises the content of the `ImmersiveGlobeView` (a `RealityView`) with `globeEntities`. Identical to `GlobeConfiguration`, a `GlobeEntity` also has `globeId` property of type `Globe.ID`, which is identical to the key used by the `globeEntities` dictionary. The `globeId` allows for looking up the `Globe` struct and the `GlobeConfiguration` belonging to the entity.
     var globeEntities: [Globe.ID: GlobeEntity] = [:]
     
     @MainActor
