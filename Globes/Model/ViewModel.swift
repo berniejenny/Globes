@@ -228,7 +228,7 @@ import SwiftUI
     @MainActor
     /// Hide all currently visible globes and delete their GlobeConfiguration` and `GlobeEntity`.
     func hideAllGlobes() {
-        for globeId in globeEntities.keys {
+        for globeId in configurations.keys {
             hideGlobe(with: globeId)
         }
     }
