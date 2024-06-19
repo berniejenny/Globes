@@ -32,10 +32,10 @@ struct GlobeConfiguration: Equatable, Identifiable {
     // MARK: - Size
     
     /// Maximum diameter of globe when scaled up in meter
-    private let maxDiameter: Float = 5
+    static let maxDiameter: Float = 5
     
     /// Minimum diameter of globe when scaled down in meter
-    private let minDiameter: Float = 0.05
+    static let minDiameter: Float = 0.05
     
     var globe: Globe
     
@@ -69,13 +69,13 @@ struct GlobeConfiguration: Equatable, Identifiable {
     /// Minimum scale factor
     var minScale: Float {
         let d = 2 * globe.radius
-        return minDiameter / d
+        return Self.minDiameter / d
     }
     
     /// Maximum scale factor
     var maxScale: Float {
         let d = 2 * globe.radius
-        return max(1, maxDiameter / d)
+        return max(1, Self.maxDiameter / d)
     }
     
     // MARK: - Rotation
