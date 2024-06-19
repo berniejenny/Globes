@@ -44,3 +44,15 @@ class ImageBasedLightSourceEntity: Entity {
         self.components.set(iblComponent)
     }
 }
+
+extension Entity {
+    @MainActor
+    func applyImageBasedLight(_ ibl: ImageBasedLightSourceEntity?) {
+        if let ibl {
+            let lightReceiver = ImageBasedLightReceiverComponent(imageBasedLight: ibl)
+            components.set(lightReceiver)
+        } else {
+            components.remove(ImageBasedLightReceiverComponent.self)
+        }
+    }
+}
