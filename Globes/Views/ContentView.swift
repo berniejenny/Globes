@@ -32,18 +32,7 @@ struct ContentView: View {
                 650
             }
         }
-        
-        var maxWidth: CGFloat? {
-            switch self {
-            case .settings:
-                500
-            case .about:
-                1400
-            default:
-                nil
-            }
-        }
-        
+               
         var minHeight: Double {
             switch self {
             case .gallery:
@@ -129,7 +118,7 @@ struct ContentView: View {
                 closeWindowsAndImmersiveSpace()
             }
         }
-        .frame(minWidth: selectedTab.minWidth, maxWidth: selectedTab.maxWidth, minHeight: selectedTab.minHeight)
+        .frame(minWidth: selectedTab.minWidth, minHeight: selectedTab.minHeight)
     }
     
     @ViewBuilder
