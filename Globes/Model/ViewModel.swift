@@ -137,43 +137,53 @@ import SwiftUI
     }
     
     @MainActor
+    var uniformSizeForAnimatedGlobe: Bool {
+        // scale and adjust the position before showing the new texture
+        if UserDefaults.standard.object(forKey: "AnimationUniformSize") == nil {
+            return true // default for boolean values is false if the value does not exist, but we want true
+        } else {
+            return UserDefaults.standard.bool(forKey: "AnimationUniformSize")
+        }
+    }
+    
+    @MainActor
     /// Called by `SerialGlobeLoader` when a new globe entity for an animated globe has been loaded.
     /// - Parameters:
     ///   - globeEntity: The loaded globe entity.
     ///   - entityID: The id of the animated globe entity.
     func storeAnimatedGlobe(_ globeEntity: GlobeEntity, entityID: UInt64) {
         let transformDuration = GlobeEntity.transformAnimationDuration / 2
-        if let newModelComponent = globeEntity.modelEntity?.components[ModelComponent.self],
-           let newGlobe = globes.first(where: { $0.id == globeEntity.globeId }),
+        if let newGlobe = globes.first(where: { $0.id == globeEntity.globeId }),
            let animatedGlobeEntity = globeEntities.values.first(where: { $0.id == entityID }),
-           let animatedModelEntity = animatedGlobeEntity.children.first(where: { $0 is ModelEntity }),
-           var animatedModelComponent = animatedModelEntity.components[ModelComponent.self],
            var animatedConfiguration = configurations[animatedGlobeEntity.globeId] {
             
-            // scale and adjust the position before showing the new texture
-            let uniformSize = UserDefaults.standard.bool(forKey: "AnimationUniformSize")
             let oldScale = animatedGlobeEntity.scale
-            let newScale = newGlobe.radius / animatedConfiguration.globe.radius * oldScale.x
-#warning("Make sure newScale is not too large here")
+            let newRadius = animatedConfiguration.globe.radius
+            var newScale = newGlobe.radius / animatedConfiguration.globe.radius * oldScale.x
+            newScale = min(newScale, GlobeConfiguration.maxDiameter / newRadius)
+            newScale = max(newScale, GlobeConfiguration.minDiameter / newRadius)
+        
+            let uniformSize = uniformSizeForAnimatedGlobe
             if !uniformSize {
                 animatedGlobeEntity.scaleAndAdjustDistanceToCamera(
                     newScale: newScale,
-                    radius: animatedConfiguration.globe.radius,
+                    radius: newRadius,
                     duration: transformDuration)
             }
             
             DispatchQueue.main.asyncAfter(deadline: .now() + transformDuration) {
-                if let modelComponent = globeEntity.modelEntity?.components[ModelComponent.self] {
-                    animatedGlobeEntity.modelEntity?.components.set(modelComponent)
-                    
-                    // update collision shape
-                    let collisionSphere = ShapeResource.generateSphere(radius: newGlobe.radius)
-                    animatedGlobeEntity.components.set(CollisionComponent(shapes: [collisionSphere], mode: .trigger))
-                }
+                guard let modelComponent = globeEntity.modelEntity?.components[ModelComponent.self] else { return }
+                
+                // update the model
+                animatedGlobeEntity.modelEntity?.components.set(modelComponent)
+                
+                // update the collision shape
+                let collisionSphere = ShapeResource.generateSphere(radius: newGlobe.radius)
+                animatedGlobeEntity.components.set(CollisionComponent(shapes: [collisionSphere], mode: .trigger))
                 
                 // adjust the scale
                 if uniformSize {
-                    let newScale = animatedConfiguration.globe.radius / newGlobe.radius
+                    let newScale = newRadius / newGlobe.radius
                     animatedGlobeEntity.scale = [newScale, newScale, newScale] * oldScale
                 } else {
                     animatedGlobeEntity.scale = oldScale

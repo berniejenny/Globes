@@ -284,7 +284,7 @@ struct ImmersiveGlobeView: View {
     }
     
     @MainActor
-    /// Change the texture of all animated globes.
+    /// Change the texture of all animated globes. This is periodically called by `animationTimer`.
     private func animateTextures() {
         for globeEntity in model.globeEntities.values {
             if let configuration = model.configurations[globeEntity.globeId],
