@@ -7,6 +7,7 @@
 
 import Foundation
 
+//#if DEBUG
 extension Globe {
     
     /// A globe for previewing SwiftUI views.
@@ -34,3 +35,4 @@ extension Globe {
         }
     }
 }
+//#endif

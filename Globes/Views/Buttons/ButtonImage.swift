@@ -11,7 +11,7 @@ struct ButtonImage: View {
     let name: String
     var isSystemImage = true
     
-    var size: Double = 22
+    @ScaledMetric private var size = 22.0
     
     var body: some View {
         let image = isSystemImage ? Image(systemName: name) : Image(name)
@@ -37,7 +37,7 @@ struct ButtonImage: View {
                 
                 Button(action: { rotation.toggle() } ) {
                     if rotation {
-                        ButtonImage(name: "rotate.3d", size: 16)
+                        ButtonImage(name: "rotate.3d")
                     } else {
                         ButtonImage(name: "rotate.3d.slash", isSystemImage: false)
                     }

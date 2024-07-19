@@ -16,15 +16,14 @@ struct GlobeView: View {
     
     let globe: Globe
     
-    @State private var editGlobe = false
+    static let viewWidth = 155.0
+    static let viewHeight = 160.0
     
-    private let globeViewSize: Double = 90
-    static let viewHeight: Double = 160
-    static let viewWidth: Double = 155
-    private let cornerRadius: Double = 20
+    @ScaledMetric private var scaledViewWidth = viewWidth
+    @ScaledMetric private var scaledViewHeight = viewHeight
+    @ScaledMetric private var scaledGlobeViewSize = 90.0
     
-    /// Radius of preview globe in meter
-    private let globeRadius: Float = 0.038
+    private let cornerRadius = 20.0
     
     /// Value between 0 and 1 indicting the fraction of the view that is currently visible.
     /// This is used to sink the preview globe into the view if the view is not fully visible.
@@ -49,8 +48,8 @@ struct GlobeView: View {
     var body: some View {
         VStack {
             ZStack {
-                ImmersivePreviewGlobeView(globe: globe, rotate: true, addHoverEffect: true, radius: globeRadius)
-                    .frame(width: globeViewSize, height: globeViewSize)
+                ImmersivePreviewGlobeView(globe: globe, rotate: true, addHoverEffect: true)
+                    .frame(width: scaledGlobeViewSize, height: scaledGlobeViewSize)
                     .scaledToFit()
                     .offset(z: globeZOffset)
                     .animation(.default, value: model.hidePreviewGlobes)
@@ -77,18 +76,16 @@ struct GlobeView: View {
         .font(.caption)
         .allowsTightening(true)
         .padding(4)
-        .frame(height: Self.viewHeight)
-        .frame(width: Self.viewWidth)
-//        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: cornerRadius))
+        .frame(width: scaledViewWidth, height: scaledViewHeight)
         .glassBackgroundEffect(in: RoundedRectangle(cornerRadius: cornerRadius))
     }
     
     @MainActor
     private var globeZOffset: Double {
         if model.hidePreviewGlobes {
-            -globeViewSize * 0.6
+            -scaledGlobeViewSize * 0.6
         } else {
-            globeViewSize * 0.5 * (visibleFraction * visibleFraction * visibleFraction * visibleFraction * 2 - 1)
+            scaledGlobeViewSize * 0.5 * (visibleFraction * visibleFraction * visibleFraction * visibleFraction * 2 - 1)
         }
     }
     

@@ -9,7 +9,8 @@ import SwiftUI
 
 struct AnimateView: View {
     @Environment(ViewModel.self) var model
-    @Environment(\.openImmersiveSpace) var openImmersiveSpaceAction
+    @Environment(\.openImmersiveSpace) private var openImmersiveSpaceAction
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize: DynamicTypeSize
     
     @State private var selection = GlobeSelection.all
     
@@ -17,16 +18,18 @@ struct AnimateView: View {
     @AppStorage("AnimationRandomOrder") private var animationRandomOrder = false
     @AppStorage("AnimationInterval") private var animationInterval: Double = 3
     
+    @ScaledMetric private var scaledGlobeViewWidth = GlobeView.viewWidth
+    @ScaledMetric private var scaledGlobeViewHeight = GlobeView.viewHeight
+    
     private let selections: [GlobeSelection] = [.all, .favorites, .earth, .celestial, .moon, .planets]
     
     var body: some View {
         NavigationSplitView {
             sidebar
-            .navigationSplitViewColumnWidth(260)
             .padding()
             .navigationTitle("Animate")
         } detail: {
-            let columns = [GridItem(.adaptive(minimum: GlobeView.viewWidth))]
+            let columns = [GridItem(.adaptive(minimum: scaledGlobeViewWidth))]
             
             GeometryReader { outer in
                 ScrollViewReader { value in
@@ -37,7 +40,7 @@ struct AnimateView: View {
                                     let visibleFraction = CGRect.verticalInsideFraction(inner.frame(in: .global), outer.frame(in: .global))
                                     GlobeView(globe: globe, visibleFraction: visibleFraction)
                                 }
-                                .frame(height: GlobeView.viewHeight)
+                                .frame(height: scaledGlobeViewHeight)
                             }
                         }
                         .scrollTargetLayout() // for scrollTargetBehavior
@@ -90,7 +93,12 @@ struct AnimateView: View {
             
             Group {
                 Toggle(isOn: $animationUniformSize) {
-                    Label("Uniform Size", systemImage: "circle.circle")
+                    // no icon when accessibility text size is large
+                    if dynamicTypeSize.isAccessibilitySize {
+                        Text("Uniform Size")
+                    } else {
+                        Label("Uniform Size", systemImage: "circle.circle")
+                    }
                 }
                 
                 Toggle("Random Order", isOn: $animationRandomOrder)
@@ -135,7 +143,7 @@ struct AnimateView: View {
 #Preview {
     AnimateView()
         .environment(ViewModel.preview)
-        .frame(width: 800)
+//        .frame(width: 800)
         .glassBackgroundEffect()
 }
 #endif

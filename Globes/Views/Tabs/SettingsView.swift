@@ -13,8 +13,8 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     
     private let immersionStyles: [PanoramaImmersionStyle] = [.progressive, .full]
-    private let globeViewSize: Double = 120
-    private let globeRadius: Float = 0.05
+    
+    @ScaledMetric private var scaledGlobeViewSize = 120.0
     
     @State private var player: AVAudioPlayer?
     
@@ -30,12 +30,8 @@ struct SettingsView: View {
                     }
                 } label: {
                     if let previewGlobe {
-                        ImmersivePreviewGlobeView(
-                            globe: previewGlobe,
-                            rotate: model.rotateGlobes,
-                            radius: globeRadius
-                        )
-                            .frame(width: globeViewSize, height: globeViewSize)
+                        ImmersivePreviewGlobeView(globe: previewGlobe, rotate: model.rotateGlobes)
+                            .frame(width: scaledGlobeViewSize, height: scaledGlobeViewSize)
                             .scaledToFit()
                             .padding([.top, .leading])
                             .offset(z: globeZOffset)
@@ -106,15 +102,15 @@ struct SettingsView: View {
             }
             .listRowSeparator(.hidden)
         }
-        .frame(maxWidth: 500)
         .padding(.top)
         .padding()
     }
     
     @MainActor
+    /// Returns the first opened globe or a default globe when no globe is opened.
     private var previewGlobe: Globe? {
         if let id = model.configurations.first?.key,
-           let globe = model.globes.first(where: { $0.id == id }){
+           let globe = model.globes.first(where: { $0.id == id }) {
             return globe
         }
         return model.globes.first(where: { $0.authorSurname == "Bellerby" })
@@ -123,9 +119,9 @@ struct SettingsView: View {
     @MainActor
     private var globeZOffset: Double {
         if model.hidePreviewGlobes {
-            -globeViewSize * 0.55
+            -scaledGlobeViewSize * 0.55
         } else {
-            globeViewSize * 0.5
+            scaledGlobeViewSize * 0.5
         }
     }
     

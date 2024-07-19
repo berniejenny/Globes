@@ -15,18 +15,16 @@ struct GlobeSelectionView: View {
     @Environment(ViewModel.self) private var model
     @Environment(\.openWindow) private var openWindow
     @Environment(\.openImmersiveSpace) var openImmersiveSpaceAction
-    
-    @State private var editGlobe = false
-    
-    private let globeViewSize: Double = 100
+        
     static let viewHeight: Double = 136
-    static let viewMinWidth: Double = 380
-    private let cornerRadius: Double = 20
+    static let viewMinWidth: Double = 320
+    @ScaledMetric private var scaledViewHeight = Self.viewHeight
+    @ScaledMetric(relativeTo: .headline) private var scaledMinWidth = Self.viewMinWidth
+    @ScaledMetric private var scaledGlobeViewSize: Double = 100
+    @ScaledMetric private var scaledButtonPaddingH = 4
+    @ScaledMetric private var scaledButtonPaddingV = 8
     
-    /// Radius of preview globe in meter
-#warning("This could be derived from the view geometry size")
-    // https://developer.apple.com/wwdc23/10080 at 14:45
-    private let globeRadius: Float = 0.035
+    private let cornerRadius: Double = 20
 
     /// Value between 0 and 1 indicting the fraction of the view that is currently visible.
     /// This is used to sink the preview globe into the view if the view is not fully visible.
@@ -44,7 +42,7 @@ struct GlobeSelectionView: View {
                     Text(globe.shortName ?? globe.name)
                 }
                 .font(.headline)
-                .padding(.trailing, globeViewSize)
+                .padding(.trailing, scaledGlobeViewSize)
                 
                 Text(globe.author)
                     .font(.callout)
@@ -64,17 +62,18 @@ struct GlobeSelectionView: View {
                         PanoramaButton(globe: globe)
                         FavoriteGlobeButton(globeId: globe.id)
                     }
-                    .padding(8)
+                    .padding(.vertical, scaledButtonPaddingV)
+                    .padding(.horizontal, scaledButtonPaddingH)
                     Spacer()
                 }
             }
-            .padding(.trailing, 50)
+            .padding(.trailing, scaledGlobeViewSize / 2)
             
             // 3D preview globe
             HStack {
                 Spacer()
-                ImmersivePreviewGlobeView(globe: globe, rotate: true, radius: globeRadius)
-                    .frame(width: globeViewSize, height: globeViewSize)
+                ImmersivePreviewGlobeView(globe: globe, rotate: true)
+                    .frame(width: scaledGlobeViewSize, height: scaledGlobeViewSize)
                     .scaledToFit()
                     .offset(z: globeZOffset)
                     .animation(.default, value: model.hidePreviewGlobes)
@@ -82,8 +81,8 @@ struct GlobeSelectionView: View {
                     .onTapGesture(perform: showGlobe)
             }
         }
-        .frame(height: Self.viewHeight)
-        .frame(minWidth: Self.viewMinWidth)
+        .frame(height: scaledViewHeight)
+        .frame(minWidth: scaledMinWidth)
         .allowsTightening(true)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: cornerRadius))
         .glassBackgroundEffect(in: RoundedRectangle(cornerRadius: cornerRadius))
@@ -92,9 +91,9 @@ struct GlobeSelectionView: View {
     @MainActor
     private var globeZOffset: Double {
         if model.hidePreviewGlobes {
-            -globeViewSize * 0.55
+            -scaledGlobeViewSize * 0.55
         } else {
-            globeViewSize * 0.5 * (visibleFraction * visibleFraction * visibleFraction * visibleFraction * 2 - 1)
+            scaledGlobeViewSize * 0.5 * (visibleFraction * visibleFraction * visibleFraction * visibleFraction * 2 - 1)
         }
     }
     
@@ -105,9 +104,9 @@ struct GlobeSelectionView: View {
 }
 
 #if DEBUG
-#Preview {
+#Preview(windowStyle: .automatic) {
     GlobeSelectionView(globe: Globe.editablePreview, visibleFraction: 1)
-        .frame(width: 350)
         .environment(ViewModel.preview)
+        .padding()
 }
 #endif

@@ -41,6 +41,8 @@ struct CreditsView: View {
 
 struct AboutView: View {
     @Environment(\.openURL) var openURL
+    @ScaledMetric private var scaledHWidth = 450.0
+    @ScaledMetric private var scaledVWidth = 600.0
     
     private static let appName = Bundle.main.infoDictionary![kCFBundleNameKey as String] as! String
     private let appVersion = Bundle.main.infoDictionary!["CFBundleShortVersionString" as String] as! String
@@ -77,9 +79,9 @@ struct AboutView: View {
             ViewThatFits(in: .horizontal) {
                 HStack(alignment: .top, spacing: 40) {
                     HelpView()
-                        .frame(width: 450)
+                        .frame(width: scaledHWidth)
                     CreditsView()
-                        .frame(width: 450)
+                        .frame(width: scaledHWidth)
                 }
                 .multilineTextAlignment(.center)
                 .font(.callout)
@@ -95,9 +97,7 @@ struct AboutView: View {
                 .multilineTextAlignment(.center)
                 .font(.callout)
                 .foregroundStyle(.secondary)
-                .frame(width: 600)
-                
-
+                .frame(width: scaledVWidth)
             }
             .allowsTightening(true)
             
@@ -113,7 +113,8 @@ struct AboutView: View {
         
 }
 
-#Preview(traits: .fixedLayout(width: 350, height: 500)) {
+#Preview {
     AboutView()
+        .padding()
         .glassBackgroundEffect()
 }

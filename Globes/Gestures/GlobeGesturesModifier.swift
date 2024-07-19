@@ -387,7 +387,7 @@ private struct GlobeGesturesModifier: ViewModifier {
     
     private func log(_ message: String) {
 #if DEBUG
-        let logger = Logger(subsystem: "Globe Gestures", category: "Gestures")
+//        let logger = Logger(subsystem: "Globe Gestures", category: "Gestures")
 //        logger.info("\(message)")
 #endif
     }

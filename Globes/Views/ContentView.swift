@@ -10,47 +10,22 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(ViewModel.self) var model
-
+    
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dismissWindow) private var dismissWindow
-    @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
-
+    @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize: DynamicTypeSize
+   
+    @ScaledMetric private var scaledWidthSettings = 500.0
+    @ScaledMetric private var scaledMinWidthGallery = GlobeSelectionView.viewMinWidth + 48
+    @ScaledMetric private var scaledMinWidthSearch = GlobeSelectionView.viewMinWidth + 500
+    @ScaledMetric private var scaledMinWidthSearchAccessibleTypeSize = GlobeSelectionView.viewMinWidth + 200
+    @ScaledMetric private var scaledMinWidthPlay = GlobeView.viewWidth * 2 + 450
+    @ScaledMetric private var scaledMinWidthPlayAccessibleTypeSize = GlobeView.viewWidth + 450
+    @ScaledMetric private var scaledMinWidthAbout = 620.0
+    
     private enum Tab {
         case gallery, favorites, play, search, createGlobe, settings, about
-        
-        var minWidth: Double {
-            switch self {
-            case .gallery, .favorites:
-                450
-            case .play:
-                520
-            case .settings:
-                500
-            case .search, .createGlobe:
-                800
-            case .about:
-                650
-            }
-        }
-               
-        var minHeight: Double {
-            switch self {
-            case .gallery:
-                330
-            case .favorites:
-                316
-            case .play:
-                500
-            case .search:
-                500
-            case .createGlobe:
-                600
-            case .settings:
-                725
-            case .about:
-                700
-            }
-        }
     }
     
     @State private var selectedTab = Tab.gallery
@@ -65,7 +40,7 @@ struct ContentView: View {
                 }
             })
     }
-
+    
     var body: some View {
         TabView(selection: $selectedTab) {
             GalleryView()
@@ -118,7 +93,8 @@ struct ContentView: View {
                 closeWindowsAndImmersiveSpace()
             }
         }
-        .frame(minWidth: selectedTab.minWidth, minHeight: selectedTab.minHeight)
+        .frame(width: scaledWidth, height: scaledHeight)
+        .frame(minWidth: scaledMinWidth, minHeight: scaledMinHeight)
     }
     
     @ViewBuilder
@@ -174,23 +150,94 @@ struct ContentView: View {
     @MainActor
     private var debugButtons: some View {
 #if DEBUG
-            Button(action: {
-                model.errorToShowInAlert = error("Debug Info", secondaryMessage: String(reflecting: model))
-                print(model)
-            }) {
-                Label("Debug Info", systemImage: "ant")
-            }
-            .foregroundColor(.red)
-            
-            Button(action: {
-                UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
-                UserDefaults.standard.synchronize()
-                model.errorToShowInAlert = error("Erased UserDefaults")
-            }) {
-                Label("Debug Info", systemImage: "eraser")
-            }
-            .foregroundColor(.red)
+        Button(action: {
+            model.errorToShowInAlert = error("Debug Info", secondaryMessage: String(reflecting: model))
+            print(model)
+        }) {
+            Label("Debug Info", systemImage: "ant")
+        }
+        .foregroundColor(.red)
+        
+        Button(action: {
+            UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+            UserDefaults.standard.synchronize()
+            model.errorToShowInAlert = error("Erased UserDefaults")
+        }) {
+            Label("Debug Info", systemImage: "eraser")
+        }
+        .foregroundColor(.red)
 #endif
+    }
+    
+    private var scaledWidth: CGFloat? {
+        selectedTab == .settings ? scaledWidthSettings : nil
+    }
+    
+    private var scaledHeight: CGFloat? {
+        if selectedTab == .settings {
+            switch dynamicTypeSize {
+            case .xSmall, .small, .medium:
+                return 680
+            case .large:
+                return 740
+            case .xLarge:
+                return 755
+            case .xxLarge:
+                return 775
+            case .xxxLarge:
+                return 810
+            case .accessibility1:
+                return 845
+            case .accessibility2:
+                return 880
+            case .accessibility3:
+                return 940
+            case .accessibility4:
+                return 1000
+            case .accessibility5:
+                return 1110
+            @unknown default:
+                return 880
+            }
+        } else {
+            return nil
+        }
+    }
+    
+    private var scaledMinWidth: CGFloat? {
+        switch selectedTab {
+        case .gallery, .favorites:
+            scaledMinWidthGallery
+        case .play:
+            dynamicTypeSize.isAccessibilitySize ? scaledMinWidthPlayAccessibleTypeSize : scaledMinWidthPlay
+        case .search:
+            dynamicTypeSize.isAccessibilitySize ? scaledMinWidthSearchAccessibleTypeSize : scaledMinWidthSearch
+        case .createGlobe:
+            nil
+        case .settings:
+            scaledWidthSettings
+        case .about:
+            scaledMinWidthAbout
+        }
+    }
+    
+    private var scaledMinHeight: CGFloat? {
+        switch selectedTab {
+        case .gallery:
+            330
+        case .favorites:
+            316
+        case .play:
+            550
+        case .search:
+            550
+        case .createGlobe:
+            600
+        case .settings:
+            nil
+        case .about:
+            dynamicTypeSize.isAccessibilitySize ? 1000 : 700
+        }
     }
 }
 

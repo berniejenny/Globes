@@ -11,9 +11,12 @@ struct GlobesGridView: View {
     @Environment(ViewModel.self) private var model
     
     let globes: [Globe]
-        
+    
+    @ScaledMetric private var scaledGlobeSelectionViewHeight = GlobeSelectionView.viewHeight
+    @ScaledMetric(relativeTo: .headline) private var scaledGlobeSelectionViewMinWidth = GlobeSelectionView.viewMinWidth
+    
     var body: some View {
-        let columns = [GridItem(.adaptive(minimum: GlobeSelectionView.viewMinWidth))]
+        let columns = [GridItem(.adaptive(minimum: scaledGlobeSelectionViewMinWidth))]
         
         GeometryReader { outer in
             ScrollViewReader { value in
@@ -24,7 +27,7 @@ struct GlobesGridView: View {
                                 let visibleFraction = CGRect.verticalInsideFraction(inner.frame(in: .global), outer.frame(in: .global))
                                 GlobeSelectionView(globe: globe, visibleFraction: visibleFraction)
                             }
-                            .frame(height: GlobeSelectionView.viewHeight)
+                            .frame(height: scaledGlobeSelectionViewHeight)
                             .padding(8)
                         }
                     }
