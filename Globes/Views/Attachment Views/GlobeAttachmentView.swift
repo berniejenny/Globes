@@ -85,9 +85,12 @@ struct GlobeAttachmentView: View {
             ZStack {
                 titlePlate
                 closeButton
+                // place close button in top-left corner
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                     .offset(x: -32)
             }
+            // force constant width of containing ZStack, such that the close button does not move when the info view becomes visible.
+            .frame(width: scaledInfoTextWidth)
             
             topButtons
             
@@ -103,7 +106,6 @@ struct GlobeAttachmentView: View {
                     infoView
                 }
             case .custom:
-#warning("Custom globes")
                 EmptyView()
                 // EditGlobeView(globe: customGlobeBinding)
             }
@@ -237,9 +239,10 @@ struct GlobeAttachmentView: View {
         }
     }
     
+    @ScaledMetric private var scaledInfoTextWidth = 370.0
+    
     @MainActor
     @ViewBuilder var infoView: some View {
-        let textWidth: Double = 370
         VStack {
             if let description = globe.description {
                 ScrollView(.vertical, showsIndicators: true) {
@@ -252,7 +255,7 @@ struct GlobeAttachmentView: View {
                     }
                 }
                 .scrollIndicators(.visible, axes: .vertical)
-                .frame(width: textWidth)                
+                .frame(width: scaledInfoTextWidth)
                 .frame(maxHeight: 400)
                 .padding()
                 .glassBackgroundEffect(in: RoundedRectangle(cornerRadius: cornerRadius))

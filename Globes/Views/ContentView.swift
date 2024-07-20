@@ -55,7 +55,6 @@ struct ContentView: View {
             SearchView()
                 .tabItem { Label("Search", systemImage: "magnifyingglass") }
                 .tag(Tab.search)
-#warning("Create custom globe")
 //            CreateGlobeView()
 //                .tabItem { Label("Create a Globe", systemImage: "hammer") }
 //                .tag(Tab.createGlobe)
