@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2BBBCD302C4A99D2007BCCC2 /* MyGroupActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BBBCD2F2C4A99D2007BCCC2 /* MyGroupActivity.swift */; };
+		2BBBCD332C4A9A1B007BCCC2 /* SharePlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BBBCD322C4A9A1B007BCCC2 /* SharePlayView.swift */; };
 		7D0905CC2C187022008B9513 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 7D0905CB2C187022008B9513 /* AsyncAlgorithms */; };
 		7D62945A2BC8ECE1006AB242 /* WorldAeronautical.heic in Resources */ = {isa = PBXBuildFile; fileRef = 7D6294592BC8ECE1006AB242 /* WorldAeronautical.heic */; };
 		7D62945C2BC8ED2D006AB242 /* MoonGeology.heic in Resources */ = {isa = PBXBuildFile; fileRef = 7D62945B2BC8ED2D006AB242 /* MoonGeology.heic */; };
@@ -101,6 +103,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2BBBCD2F2C4A99D2007BCCC2 /* MyGroupActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyGroupActivity.swift; sourceTree = "<group>"; };
+		2BBBCD312C4A99F3007BCCC2 /* GlobesDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GlobesDebug.entitlements; sourceTree = "<group>"; };
+		2BBBCD322C4A9A1B007BCCC2 /* SharePlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePlayView.swift; sourceTree = "<group>"; };
 		7D6294592BC8ECE1006AB242 /* WorldAeronautical.heic */ = {isa = PBXFileReference; lastKnownFileType = file; path = WorldAeronautical.heic; sourceTree = "<group>"; };
 		7D62945B2BC8ED2D006AB242 /* MoonGeology.heic */ = {isa = PBXFileReference; lastKnownFileType = file; path = MoonGeology.heic; sourceTree = "<group>"; };
 		7D6CAB5D2C1D97F500AE4ECA /* Plastic_Fabric_2.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = Plastic_Fabric_2.aiff; sourceTree = "<group>"; };
@@ -319,6 +324,7 @@
 				7DCE1C022C12D50000234DB6 /* ImmersivePreviewGlobeView.swift */,
 				7DCE1C032C12D50000234DB6 /* WebView.swift */,
 				7DCE1C042C12D50000234DB6 /* WebViewDecorated.swift */,
+				2BBBCD322C4A9A1B007BCCC2 /* SharePlayView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -342,14 +348,15 @@
 			isa = PBXGroup;
 			children = (
 				7D6CAB632C1E7FC900AE4ECA /* CollisionSound.swift */,
-				7DCE1BE62C12D50000234DB6 /* Globe.swift */,
 				7DCE1C0F2C12D50100234DB6 /* GlobeConfiguration.swift */,
+				7DCE1BE62C12D50000234DB6 /* Globe.swift */,
 				7D6FEA8E2C154F0F00725C20 /* GlobeSelection.swift */,
 				7DCE1BE02C12D4FF00234DB6 /* GlobeType.swift */,
 				7DCE1BE82C12D50000234DB6 /* Lighting.swift */,
 				7DCE1BE52C12D50000234DB6 /* PanoramaImmersionStyle.swift */,
 				7DCE1BE92C12D50000234DB6 /* ViewModel.swift */,
 				7DD9C2572C1C777D00D00593 /* ViewModel+Audio.swift */,
+				2BBBCD2F2C4A99D2007BCCC2 /* MyGroupActivity.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -407,6 +414,7 @@
 		7DEAB0462B9B04C2004027B1 /* Globes */ = {
 			isa = PBXGroup;
 			children = (
+				2BBBCD312C4A99F3007BCCC2 /* GlobesDebug.entitlements */,
 				7DCE1C062C12D50000234DB6 /* GlobesApp.swift */,
 				7DCE1C3A2C12D64900234DB6 /* Model */,
 				7DCE1C0E2C12D50000234DB6 /* Entities */,
@@ -615,6 +623,7 @@
 				7DD9C2582C1C777D00D00593 /* ViewModel+Audio.swift in Sources */,
 				7DCE1C242C12D50100234DB6 /* FavoritesView.swift in Sources */,
 				7DCE1C212C12D50100234DB6 /* GlobeButton.swift in Sources */,
+				2BBBCD302C4A99D2007BCCC2 /* MyGroupActivity.swift in Sources */,
 				7DCE1C292C12D50100234DB6 /* GaugeProgressStyle.swift in Sources */,
 				7DCE1C282C12D50100234DB6 /* ContentView.swift in Sources */,
 				7DCE1C2D2C12D50100234DB6 /* ImmersivePreviewGlobeView.swift in Sources */,
@@ -636,6 +645,7 @@
 				7DCE1C152C12D50100234DB6 /* Globe.swift in Sources */,
 				7DCE1C192C12D50100234DB6 /* CameraTracker.swift in Sources */,
 				7D6CAB642C1E7FC900AE4ECA /* CollisionSound.swift in Sources */,
+				2BBBCD332C4A9A1B007BCCC2 /* SharePlayView.swift in Sources */,
 				7DCE1C272C12D50100234DB6 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -831,6 +841,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Globes/GlobesDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_ASSET_PATHS = "\"Globes/Preview Content\"";
