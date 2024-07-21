@@ -87,6 +87,9 @@ struct ContentView: View {
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gear") }
                 .tag(Tab.settings)
+//            SharePlayView()
+//                .tabItem { Label("SharePlay", systemImage: "shareplay") }
+//                .tag(Tab.sharePlay)
             AboutView()
                 .tabItem { Label("About", systemImage: "ellipsis") }
                 .tag(Tab.about)
