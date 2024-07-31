@@ -14,7 +14,8 @@ import Combine
 struct SharePlayView: View {
     
     @State private var groupSession: GroupSession<MyGroupActivity>? = nil
-  
+    @State private var subscriptions = Set<AnyCancellable>()
+    @State private var globeState = GlobeState(rotation: 0.0, zoom: 1.0)
     
     var body: some View {
         VStack{
@@ -55,6 +56,8 @@ struct SharePlayView: View {
             for await session in MyGroupActivity.sessions() {
                 guard let systemCoordinator = await session.systemCoordinator else {continue}
                 
+                
+                
                 // Check if local participant is spatial
                 let isLocalParticipantSpatial = systemCoordinator.localParticipantState.isSpatial
                 
@@ -65,15 +68,15 @@ struct SharePlayView: View {
                 
                 //TODO: Sync globe rotation and zoom with other participants
                 
-                Task.detached{
-                    for await localParticipantState in systemCoordinator.localParticipantStates {
-                        if localParticipantState.isSpatial{
-                            // start syncing scroll position
-                        } else{
-                            // stop syncing scroll position
-                        }
-                    }
+                Task{
+                    await observeStateChanges(in: session)
                 }
+                
+                // Sync globe rotation and zoom with other participants
+                
+//                Task.detached {
+//                    await observeLocalParticipantStates(in: systemCoordinator)
+//                }
                
                 session.join()
             }
@@ -93,6 +96,25 @@ struct SharePlayView: View {
                 self.groupSession = nil
             default:
                 break
+            }
+        }
+    
+    private func observeStateChanges(in session: GroupSession<MyGroupActivity>) async {
+            for await state in session.$state.values {
+                await MainActor.run {
+                    handleSessionStateChange(state)
+                }
+            }
+        }
+    
+    
+    private func observeLocalParticipantStates(in systemCoordinator: SystemCoordinator) async {
+            for await localParticipantState in systemCoordinator.localParticipantStates {
+                if localParticipantState.isSpatial {
+                    // start syncing scroll position
+                } else {
+                    // stop syncing scroll position
+                }
             }
         }
 }

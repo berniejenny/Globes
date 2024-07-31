@@ -23,9 +23,10 @@ struct ContentView: View {
     @ScaledMetric private var scaledMinWidthPlay = GlobeView.viewWidth * 2 + 450
     @ScaledMetric private var scaledMinWidthPlayAccessibleTypeSize = GlobeView.viewWidth + 450
     @ScaledMetric private var scaledMinWidthAbout = 620.0
+    @ScaledMetric private var scaledMinWidthSharePlay = 500.0
     
     private enum Tab {
-        case gallery, favorites, play, search, createGlobe, settings, about
+        case gallery, favorites, play, search, createGlobe, settings, about, sharePlay
     }
     
     @State private var selectedTab = Tab.gallery
@@ -61,9 +62,9 @@ struct ContentView: View {
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gear") }
                 .tag(Tab.settings)
-//            SharePlayView()
-//                .tabItem { Label("SharePlay", systemImage: "shareplay") }
-//                .tag(Tab.sharePlay)
+            SharePlayView()
+                .tabItem { Label("SharePlay", systemImage: "shareplay") }
+                .tag(Tab.sharePlay)
             AboutView()
                 .tabItem { Label("About", systemImage: "ellipsis") }
                 .tag(Tab.about)
@@ -220,6 +221,8 @@ struct ContentView: View {
             scaledWidthSettings
         case .about:
             scaledMinWidthAbout
+        case .sharePlay:
+            scaledMinWidthSharePlay
         }
     }
     
@@ -239,6 +242,8 @@ struct ContentView: View {
             nil
         case .about:
             dynamicTypeSize.isAccessibilitySize ? 1000 : 700
+        case .sharePlay:
+            500
         }
     }
 }

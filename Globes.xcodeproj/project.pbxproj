@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2BB9FED72C5A33B600FAD2F1 /* SharePlayMock in Frameworks */ = {isa = PBXBuildFile; productRef = 2BB9FED62C5A33B600FAD2F1 /* SharePlayMock */; };
 		2BBBCD302C4A99D2007BCCC2 /* MyGroupActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BBBCD2F2C4A99D2007BCCC2 /* MyGroupActivity.swift */; };
 		2BBBCD332C4A9A1B007BCCC2 /* SharePlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BBBCD322C4A9A1B007BCCC2 /* SharePlayView.swift */; };
 		7D0905CC2C187022008B9513 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 7D0905CB2C187022008B9513 /* AsyncAlgorithms */; };
@@ -211,6 +212,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2BB9FED72C5A33B600FAD2F1 /* SharePlayMock in Frameworks */,
 				7D0905CC2C187022008B9513 /* AsyncAlgorithms in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -481,6 +483,7 @@
 			name = Globes;
 			packageProductDependencies = (
 				7D0905CB2C187022008B9513 /* AsyncAlgorithms */,
+				2BB9FED62C5A33B600FAD2F1 /* SharePlayMock */,
 			);
 			productName = Globes;
 			productReference = 7DEAB0442B9B04C2004027B1 /* Globes.app */;
@@ -515,6 +518,7 @@
 			mainGroup = 7DEAB03B2B9B04C2004027B1;
 			packageReferences = (
 				7D0905CA2C187022008B9513 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
+				2BB9FED52C5A33B600FAD2F1 /* XCRemoteSwiftPackageReference "SharePlayMock" */,
 			);
 			productRefGroup = 7DEAB0452B9B04C2004027B1 /* Products */;
 			projectDirPath = "";
@@ -845,7 +849,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_ASSET_PATHS = "\"Globes/Preview Content\"";
-				DEVELOPMENT_TEAM = MD358F9757;
+				DEVELOPMENT_TEAM = D3UA3H3VA4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
@@ -926,6 +930,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		2BB9FED52C5A33B600FAD2F1 /* XCRemoteSwiftPackageReference "SharePlayMock" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Pixeland-Tech/SharePlayMock";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.1;
+			};
+		};
 		7D0905CA2C187022008B9513 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-async-algorithms.git";
@@ -937,6 +949,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		2BB9FED62C5A33B600FAD2F1 /* SharePlayMock */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2BB9FED52C5A33B600FAD2F1 /* XCRemoteSwiftPackageReference "SharePlayMock" */;
+			productName = SharePlayMock;
+		};
 		7D0905CB2C187022008B9513 /* AsyncAlgorithms */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7D0905CA2C187022008B9513 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */;
