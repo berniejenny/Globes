@@ -34,7 +34,7 @@ struct ImmersivePreviewGlobeView: View {
     var body: some View {
         GeometryReader3D { geometry in
             RealityView (make: { content in
-                if let globeEntity = await createGlobe(){
+                if let globeEntity = await createGlobe() {
                     content.add(globeEntity)
                 }
                 
@@ -43,7 +43,7 @@ struct ImmersivePreviewGlobeView: View {
                 applyRotation()
                 
                 // image based lighting
-                self.imageBasedLightSourceEntity = await loadImageBaseLightSourceEntity()
+                self.imageBasedLightSourceEntity = await loadImageBasedLightSourceEntity()
                 applyImageBasedLighting()
             }, update: { content in
                 // replace the globe entity if it changed
@@ -81,13 +81,13 @@ struct ImmersivePreviewGlobeView: View {
             .onChange(of: model.lighting) {
                 // load another image based lighting texture
                 Task { @MainActor in
-                    imageBasedLightSourceEntity = await loadImageBaseLightSourceEntity()
+                    imageBasedLightSourceEntity = await loadImageBasedLightSourceEntity()
                 }
             }
             .onChange(of: model.isShowingPanorama) {
                 // might have to change image based lighting texture, as natural lighting is not available inside a panorama
                 Task { @MainActor in
-                    imageBasedLightSourceEntity = await loadImageBaseLightSourceEntity()
+                    imageBasedLightSourceEntity = await loadImageBasedLightSourceEntity()
                 }
             }
         }
@@ -127,7 +127,7 @@ struct ImmersivePreviewGlobeView: View {
     }
     
     @MainActor
-    private func loadImageBaseLightSourceEntity() async -> ImageBasedLightSourceEntity? {
+    private func loadImageBasedLightSourceEntity() async -> ImageBasedLightSourceEntity? {
         // natural lighting is not available when a panorama is visible
         var lighting = model.lighting
         if model.isShowingPanorama && model.lighting == .natural {
