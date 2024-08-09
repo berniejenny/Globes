@@ -24,17 +24,17 @@ struct HelpView: View {
 struct CreditsView: View {
     private static let appName = Bundle.main.infoDictionary![kCFBundleNameKey as String] as! String
     private let appVersion = Bundle.main.infoDictionary!["CFBundleShortVersionString" as String] as! String
-    private let authors: LocalizedStringKey = "Software development by [Bernhard Jenny](https://berniejenny.info) and [Dilpreet Singh](https://dilpreet.co), Monash University.\nGlobe images and metadata by [David Rumsey](https://www.davidrumsey.com)."
+    private let authors: LocalizedStringKey = "Software development by [Bernie Jenny](https://berniejenny.info) and [Dilpreet Singh](https://dilpreet.co), Monash University.\nGlobe images and metadata by [David Rumsey](https://www.davidrumsey.com)."
     private let copyright: LocalizedStringKey = "Copyright 2024 by Monash University, Melbourne, Australia and [David Rumsey Map Center](https://library.stanford.edu/libraries/david-rumsey-map-center), Stanford Libraries, USA."
-    private let license: LocalizedStringKey = "Source code under MIT license on [GitHub](https://github.com/berniejenny/Globes)"
-    
+    private let license: LocalizedStringKey = "Globes is open source on [GitHub](https://github.com/berniejenny/Globes)"
+   
     var body: some View {
         VStack(alignment: .center, spacing: 8) {
             Text("About")
                 .font(.title3)
             Text(authors)
             Text(copyright)
-            // Text(license) // TBD: increase frame height when license is shown
+            Text(license)
         }
     }
 }
@@ -84,7 +84,6 @@ struct AboutView: View {
                         .frame(width: scaledHWidth)
                 }
                 .multilineTextAlignment(.center)
-                .font(.callout)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal)
                 .padding(.top)
@@ -95,7 +94,6 @@ struct AboutView: View {
                         .padding(.top)
                 }
                 .multilineTextAlignment(.center)
-                .font(.callout)
                 .foregroundStyle(.secondary)
                 .frame(width: scaledVWidth)
             }

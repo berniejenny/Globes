@@ -235,7 +235,7 @@ struct ContentView: View {
         case .settings:
             nil
         case .about:
-            dynamicTypeSize.isAccessibilitySize ? 1000 : 700
+            dynamicTypeSize.isAccessibilitySize ? 1100 : 800
         }
     }
 }
