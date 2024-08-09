@@ -115,6 +115,7 @@
 		7D6FEA8A2C14711000725C20 /* AnimateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimateView.swift; sourceTree = "<group>"; };
 		7D6FEA8C2C14815300725C20 /* GlobeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobeView.swift; sourceTree = "<group>"; };
 		7D6FEA8E2C154F0F00725C20 /* GlobeSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobeSelection.swift; sourceTree = "<group>"; };
+		7D7262BA2C659821003A723A /* Globes.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Globes.entitlements; sourceTree = "<group>"; };
 		7D7464392BA3C16F00182871 /* ViewModel+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModel+Preview.swift"; sourceTree = "<group>"; };
 		7D81B85C2BA123B5004C4477 /* Globes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Globes.json; sourceTree = SOURCE_ROOT; };
 		7D81B85E2BA13A53004C4477 /* UrbanoMonte_10130093.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = UrbanoMonte_10130093.jpg; sourceTree = "<group>"; };
@@ -407,6 +408,7 @@
 		7DEAB0462B9B04C2004027B1 /* Globes */ = {
 			isa = PBXGroup;
 			children = (
+				7D7262BA2C659821003A723A /* Globes.entitlements */,
 				7DCE1C062C12D50000234DB6 /* GlobesApp.swift */,
 				7DCE1C3A2C12D64900234DB6 /* Model */,
 				7DCE1C0E2C12D50000234DB6 /* Entities */,
@@ -831,6 +833,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Globes/Globes.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_ASSET_PATHS = "\"Globes/Preview Content\"";
@@ -859,6 +862,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Globes/Globes.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_ASSET_PATHS = "\"Globes/Preview Content\"";
