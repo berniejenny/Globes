@@ -98,7 +98,10 @@ struct ContentView: View {
         }
         .frame(width: scaledWidth, height: scaledHeight)
         .frame(minWidth: scaledMinWidth, minHeight: scaledMinHeight)
+        .task { Registration.registerGroupActivity() }
+//        .task {model.configureGroupSessions()}
     }
+        
     
     @ViewBuilder
     @MainActor

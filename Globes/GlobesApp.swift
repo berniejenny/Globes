@@ -8,6 +8,10 @@
 import os
 import SwiftUI
 
+#if DEBUG
+import SharePlayMock
+#endif
+
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
@@ -19,6 +23,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         // start camera tracking
         CameraTracker.start()
+       
+        
         
         return true
     }
@@ -43,16 +49,29 @@ struct GlobesApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
     @Environment(\.openURL) private var openURL
+    @Environment(\.openImmersiveSpace) private var openImmersiveSpaceAction // ADDED this
+
     
     /// View model injected in environment. @State instead of the old @StateObject is fine with the new Observable framework.
     @State private var model = ViewModel.shared
+    
+    #if DEBUG
+    init() {
+
+    }
+    #endif
     
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(model)
+                .onAppear(){
+                    model.openImmersiveSpaceAction = openImmersiveSpaceAction // Pass the openImmersiveSpaceAction to the ViewModel
+                }
+                .task { Registration.registerGroupActivity() }
         }
         .windowResizability(.contentSize) // window resizability is derived from window content
+        
         
         WindowGroup(id: "info", for: UUID.self) { $globeId in
             if let infoURL = model.globes.first(where: { $0.id == globeId })?.infoURL {
@@ -77,6 +96,15 @@ struct GlobesApp: App {
                     model.hideAllGlobes()
                     model.hidePanorama()
                 }
+//                .handlesExternalEvents(
+////
+////                    // There are two scenes but we need to tell shareplay which scene Can and Prefers
+////                    // https://developer.apple.com/videos/play/wwdc2023/10087/?time=248
+////
+//                    preferring: ["planet"],
+//                    allowing: ["planet"]
+//                )
+        
         }
         .immersionStyle(selection: immersionStyleBinding, in: .mixed, .progressive, .full)
     }

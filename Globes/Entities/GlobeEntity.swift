@@ -8,10 +8,13 @@
 import os
 import RealityKit
 import SwiftUI
+import Combine
 
 /// Globe entity with a model child consisting of a mesh and a material, plus  `InputTargetComponent`, `CollisionComponent` and `PhysicsBodyComponent` components.
 /// Gestures mutate the transform of this parent entity, while the optional automatic rotation mutates the transform of the child entity.
-class GlobeEntity: Entity {
+class GlobeEntity: Entity, Codable {
+    
+    var collisionSubscription: Cancellable?
     
     /// Child model entity
     var modelEntity: Entity? { children.first(where: { $0 is ModelEntity }) }
@@ -26,12 +29,13 @@ class GlobeEntity: Entity {
     
     /// Duration of animations of scale, orientation and position in seconds.
     static let transformAnimationDuration: Double = 2
-        
+    
     /// Controller for stopping animated transformations.
     var animationPlaybackController: AnimationPlaybackController? = nil
     
     @MainActor required init() {
         self.globeId = UUID()
+
         super.init()
     }
     
@@ -40,8 +44,9 @@ class GlobeEntity: Entity {
     ///   - globe: Globe settings.
     init(globe: Globe) async throws {
         self.globeId = globe.id
+    
         super.init()
-                
+        
         let material = try await ResourceLoader.loadMaterial(
             globe: globe,
             loadPreviewTexture: false,
@@ -55,14 +60,24 @@ class GlobeEntity: Entity {
         modelEntity.name = "Sphere"
         modelEntity.components.set(GroundingShadowComponent(castsShadow: true))
         
+        
+        #warning("do research how to get notification every time there is a physics collision and send message")
         // Add InputTargetComponent and CollisionComponent to enable gestures and physics
         components.set(InputTargetComponent())
         components.set(CollisionComponent(shapes: [.generateSphere(radius: globe.radius)], mode: .trigger))
-        
         components.set(PhysicsBodyComponent(massProperties: .default, material: .default, mode: .dynamic))
+   
 
         self.addChild(modelEntity)
         self.name = globe.name
+    }
+    
+   
+    
+    func handleCollision(_ event: CollisionEvents.Began) {
+        print("Collision detected between \(event.entityA.name) and \(event.entityB.name)")
+        
+        ViewModel.shared.sendMessage()
     }
     
     @MainActor
@@ -81,7 +96,7 @@ class GlobeEntity: Entity {
                 )
                 modelEntity.components.set(rotationComponent)
             }
-        }        
+        }
     }
     
     /// Apply animated transformation. All values in global space. Stops any current animation and updates `self.animationPlaybackController`.
@@ -90,6 +105,7 @@ class GlobeEntity: Entity {
     ///   - orientation: New orientation. If nil, orientation is not changed.
     ///   - position: New position. If nil, position is not changed.
     ///   - duration: Duration of the animation.
+//#warning("pass a flag for sending instead of shouldSendMessage property")
     func animateTransform(
         scale: Float? = nil,
         orientation: simd_quatf? = nil,
@@ -114,6 +130,9 @@ class GlobeEntity: Entity {
             self.transform = transform
         }
     }
+    
+
+      
     
     /// Returns true if the globe axis is vertically oriented.
     var isNorthOriented: Bool {
@@ -145,11 +164,11 @@ class GlobeEntity: Entity {
         
         // Compute the axis to rotate around to align localUp with the world up vector
         let rotationAxis = normalize(simd_cross(localUp, worldUp))
-
+        
         // Compute the angle between localUp and the world up vector
         let dotProduct = simd_dot(localUp, worldUp)
         let angle = acos(dotProduct)
-
+        
         // Create the quaternion that represents the rotation needed to align localUp with the world up vector
         let alignmentQuat = simd_quatf(angle: angle, axis: rotationAxis)
         
@@ -166,7 +185,7 @@ class GlobeEntity: Entity {
             // Unary vector in global space from the globe center to the camera.
             // This vector is pointing from the globe center toward the target position on the globe.
             let v = normalize(cameraPosition - position(relativeTo: nil))
-
+            
             // rotate the point to the target position
             let orientation = simd_quatf(from: normalize(location), to: v)
             
@@ -235,6 +254,12 @@ class GlobeEntity: Entity {
         let position = oldPosition - globeCameraDirection * deltaRadius
         if duration > 0 {
             animateTransform(scale: newScale, position: position, duration: duration)
+            
+            
+            // RESIZE: SEND MESSAGE HERE
+            ViewModel.shared.activityState.tempTranslation = TempTranslation(scale: newScale, orientation: nil, position: position, duration: 1.0)
+            ViewModel.shared.activityState.changes[globeId] = GlobeChange.resize
+            ViewModel.shared.sendMessage()
         } else {
             self.scale = [newScale, newScale, newScale]
             self.position = position
@@ -288,4 +313,31 @@ class GlobeEntity: Entity {
     /// The  mean scale factor of this entity relative to the world space.
     @MainActor
     var meanScale: Float { scale(relativeTo: nil).sum() / 3 }
+    
+    
+    /// Codable
+    ///
+    
+    enum CodingKeys: String, CodingKey {
+        case globeId
+        case roughness
+        case clearcoat
+        case transform
+        case name
+        case animationPlaybackController
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.globeId = try container.decode(UUID.self, forKey: .globeId)
+
+        super.init()
+    }
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(globeId, forKey: .globeId)
+        try container.encode(roughness, forKey: .roughness)
+        try container.encode(clearcoat, forKey: .clearcoat)
+    }
+    
 }

@@ -8,6 +8,9 @@
 import os
 import RealityKit
 import SwiftUI
+import SharePlayMock
+import Combine
+import GroupActivities
 
 /// A singleton model that can be accessed via `ViewModel.shared`, for example, by the app delegate. For SwiftUI, use the new Observable framework instead of accessing the shared singleton.
 ///
@@ -22,10 +25,12 @@ import SwiftUI
 ///
 /// For the new Observable framework: https://developer.apple.com/documentation/swiftui/migrating-from-the-observable-object-protocol-to-the-observable-macro
 @Observable class ViewModel: CustomDebugStringConvertible {
+    var openImmersiveSpaceAction: OpenImmersiveSpaceAction?
     
     /// Shared singleton that can be accessed by the AppDelegate.
     @MainActor
     static let shared = ViewModel()
+    
     
     @MainActor
     /// The `Globe` struct is a static description of a globe containing all metadata and a texture name. A globe has an id (i.e. Globe.ID), which is used as keys for dictionaries to associate globes with a configuration and a 3D entity.
@@ -111,11 +116,18 @@ import SwiftUI
             speed: GlobeConfiguration.defaultRotationSpeed,
             isRotationPaused: !rotateGlobes
         )
+        // Need to send the configuration over so the new user can initialise a globe with the same config
+        // No need to send message here because the method that calls load() will send the message
+        activityState.sharedGlobeConfiguration[globe.id] = configuration
+        configuration.isLoading = true
+        configuration.isVisible = false
+        configuration.showAttachment = false
+        
         configuration.isLoading = true
         configurations[globe.id] = configuration
         
         Task {
-            openImmersiveGlobeSpace(openImmersiveSpaceAction)            
+            openImmersiveGlobeSpace(openImmersiveSpaceAction)
             await SerialGlobeLoader.shared.load(globe: globe)
         }
     }
@@ -133,6 +145,7 @@ import SwiftUI
             return
         }
         configuration.isLoading = false
+        configuration.isVisible = true
         configurations[id] = configuration
         
         // Set the initial scale and position for a move-in animation.
@@ -180,7 +193,7 @@ import SwiftUI
             var newScale = newGlobe.radius / animatedConfiguration.globe.radius * oldScale.x
             newScale = min(newScale, GlobeConfiguration.maxDiameter / newRadius)
             newScale = max(newScale, GlobeConfiguration.minDiameter / newRadius)
-        
+            
             let uniformSize = uniformSizeForAnimatedGlobe
             if !uniformSize {
                 animatedGlobeEntity.scaleAndAdjustDistanceToCamera(
@@ -396,7 +409,7 @@ import SwiftUI
                 openImmersiveGlobeSpace(openImmersiveSpaceAction)
                 await SerialGlobeLoader.shared.load(panorama: globe)
             }
-        }        
+        }
     }
     
     @MainActor
@@ -448,21 +461,21 @@ import SwiftUI
             }
         }
     }
-   
+    
     let imageBasedLightIntensity: Float = 0
     
     // MARK: - Immersive Space
     
     @MainActor
     var immersiveSpaceIsShown = false
-
+    
     @MainActor
     private func openImmersiveGlobeSpace(_ action: OpenImmersiveSpaceAction) {
         guard !immersiveSpaceIsShown else { return }
         Task {
             let result = await action(id: "ImmersiveGlobeSpace")
             switch result {
-            case .opened:                
+            case .opened:
                 Task { @MainActor in
                     immersiveSpaceIsShown = true
                 }
@@ -518,7 +531,7 @@ import SwiftUI
             }
         }
     }
-
+    
     @MainActor
     /// Hide small preview globes when an alert, a confirmation dialog or a sheet is shown to avoid intersections between these views and the globes.
     var hidePreviewGlobes: Bool { errorToShowInAlert != nil }
@@ -602,9 +615,29 @@ import SwiftUI
         return description
     }
     
+    // MARK: SharePlay Variables
+    
+    var activityState = ActivityState()
+    var sharePlayEnabled = false
+#if DEBUG
+    var groupSession: GroupSessionMock<MyGroupActivity>?
+    var messenger: GroupSessionMessengerMock?
+#else
+    var groupSession: GroupSession<MyGroupActivity>?
+    var messenger: GroupSessionMessenger?
+#endif
+    
+    
+    var subscriptions: Set<AnyCancellable> = []
+    var tasks: Set<Task<Void, Never>> = []
+    
+    
+    
+    
+    
     // MARK: - Initializer
     
-    private init() {
+    init() {
         Task { @MainActor in
             // load Globes.json
             do {
@@ -618,6 +651,11 @@ import SwiftUI
             // load favorite globes from user defaults
             let favoriteIdStrings = UserDefaults.standard.object(forKey: "Favorites") as? [String] ?? []
             favorites = Set(favoriteIdStrings.compactMap { UUID(uuidString: $0) })
+            
+            self.configureGroupSessions()
+            Registration.registerGroupActivity()
         }
     }
+    
+    
 }

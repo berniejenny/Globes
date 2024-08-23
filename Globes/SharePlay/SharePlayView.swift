@@ -8,8 +8,14 @@
 import SwiftUI
 
 struct SharePlayView: View {
+    @Environment(ViewModel.self) var model
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Button(action: {
+            model.toggleSharePlay()
+        }, label: {
+            model.sharePlayEnabled ? Text("Stop SharePlay") : Text("Start SharePlay")
+        })
+        .buttonStyle(.bordered).tint(model.sharePlayEnabled ? .green : .gray)
     }
 }
 

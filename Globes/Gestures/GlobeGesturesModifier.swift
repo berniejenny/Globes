@@ -176,6 +176,11 @@ private struct GlobeGesturesModifier: ViewModifier {
                         let localRotationSinceStart = simd_quatf(value.convert(rotation: rotationSinceStart, from: .scene, to: .local))
                         let rotation = simd_mul(localRotationSinceStart, localRotationAtGestureStart)
                         
+                        // TRANSFORM: SEND MESSAGE HERE
+                        model.activityState.tempTranslation = TempTranslation(orientation:rotation, position: position)
+                        model.activityState.changes[globeEntity.globeId] = GlobeChange.transform
+                        model.sendMessage()
+                        
                         // animate the transformation to reduce jitter, as in the Apple EntityGestures sample project
                         globeEntity.animateTransform(orientation: rotation, position: position, duration: animationDuration)
                     }
@@ -272,6 +277,11 @@ private struct GlobeGesturesModifier: ViewModifier {
                         let newOrientation = orientationAtGestureStart.rotated(by: flippedRotation)
                         globeEntity.animationPlaybackController?.stop()
                         globeEntity.orientation = simd_quatf(newOrientation)
+                        
+                        // ROTATE  : SEND MESSAGE HERE
+                        model.activityState.tempTranslation = TempTranslation(orientation: globeEntity.orientation)
+                        model.activityState.changes[globeEntity.globeId] = GlobeChange.rotate
+                        model.sendMessage()
                     }
                 }
             }

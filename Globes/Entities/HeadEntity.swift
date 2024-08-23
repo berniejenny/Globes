@@ -7,10 +7,11 @@
 
 import Foundation
 import RealityKit
+import Combine
 
 /// An invisible sphere centered on the camera that updates its position periodically.
 class HeadEntity: Entity {
-    
+    var collisionSubscription: Cancellable?
     /// Radius of head sphere: small enough for visionOS to make close objects temporarily semi-transparent
     private let headRadius: Float = 0.18
     
@@ -43,10 +44,15 @@ class HeadEntity: Entity {
         components.set(PhysicsBodyComponent(massProperties: .default, material: .default, mode: .static))
         name = "Head + Body"
         
+      
+        
         timer = Timer.scheduledTimer(withTimeInterval: timerInterval, repeats: true) { timer in
             self.update()
         }
     }
+    
+ 
+        
   
     deinit {
         timer?.invalidate()
@@ -59,6 +65,11 @@ class HeadEntity: Entity {
             rotation: orientation,
             translation: position
         )
+        
+        // This function is called whenever the camera/other globes collide with the current entity
+        // I can either put a flag in sendMessage(physicsMove: true)
+        // so instead of calling animateTransform I can use the move() method
         move(to: transform, relativeTo: .none, duration: timerInterval)
+//        ViewModel.shared.sendMessage()
     }
 }

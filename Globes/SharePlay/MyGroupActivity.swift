@@ -1,37 +1,52 @@
 //
-//  MyGroupActivity.swift
-//  Globes
+//  GroupActivity.swift
+//  VisionSharePlayTest
 //
-//  Created by BooSung Jung on 19/7/2024.
+//  Created by BooSung Jung on 30/7/2024.
 //
 
-import Foundation
 import GroupActivities
 import SwiftUI
 import SharePlayMock
 
-class MyGroupActivity: GroupActivityMock{
-    typealias ActivityType = MyGroupActivity.AppGroupActivity
-     
-     private(set) var groupActivity: AppGroupActivity
+#if DEBUG
+class MyGroupActivity: GroupActivityMock {
+    
+    typealias ActivityType = MyGroupActivity.Activity
+    
+    private(set) var groupActivity: Activity
+    
     init() {
-            self.groupActivity = AppGroupActivity()
-        }
-    struct AppGroupActivity: GroupActivity{
-
-        // Define a unique activity identifier for system to reference
-                static let activityIdentifier = "com.boosungjung.Globes.MyGroupActivity"
-               
+        self.groupActivity = Activity()
+    }
+    
+    struct Activity: GroupActivity {
+        
+        static let activityIdentifier = "com.davidrumseymapcollection.globes"
+        
         var metadata: GroupActivityMetadata {
             var metadata = GroupActivityMetadata()
-            metadata.title = "Globes SharePlay"
-            metadata.subtitle = "Test Subtitle"
-
+            metadata.title = "Group activity: Globes Debug"
+            metadata.subtitle = "Let's explore together!"
+            metadata.sceneAssociationBehavior = .content("planet") // we associate it with a behaviour so we prioritise the content
+            metadata.previewImage = UIImage(resource: .shareplay).cgImage
             metadata.type = .generic
             return metadata
         }
+    }
 }
-    
-  
+#else
+struct MyGroupActivity: GroupActivity {
+    var metadata: GroupActivityMetadata {
+        var metadata = GroupActivityMetadata()
+        metadata.title = "Group activity: Globes Release"
+        metadata.subtitle = "Let's explore together!"
+        metadata.sceneAssociationBehavior = .content("planet")
+        metadata.previewImage = UIImage(resource: .shareplay).cgImage
+        
+        metadata.type = .generic
+        
+        return metadata
+    }
 }
-
+#endif

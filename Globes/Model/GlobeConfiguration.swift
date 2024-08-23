@@ -8,12 +8,15 @@
 import SwiftUI
 
 /// Configuration information for globe entities.
-struct GlobeConfiguration: Equatable, Identifiable {
+struct GlobeConfiguration: Equatable, Identifiable, Codable {
     var id: UUID { globeId }
     
     let globeId: Globe.ID
     
     var isLoading = false
+    
+    /// True if the globe is visible.
+    var isVisible = false
     
     /// If true, a view is attached to the globe
     var showAttachment = false
@@ -38,6 +41,7 @@ struct GlobeConfiguration: Equatable, Identifiable {
     static let minDiameter: Float = 0.05
     
     var globe: Globe
+    
     
     // MARK: - Position
     
@@ -116,4 +120,38 @@ struct GlobeConfiguration: Equatable, Identifiable {
         self.rotationSpeed = speed
         self.isRotationPaused = isRotationPaused
     }
+    
+    // MARK: Codable
+   
+    enum CodingKeys: String, CodingKey {
+            case globeId
+            case isLoading
+            case showAttachment
+            case selection
+            case globe
+            case rotationSpeed
+            case isRotationPaused
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(globeId, forKey: .globeId)
+            try container.encode(isLoading, forKey: .isLoading)
+            try container.encode(showAttachment, forKey: .showAttachment)
+            try container.encode(selection.rawValue, forKey: .selection)
+            try container.encode(globe, forKey: .globe)
+            try container.encode(rotationSpeed, forKey: .rotationSpeed)
+            try container.encode(isRotationPaused, forKey: .isRotationPaused)
+        }
+        
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            globeId = try container.decode(Globe.ID.self, forKey: .globeId)
+            isLoading = try container.decode(Bool.self, forKey: .isLoading)
+            showAttachment = try container.decode(Bool.self, forKey: .showAttachment)
+            selection = try GlobeSelection(rawValue: container.decode(String.self, forKey: .selection)) ?? .none
+            globe = try container.decode(Globe.self, forKey: .globe)
+            rotationSpeed = try container.decode(Float.self, forKey: .rotationSpeed)
+            isRotationPaused = try container.decode(Bool.self, forKey: .isRotationPaused)
+        }
 }

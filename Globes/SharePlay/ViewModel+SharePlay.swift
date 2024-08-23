@@ -12,6 +12,8 @@ import SharePlayMock
 /// User can break out of the spatial persona and if they want to return to the spatial persona format they can press the digital crown
 
 extension ViewModel {
+
+
     func configureGroupSessions(){
         
         Task(priority: .high) {
@@ -30,13 +32,7 @@ extension ViewModel {
                 groupSession.$state.sink {
                     // this Tearsdown existing group session
                     if case .invalidated = $0 {
-                        self.messenger = nil
-                        self.tasks.forEach { $0.cancel() }
-                        self.tasks = []
-                        self.subscriptions = []
-                        //                        self.groupSession?.leave()
-                        self.groupSession = nil
-                        self.sharePlayEnabled = false
+                        self.cleanupGroupSession()
                     }
                 }
                 .store(in: &self.subscriptions)
@@ -45,7 +41,7 @@ extension ViewModel {
                 // sink observes and reacts to changes in the group session activeParticipants
                 groupSession.$activeParticipants
                     .sink {
-                        if $0.count >= 1 { self.activityState.mode = .sharePlay }
+            
                         let newParticipants = $0.subtracting(groupSession.activeParticipants)
                         Task {
                             // if there is a new participant send the activity state to only the new participants
@@ -170,64 +166,72 @@ extension ViewModel {
             try? await self.messenger?.send(self.activityState)
         }
     }
+    
     func receive(_ message: ActivityState) {
-        // receive the state of the activity and update the UI
-        guard message.mode == .sharePlay else { return }
+        
+        
         Task{ @MainActor in
             self.activityState = message
             // after i get the new activity state i need to update the UI/Globe position
-            updateUI()
-        }
-    }
-    
-    
-    @MainActor
-    private func updateUI() {
-        // Loop through all the globe configurations and update the UI with animations. Either loop through globeConfigurations or entities
-        for (globeId, configuration) in activityState.globeConfigurations {
-            
-            if let globeEntity = globeEntities[globeId] {
-                let newTransform = activityState.globeEntities[globeId] // gets the new globeEntity from the activity
-                
-                // Careful since animateTransform also calls sendMessage this might cause a recursive loop thats why we use this
-                globeEntity.animateTransformWithoutSendingMessage(
-                    scale: newTransform?.scale.x,
-                    orientation: newTransform?.orientation,
-                    position: newTransform?.position,
-                    duration: GlobeEntity.transformAnimationDuration
-                )
+            if sharePlayEnabled{
+                self.updateEntity()
             }
         }
     }
     
+//    #warning("change name to updateEntity")
+    @MainActor
+    private func updateEntity() {
+        guard let openImmersiveSpaceAction = self.openImmersiveSpaceAction else{
+            return
+        }
+        for (globeID, change) in activityState.changes {
+            guard let globeConfiguration = activityState.sharedGlobeConfiguration[globeID] else{
+                return
+            }
+            
+            switch change {
+            case .load:
+                if !globeConfiguration.isVisible && !globeConfiguration.isLoading {
+                    load(globe: globeConfiguration.globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
+//                    activityState.changes[globeID] = GlobeChange.none
+                }
+            case .hide:
+                if globeConfiguration.isVisible {
+                    hideGlobe(with: globeID)
+                   
+                }
+            case .resize:
+                if let tempTranslation = self.activityState.tempTranslation {
+                    let scale = tempTranslation.scale!
+                    let position = tempTranslation.position ?? .zero
+                    let duration = tempTranslation.duration ?? 0.2
+                    globeEntities[globeID]?.animateTransform(scale: scale,position: position, duration: duration)
+                
+                }
+            case .transform:
+                if let tempTranslation = self.activityState.tempTranslation {
+                    let orientation = tempTranslation.orientation!
+                    let position = tempTranslation.position ?? .zero
+                    globeEntities[globeID]?.animateTransform(orientation: orientation, position: position)
+          
+                }
+            case .rotate:
+                if let tempTranslation = self.activityState.tempTranslation {
+                    let orientation = tempTranslation.orientation!
+                    globeEntities[globeID]?.animateTransform(orientation: orientation)
+                }
+            case .none:
+                break
+
+            }
+        }
+    }
     
-    //    func activateGroupActivity(){
-    //        // activate the group activity
-    //
-    //        Task {
-    //            do {
-    //                let groupActivity = MyGroupActivity()
-    //                switch await groupActivity.prepareForActivation() {
-    //                case .activationPreferred:
-    //                    let result = try await groupActivity.activate()
-    //                    if result == false { throw Self.ActivationError.failed }
-    //                case .activationDisabled:
-    //                    throw Self.ActivationError.disabled
-    //                case .cancelled:
-    //                    throw Self.ActivationError.cancelled
-    //                @unknown default:
-    //                    throw Self.ActivationError.unknown
-    //                }
-    //            } catch {
-    //                print("Failed activation: \(error)")
-    //                assertionFailure()
-    //            }
-    //        }
-    //    }
-    //
+
     private func cleanupGroupSession() {
-        // reset the group session, this is called when
         
+        sharePlayEnabled = false
         self.messenger = nil
         self.tasks.forEach { $0.cancel() }
         self.tasks = []

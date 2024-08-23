@@ -53,6 +53,8 @@ struct Globe: Identifiable, Hashable, Codable {
         textureURL != nil
     }
     
+    
+    
     /// Custom coding keys to avoid
     enum CodingKeys: String, CodingKey {
         case id

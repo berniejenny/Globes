@@ -1,13 +1,13 @@
 {
-  "originHash" : "91de82b97d61a75880b6a2cf24ea932b821add55e860aeae948ed23e452e62be",
+  "originHash" : "64b2459748aaa9996cb0fc676dadfd24fd50f2f73630c14089153f69e883ef07",
   "pins" : [
     {
       "identity" : "shareplaymock",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Pixeland-Tech/SharePlayMock",
       "state" : {
-        "revision" : "8caf486e277eb501f26e045b780bf77fd3550cb3",
-        "version" : "0.1.1"
+        "revision" : "a3ce35ac8a5e3a2b48e03da1a720d86f60188713",
+        "version" : "0.1.3"
       }
     },
     {

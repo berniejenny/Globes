@@ -9,14 +9,27 @@ import LinkPresentation
 enum Registration {
     static func registerGroupActivity() {
         let itemProvider = NSItemProvider()
+        
+#if DEBUG
         itemProvider.registerGroupActivity(MyGroupActivity().groupActivity)
+        
+#else
+        itemProvider.registerGroupActivity(MyGroupActivity())
+        
+#endif
         
         let configuration = UIActivityItemsConfiguration(itemProviders: [itemProvider])
         configuration.metadataProvider = { key in
-            guard key == .linkPresentationMetadata else { return nil}
+            guard key == .linkPresentationMetadata else { return }
+            
+#if DEBUG
+            let metadata = MyGroupActivity().groupActivity.metadata
+            
+#else
             let metadata = LPLinkMetadata()
-            metadata.title = String(localized: "Share planet")
-//            metadata.imageProvider = NSItemProvider(object: UIImage(resource: .birdicon))
+            metadata.title = String(localized: "Register: Share planet Release")
+#endif
+            //            metadata.imageProvider = NSItemProvider(object: UIImage(resource: .shareplay))
             return metadata
         }
         
