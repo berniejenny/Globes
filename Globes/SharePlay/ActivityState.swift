@@ -7,15 +7,9 @@
 
 import CoreFoundation
 
-// activity message that is going to be sent to the group
-struct ActivityState: Codable {
-    var enlarged: Bool = false
-    var mode: Mode = .localOnly
-}
-
-
-extension ActivityState {
-    mutating func clear() {
-       
-    }
+#warning("only share transform not entities")
+#warning("share configuration")
+struct ActivityState: Codable, Equatable {
+    var globeConfigurations: [Globe.ID: GlobeConfiguration] = [:]
+    var globeEntities: [Globe.ID: GlobeEntity] = [:]
 }
