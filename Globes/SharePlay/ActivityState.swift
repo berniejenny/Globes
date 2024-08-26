@@ -8,11 +8,18 @@ import CoreFoundation
 import Foundation
 import RealityFoundation
 
+/// VisionPro A will have its own globeConfiguration and for every change it will record what the change is and the globeConfiguration in the activityState. This information will be passed down to VisionPro B which will gather this information and
+/// apply the changes accordingly. This will work with more players too.
+///
+///
 struct ActivityState: Codable, Equatable {
     var changes: [Globe.ID: GlobeChange] = [:]
     var sharedGlobeConfiguration: [Globe.ID: GlobeConfiguration] = [:]
+    
+    #warning("for some reason Transform crashes the app for Vision Pro versions < 2.0, which is why i am using my own TempTranslation")
     var tempTranslation:TempTranslation?
 }
+
 enum GlobeChange: String, Codable, Equatable, CaseIterable {
     case load
     case hide

@@ -161,6 +161,9 @@ extension ViewModel {
     }
     
     func sendMessage() {
+        if !sharePlayEnabled{
+            return
+        }
         // sends the state of activity
         Task{
             try? await self.messenger?.send(self.activityState)
@@ -168,63 +171,70 @@ extension ViewModel {
     }
     
     func receive(_ message: ActivityState) {
-        
+        if !sharePlayEnabled{
+            return
+        }
         
         Task{ @MainActor in
             self.activityState = message
             // after i get the new activity state i need to update the UI/Globe position
-            if sharePlayEnabled{
-                self.updateEntity()
-            }
+            
+            self.updateEntity()
+            
         }
     }
     
-//    #warning("change name to updateEntity")
     @MainActor
     private func updateEntity() {
-        guard let openImmersiveSpaceAction = self.openImmersiveSpaceAction else{
-            return
-        }
-        for (globeID, change) in activityState.changes {
-            guard let globeConfiguration = activityState.sharedGlobeConfiguration[globeID] else{
+        Task{
+            guard let openImmersiveSpaceAction = self.openImmersiveSpaceAction else{
                 return
             }
-            
-            switch change {
-            case .load:
-                if !globeConfiguration.isVisible && !globeConfiguration.isLoading {
-                    load(globe: globeConfiguration.globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
-//                    activityState.changes[globeID] = GlobeChange.none
+            for (globeID, change) in activityState.changes {
+                guard let globeConfiguration = activityState.sharedGlobeConfiguration[globeID] else{
+                    return
                 }
-            case .hide:
-                if globeConfiguration.isVisible {
-                    hideGlobe(with: globeID)
-                   
-                }
-            case .resize:
-                if let tempTranslation = self.activityState.tempTranslation {
-                    let scale = tempTranslation.scale!
-                    let position = tempTranslation.position ?? .zero
-                    let duration = tempTranslation.duration ?? 0.2
-                    globeEntities[globeID]?.animateTransform(scale: scale,position: position, duration: duration)
                 
-                }
-            case .transform:
-                if let tempTranslation = self.activityState.tempTranslation {
-                    let orientation = tempTranslation.orientation!
-                    let position = tempTranslation.position ?? .zero
-                    globeEntities[globeID]?.animateTransform(orientation: orientation, position: position)
-          
-                }
-            case .rotate:
-                if let tempTranslation = self.activityState.tempTranslation {
-                    let orientation = tempTranslation.orientation!
-                    globeEntities[globeID]?.animateTransform(orientation: orientation)
-                }
-            case .none:
-                break
+                switch change {
+                case .load:
+                    if !globeConfiguration.isVisible && !globeConfiguration.isLoading {
+                        
+                        load(globe: globeConfiguration.globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
+                        activityState.changes[globeID] = GlobeChange.none // need to reset to none because once a case is completed there is no reason to redo it
+                    }
+                case .hide:
+                    if globeConfiguration.isVisible {
+                        hideGlobe(with: globeID)
+                        activityState.changes[globeID] = GlobeChange.none
+                    }
+                case .resize:
+                    if let tempTranslation = self.activityState.tempTranslation {
+                        let scale = tempTranslation.scale!
+                        let position = tempTranslation.position ?? .zero
+                        let duration = tempTranslation.duration ?? 0.2
+                        globeEntities[globeID]?.animateTransform(scale: scale,position: position, duration: duration)
+                        activityState.changes[globeID] = GlobeChange.none
+                    
+                    }
+                case .transform:
+                    if let tempTranslation = self.activityState.tempTranslation {
+                        let orientation = tempTranslation.orientation!
+                        let position = tempTranslation.position ?? .zero
+                        globeEntities[globeID]?.animateTransform(orientation: orientation, position: position)
+                        activityState.changes[globeID] = GlobeChange.none
+                    }
+                case .rotate:
+                    if let tempTranslation = self.activityState.tempTranslation {
+                        let orientation = tempTranslation.orientation!
+                        globeEntities[globeID]?.animateTransform(orientation: orientation)
+                        activityState.changes[globeID] = GlobeChange.none
+                    }
+                case .none:
+                    break
 
+                }
             }
+        
         }
     }
     

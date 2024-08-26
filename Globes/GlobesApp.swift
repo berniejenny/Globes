@@ -57,7 +57,7 @@ struct GlobesApp: App {
     
     #if DEBUG
     init() {
-
+  
     }
     #endif
     
