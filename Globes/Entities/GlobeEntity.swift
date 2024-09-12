@@ -189,8 +189,17 @@ class GlobeEntity: Entity {
         let sizeScale = max(1, scaledRadius)
         duration *= Double(sizeScale)
         
-        // scale duration with angle: 0° -> 0, 180° -> 2
-        let angle = (transformation.conjugate * orientation).angle
+        // Scale duration with the angle between the two quaternions: 0° -> 0, 180° -> 2
+        // The angle is computed with https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation#Recovering_the_axis-angle_representation
+        // let qd = (transformation.conjugate * orientation)
+        // let angle = 2 * atan2(length(qd.imag), qd.real)
+        var angle = (transformation.conjugate * orientation).angle
+        
+        // Normalize the angle if greater than 180 degrees.
+        if angle > .pi {
+            angle = abs(angle - 2 * .pi)
+        }
+        
         duration *= Double(angle / .pi * 2)
         
         return max(0.2, duration)
