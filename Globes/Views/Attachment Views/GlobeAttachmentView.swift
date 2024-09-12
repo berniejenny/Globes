@@ -387,7 +387,7 @@ struct GlobeAttachmentView: View {
         }
         .buttonBorderShape(.circle)
         .buttonStyle(.plain)
-        .help("Show Show North Pole")
+        .help("Show North Pole")
     }
     
     @MainActor
