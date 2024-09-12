@@ -141,7 +141,7 @@ import SwiftUI
         globeEntity.position = configuration.positionRelativeToCamera(distanceToGlobe: 2)
         
         // Rotate the central meridian to the camera, to avoid showing the empty hemisphere on the backside of some globes.
-        // The central meridian is at [-1, 0, 0], because the texture u-coordinate with lat = -180° starts at the x-axis.
+        // The central meridian is at [-1, 0, 0], because the texture u-coordinate with longitude = -180° starts at the x-axis.
         if let viewDirection = CameraTracker.shared.viewDirection {
             var orientation = simd_quatf(from: [-1, 0, 0], to: -viewDirection)
             orientation = GlobeEntity.orientToNorth(orientation: globeEntity.orientation)
