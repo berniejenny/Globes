@@ -52,8 +52,6 @@ class HeadEntity: Entity {
     }
     
  
-        
-  
     deinit {
         timer?.invalidate()
     }
@@ -70,6 +68,9 @@ class HeadEntity: Entity {
         // I can either put a flag in sendMessage(physicsMove: true)
         // so instead of calling animateTransform I can use the move() method
         move(to: transform, relativeTo: .none, duration: timerInterval)
-//        ViewModel.shared.sendMessage()
+        
+
+        
+        
     }
 }

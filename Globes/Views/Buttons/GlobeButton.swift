@@ -55,16 +55,19 @@ struct GlobeButton: View {
                 model.load(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
                 
                 // LOAD: SEND MESSAGE
-                model.activityState.changes[globe.id] = GlobeChange.load
-                model.sendMessage()
+//                model.activityState.changes[globe.id]?.globeChange = GlobeChange.load
+//                model.sendMessage()
             } else {
                 // HIDE: SEND MESSAGE
-                model.activityState.changes[globe.id] = GlobeChange.hide
+                
+                model.activityState.changes[globe.id]?.globeChange = GlobeChange.hide
                 model.sendMessage()
+                
                 
                 model.hideGlobe(with: globe.id)
                 bounceDownTrigger += 1
-
+                
+                
             }
         }
     }

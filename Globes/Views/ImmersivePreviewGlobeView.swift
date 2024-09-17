@@ -8,6 +8,7 @@
 import os
 import RealityKit
 import SwiftUI
+import ARKit
 
 /// A `RealityView` for rendering a small preview globe that fills the available space.
 struct ImmersivePreviewGlobeView: View {
@@ -31,12 +32,15 @@ struct ImmersivePreviewGlobeView: View {
     /// True if the size of this view changed, which requires scaling the globe to fill the view
     @State private var sizeChanged = false
     
+
+
     var body: some View {
         GeometryReader3D { geometry in
             RealityView (make: { content in
                 if let globeEntity = await createGlobe(){
                     content.add(globeEntity)
                 }
+            
                 
                 let radius = computeRadius(content, geometry)
                 scaleTo(radius: radius)
@@ -90,6 +94,8 @@ struct ImmersivePreviewGlobeView: View {
                     imageBasedLightSourceEntity = await loadImageBaseLightSourceEntity()
                 }
             }
+         
+            
         }
     }
     

@@ -11,6 +11,7 @@ import SwiftUI
 import SharePlayMock
 import Combine
 import GroupActivities
+import ARKit
 
 /// A singleton model that can be accessed via `ViewModel.shared`, for example, by the app delegate. For SwiftUI, use the new Observable framework instead of accessing the shared singleton.
 ///
@@ -116,15 +117,17 @@ import GroupActivities
             speed: GlobeConfiguration.defaultRotationSpeed,
             isRotationPaused: !rotateGlobes
         )
-        // Need to send the configuration over so the new user can initialise a globe with the same config
-        // No need to send message here because the method that calls load() will send the message
-        activityState.sharedGlobeConfiguration[globe.id] = configuration
+  
+        
         configuration.isLoading = true
         configuration.isVisible = false
         configuration.showAttachment = false
         
-        configuration.isLoading = true
+        // Add the configuration to the dictionary.
         configurations[globe.id] = configuration
+        self.activityState.sharedGlobeConfiguration[globe.id] = configuration
+        self.activityState.changes[globe.id]?.globeChange = GlobeChange.load
+        self.sendMessage()
         
         Task {
             openImmersiveGlobeSpace(openImmersiveSpaceAction)
@@ -137,6 +140,8 @@ import GroupActivities
     /// - Parameter globeEntity: The globe entity to add.
     func storeGlobeEntity(_ globeEntity: GlobeEntity) {
         let id = globeEntity.globeId
+        
+        
         
         // toggle the loading flag of the configuration
         guard var configuration = configurations[id] else {
@@ -151,7 +156,14 @@ import GroupActivities
         // Set the initial scale and position for a move-in animation.
         // The animation is started by a DidAddEntity event when the immersive space has been created and the globe has been added to the scene.
         globeEntity.scale = [0.01, 0.01, 0.01]
+        // Position relative to the window or the camera
+        
         globeEntity.position = configuration.positionRelativeToCamera(distanceToGlobe: 2)
+        
+        if sharePlayEnabled{
+            globeEntity.position = SIMD3(0, 1, 0)
+        }
+        
         
         // Rotate the central meridian to the camera, to avoid showing the empty hemisphere on the backside of some globes.
         // The central meridian is at [-1, 0, 0], because the texture u-coordinate with lat = -180° starts at the x-axis.
@@ -255,7 +267,7 @@ import GroupActivities
                 duration: duration
             )
         }
-        
+        configurations[id]?.isVisible = false
         // remove the globe from this model
         Task { @MainActor in
             try? await Task.sleep(for: .seconds(duration))
@@ -263,6 +275,10 @@ import GroupActivities
             assert(globeEntities.keys.contains(id), "No globe entity for \(id)")
             configurations[id] = nil
             globeEntities[id] = nil
+            
+            // remove the globe from the shared model
+//            activityState.sharedGlobeConfiguration[id] = nil
+//            self.sendMessage()
         }
     }
     
@@ -331,7 +347,16 @@ import GroupActivities
             return [0, 1, -1]
         }
         
-        let targetPosition = configuration.positionRelativeToCamera(distanceToGlobe: 0.5)
+        var targetPosition = configuration.positionRelativeToCamera(distanceToGlobe: 0.5)
+//        if sharePlayEnabled {
+//            targetPosition = configuration.positionRelativeToWindow(windowSize: CGSize(width: 1024, height: 768), distanceToGlobe: 2)
+//        }
+        
+        /// Once the user enters a facetime call, the globes will now spawn relative to the window position instead of the camera.
+        if sharePlayEnabled{
+            targetPosition = SIMD3(0, 1, -2*(configuration.globe.radius))
+        }
+      
         if canPlaceGlobe(at: targetPosition, with: configuration.globe.radius) {
             return targetPosition
         }
@@ -470,7 +495,7 @@ import GroupActivities
     var immersiveSpaceIsShown = false
     
     @MainActor
-    private func openImmersiveGlobeSpace(_ action: OpenImmersiveSpaceAction) {
+    func openImmersiveGlobeSpace(_ action: OpenImmersiveSpaceAction) {
         guard !immersiveSpaceIsShown else { return }
         Task {
             let result = await action(id: "ImmersiveGlobeSpace")
@@ -478,6 +503,8 @@ import GroupActivities
             case .opened:
                 Task { @MainActor in
                     immersiveSpaceIsShown = true
+                    
+                                    
                 }
             case .error:
                 Task { @MainActor in
@@ -614,11 +641,13 @@ import GroupActivities
         
         return description
     }
+
     
     // MARK: SharePlay Variables
     
     var activityState = ActivityState()
     var sharePlayEnabled = false
+        
 #if DEBUG
     var groupSession: GroupSessionMock<MyGroupActivity>?
     var messenger: GroupSessionMessengerMock?
@@ -627,16 +656,21 @@ import GroupActivities
     var messenger: GroupSessionMessenger?
 #endif
     
-    
     var subscriptions: Set<AnyCancellable> = []
     var tasks: Set<Task<Void, Never>> = []
     
+    @MainActor
+    // Cancellable variables, so we can delay the messages sent
+    let subject = PassthroughSubject<ActivityState, Never>()
     
+    @MainActor
+    var cancellable: AnyCancellable?
     
-    
+    /// Interval in seconds for synchronizing the position of this entity with the camera position
+    private let timerInterval: TimeInterval = 0.5
     
     // MARK: - Initializer
-    
+    @MainActor
     init() {
         Task { @MainActor in
             // load Globes.json
@@ -652,9 +686,53 @@ import GroupActivities
             let favoriteIdStrings = UserDefaults.standard.object(forKey: "Favorites") as? [String] ?? []
             favorites = Set(favoriteIdStrings.compactMap { UUID(uuidString: $0) })
             
-            self.configureGroupSessions()
-            Registration.registerGroupActivity()
+//            self.configureGroupSessions()
+            
         }
+        
+        
+        // Timer to synchronize the position of this entity with the camera position
+        _ = Timer.scheduledTimer(withTimeInterval: timerInterval, repeats: true) { timer in
+  
+            DispatchQueue.main.asyncAfter(deadline: .now()) {
+                // Loop through all globe entities and update the activity state
+                for (globeID, globeEntity) in self.globeEntities {
+                    if var activityState = self.activityState.changes[globeID] {
+
+                        activityState.scale = globeEntity.scale.x
+                        activityState.orientation = globeEntity.orientation
+                        activityState.position = globeEntity.position
+                        activityState.duration = 0.2
+                        if let isLoading = self.activityState.sharedGlobeConfiguration[globeID]?.isLoading, isLoading {
+                            self.activityState.changes[globeID]?.globeChange = GlobeChange.transform
+                        }
+                        self.activityState.changes[globeID] = activityState // Update the dictionary
+                       
+                    } else {
+                        // Initialize and add new activityState
+                        self.activityState.changes[globeID] = TempTransform(
+                            scale: globeEntity.scale.x,
+                            orientation: globeEntity.orientation,
+                            position: globeEntity.position,
+                            globeChange: GlobeChange.load
+                        )
+                        
+                        self.activityState.sharedGlobeConfiguration[globeID] = self.configurations[globeID]
+                    }
+                    self.sendMessage()
+                }
+                
+            }
+        }
+        
+        cancellable = subject
+            .debounce(for: .seconds(0.1), scheduler: RunLoop.main)
+            .sink { activityState in
+                Task{
+                    try? await self.messenger?.send(activityState)
+                }
+            }
+        
     }
     
     

@@ -7,11 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2B090D5A2C855DE100A7D36C /* LogStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B090D592C855DE100A7D36C /* LogStore.swift */; };
 		2BA54F4F2C69F70B00CE25FE /* MyGroupActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA54F4A2C69F70B00CE25FE /* MyGroupActivity.swift */; };
 		2BA54F512C69F70B00CE25FE /* ActivityState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA54F482C69F70B00CE25FE /* ActivityState.swift */; };
 		2BA54F522C69F70B00CE25FE /* Registration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA54F4B2C69F70B00CE25FE /* Registration.swift */; };
 		2BA54F532C69F70B00CE25FE /* ViewModel+SharePlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA54F4C2C69F70B00CE25FE /* ViewModel+SharePlay.swift */; };
-		2BAC92672C6CEB5A001628BE /* SharePlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BAC92662C6CEB5A001628BE /* SharePlayView.swift */; };
+		2BAC92672C6CEB5A001628BE /* SharePlayTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BAC92662C6CEB5A001628BE /* SharePlayTab.swift */; };
 		2BB9FED72C5A33B600FAD2F1 /* SharePlayMock in Frameworks */ = {isa = PBXBuildFile; productRef = 2BB9FED62C5A33B600FAD2F1 /* SharePlayMock */; };
 		7D0905CC2C187022008B9513 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 7D0905CB2C187022008B9513 /* AsyncAlgorithms */; };
 		7D62945A2BC8ECE1006AB242 /* WorldAeronautical.heic in Resources */ = {isa = PBXBuildFile; fileRef = 7D6294592BC8ECE1006AB242 /* WorldAeronautical.heic */; };
@@ -107,12 +108,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2B090D592C855DE100A7D36C /* LogStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogStore.swift; sourceTree = "<group>"; };
 		2BA54F482C69F70B00CE25FE /* ActivityState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityState.swift; sourceTree = "<group>"; };
 		2BA54F4A2C69F70B00CE25FE /* MyGroupActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyGroupActivity.swift; sourceTree = "<group>"; };
 		2BA54F4B2C69F70B00CE25FE /* Registration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Registration.swift; sourceTree = "<group>"; };
 		2BA54F4C2C69F70B00CE25FE /* ViewModel+SharePlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewModel+SharePlay.swift"; sourceTree = "<group>"; };
 		2BA54F562C6A02A000CE25FE /* Globes.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Globes.entitlements; sourceTree = "<group>"; };
-		2BAC92662C6CEB5A001628BE /* SharePlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePlayView.swift; sourceTree = "<group>"; };
+		2BAC92662C6CEB5A001628BE /* SharePlayTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePlayTab.swift; sourceTree = "<group>"; };
 		2BBBCD312C4A99F3007BCCC2 /* GlobesDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GlobesDebug.entitlements; sourceTree = "<group>"; };
 		7D6294592BC8ECE1006AB242 /* WorldAeronautical.heic */ = {isa = PBXFileReference; lastKnownFileType = file; path = WorldAeronautical.heic; sourceTree = "<group>"; };
 		7D62945B2BC8ED2D006AB242 /* MoonGeology.heic */ = {isa = PBXFileReference; lastKnownFileType = file; path = MoonGeology.heic; sourceTree = "<group>"; };
@@ -227,6 +229,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2B090D582C855DD300A7D36C /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				2B090D592C855DE100A7D36C /* LogStore.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
 		2BA54F542C69F8C100CE25FE /* SharePlay */ = {
 			isa = PBXGroup;
 			children = (
@@ -234,7 +244,7 @@
 				2BA54F4A2C69F70B00CE25FE /* MyGroupActivity.swift */,
 				2BA54F4B2C69F70B00CE25FE /* Registration.swift */,
 				2BA54F4C2C69F70B00CE25FE /* ViewModel+SharePlay.swift */,
-				2BAC92662C6CEB5A001628BE /* SharePlayView.swift */,
+				2BAC92662C6CEB5A001628BE /* SharePlayTab.swift */,
 			);
 			path = SharePlay;
 			sourceTree = "<group>";
@@ -416,6 +426,7 @@
 			isa = PBXGroup;
 			children = (
 				7DEAB0462B9B04C2004027B1 /* Globes */,
+				2B090D582C855DD300A7D36C /* Helper */,
 				7DCFBEF12BA4203900B4F27C /* Globes Meta */,
 				7DEAB0452B9B04C2004027B1 /* Products */,
 			);
@@ -620,7 +631,7 @@
 			files = (
 				7DCE1C1D2C12D50100234DB6 /* OnboardingAttachmentView.swift in Sources */,
 				7DCE1C202C12D50100234DB6 /* FavoriteGlobeButton.swift in Sources */,
-				2BAC92672C6CEB5A001628BE /* SharePlayView.swift in Sources */,
+				2BAC92672C6CEB5A001628BE /* SharePlayTab.swift in Sources */,
 				7DCE1C312C12D50100234DB6 /* CollisionBox.swift in Sources */,
 				7DCE1C352C12D50100234DB6 /* PanoramaEntity.swift in Sources */,
 				7D6FEA8F2C154F0F00725C20 /* GlobeSelection.swift in Sources */,
@@ -658,6 +669,7 @@
 				7DCE1C262C12D50100234DB6 /* SearchView.swift in Sources */,
 				7DCE1C1C2C12D50100234DB6 /* GlobeAttachmentView.swift in Sources */,
 				7DCE1C382C12D50100234DB6 /* GlobeConfiguration.swift in Sources */,
+				2B090D5A2C855DE100A7D36C /* LogStore.swift in Sources */,
 				7DCE1C2E2C12D50100234DB6 /* WebView.swift in Sources */,
 				7DCE1C1B2C12D50100234DB6 /* RotationSystem.swift in Sources */,
 				7DCE1C122C12D50100234DB6 /* GlobeGesturesModifier.swift in Sources */,

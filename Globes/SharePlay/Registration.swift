@@ -29,6 +29,7 @@ enum Registration {
             let metadata = LPLinkMetadata()
             metadata.title = String(localized: "Register: Share planet Release")
 #endif
+            #warning("add image")
             //            metadata.imageProvider = NSItemProvider(object: UIImage(resource: .shareplay))
             return metadata
         }

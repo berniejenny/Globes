@@ -55,22 +55,34 @@ struct GlobesApp: App {
     /// View model injected in environment. @State instead of the old @StateObject is fine with the new Observable framework.
     @State private var model = ViewModel.shared
     
-    #if DEBUG
+    
     init() {
-  
+#if DEBUG
+         SharePlayMockManager.enable(webSocketUrl: "ws://10.250.64.10:8080/endpoint")
+#endif
+        model.configureGroupSessions()
     }
-    #endif
+    
     
     var body: some Scene {
+        
+        
         WindowGroup {
-            ContentView()
-                .environment(model)
-                .onAppear(){
-                    model.openImmersiveSpaceAction = openImmersiveSpaceAction // Pass the openImmersiveSpaceAction to the ViewModel
-                }
-                .task { Registration.registerGroupActivity() }
+           
+               
+                ContentView()
+                    .environment(model)
+                    .onAppear(){
+                        model.openImmersiveSpaceAction = openImmersiveSpaceAction // Pass the openImmersiveSpaceAction to the ViewModel
+                        
+                        model.openImmersiveGlobeSpace(openImmersiveSpaceAction)
+                    }
+     
+            
+                
         }
         .windowResizability(.contentSize) // window resizability is derived from window content
+        
         
         
         WindowGroup(id: "info", for: UUID.self) { $globeId in

@@ -7,12 +7,14 @@
 import SwiftUI
 import GroupActivities
 import SharePlayMock
-
+import Combine
+import os
 
 /// User can break out of the spatial persona and if they want to return to the spatial persona format they can press the digital crown
 
 extension ViewModel {
-
+    
+ 
 
     func configureGroupSessions(){
         
@@ -59,7 +61,13 @@ extension ViewModel {
                 // listen to messages from the group session
                 self.tasks.insert(
                     Task {
-                        for await (message, _) in messenger.messages(of: ActivityState.self) {
+                        for await (message, context) in messenger.messages(of: ActivityState.self) {
+                            let sender = context.source
+                            if sender == groupSession.localParticipant {
+                                // Message from the local participant, we skip
+                                continue
+                            }
+                            //
                             self.receive(message)
                         }
                     }
@@ -128,6 +136,7 @@ extension ViewModel {
     
     
     // MARK: Manual toggle for shareplay
+    @MainActor
     func toggleSharePlay() {
         if (!self.sharePlayEnabled) {
             startSharePlay()
@@ -136,6 +145,7 @@ extension ViewModel {
         }
     }
     
+    @MainActor
     func startSharePlay() {
         Task {
             let activity = MyGroupActivity()
@@ -144,13 +154,18 @@ extension ViewModel {
                 do {
                     _ = try await activity.activate()
                 } catch {
+                    #warning("Need fix: Make an alert")
+                    self.errorToShowInAlert = error
                     print("SharePlay unable to activate the activity: \(error)")
                 }
             case .activationDisabled:
-                print("SharePlay group activity activation disabled")
+                Logger().info("SharePlay group activity activation disabled")
             case .cancelled:
-                print("SharePlay group activity activation cancelled")
+
+                Logger().info("SharePlay group activity activation cancelled")
+
             @unknown default:
+                Logger().info("SharePlay group activity activation unknown case")
                 print("SharePlay group activity activation unknown case")
             }
         }
@@ -164,11 +179,14 @@ extension ViewModel {
         if !sharePlayEnabled{
             return
         }
-        // sends the state of activity
-        Task{
-            try? await self.messenger?.send(self.activityState)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now()) {
+            self.subject.send(self.activityState)
         }
+
     }
+    
+  
     
     func receive(_ message: ActivityState) {
         if !sharePlayEnabled{
@@ -180,10 +198,11 @@ extension ViewModel {
             // after i get the new activity state i need to update the UI/Globe position
             
             self.updateEntity()
-            
         }
     }
     
+    /// This funtion is called every time the user receives a message and updates all the globe entities according to their activityState.changes
+    /// even if user A sends the message, user A will receive the same message, therefore we need to do checks so we don't duplicate the same actions
     @MainActor
     private func updateEntity() {
         Task{
@@ -195,43 +214,48 @@ extension ViewModel {
                     return
                 }
                 
-                switch change {
-                case .load:
-                    if !globeConfiguration.isVisible && !globeConfiguration.isLoading {
-                        
-                        load(globe: globeConfiguration.globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
-                        activityState.changes[globeID] = GlobeChange.none // need to reset to none because once a case is completed there is no reason to redo it
-                    }
-                case .hide:
-                    if globeConfiguration.isVisible {
-                        hideGlobe(with: globeID)
-                        activityState.changes[globeID] = GlobeChange.none
-                    }
-                case .resize:
-                    if let tempTranslation = self.activityState.tempTranslation {
-                        let scale = tempTranslation.scale!
-                        let position = tempTranslation.position ?? .zero
-                        let duration = tempTranslation.duration ?? 0.2
-                        globeEntities[globeID]?.animateTransform(scale: scale,position: position, duration: duration)
-                        activityState.changes[globeID] = GlobeChange.none
-                    
-                    }
-                case .transform:
-                    if let tempTranslation = self.activityState.tempTranslation {
-                        let orientation = tempTranslation.orientation!
-                        let position = tempTranslation.position ?? .zero
-                        globeEntities[globeID]?.animateTransform(orientation: orientation, position: position)
-                        activityState.changes[globeID] = GlobeChange.none
-                    }
-                case .rotate:
-                    if let tempTranslation = self.activityState.tempTranslation {
-                        let orientation = tempTranslation.orientation!
-                        globeEntities[globeID]?.animateTransform(orientation: orientation)
-                        activityState.changes[globeID] = GlobeChange.none
-                    }
-                case .none:
-                    break
+                
+                switch change.globeChange {
+                    case .load:
+                        if !globeConfiguration.isVisible{ // check if globe is not visible
+                            load(globe: globeConfiguration.globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
+                            activityState.changes[globeID]?.globeChange = GlobeChange.none
+                        }
+                    case .hide:
+                    // we need to check if there is a local configuration. If not, it means the globe does not exist hence already hidden.
+                        guard let localGlobeConfiguration = configurations[globeID] else{
+                            activityState.changes[globeID]?.globeChange = GlobeChange.none
+                            return
+                        }
+                         if localGlobeConfiguration.isVisible {
+                            activityState.sharedGlobeConfiguration.removeValue(forKey: globeID)
+                            hideGlobe(with: globeID)
+                            activityState.changes[globeID]?.globeChange = GlobeChange.none
+                        }
+                    case .transform:
 
+                        if let tempTranslation = self.activityState.changes[globeID] {
+                            let scale = tempTranslation.scale!
+                            let orientation = tempTranslation.orientation!
+                            let position = tempTranslation.position ?? .zero
+                            let duration = tempTranslation.duration ?? 0.2
+                            
+//                            self.configurations[globeID]?.isRotationPaused = globeConfiguration.isRotationPaused
+                            
+                            globeEntities[globeID]?.animateTransform(scale: scale, orientation: orientation, position: position, duration: duration)
+                            
+                            
+                            activityState.changes[globeID]?.globeChange = GlobeChange.none
+                        }
+                    case .update:
+                        self.configurations[globeID] = globeConfiguration
+                        activityState.changes[globeID]?.globeChange = GlobeChange.none
+                        
+                    case nil:
+                        self.configurations[globeID] = globeConfiguration
+                        activityState.changes[globeID]?.globeChange = GlobeChange.none
+                    case .some(.none):
+                        break
                 }
             }
         

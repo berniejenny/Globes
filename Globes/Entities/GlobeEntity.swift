@@ -33,6 +33,10 @@ class GlobeEntity: Entity, Codable {
     /// Controller for stopping animated transformations.
     var animationPlaybackController: AnimationPlaybackController? = nil
     
+    var isAnimating: Bool = false
+    
+    @ObservedObject var logStore = LogStore.shared
+    
     @MainActor required init() {
         self.globeId = UUID()
 
@@ -74,11 +78,7 @@ class GlobeEntity: Entity, Codable {
     
    
     
-    func handleCollision(_ event: CollisionEvents.Began) {
-        print("Collision detected between \(event.entityA.name) and \(event.entityB.name)")
-        
-        ViewModel.shared.sendMessage()
-    }
+
     
     @MainActor
     /// Set the speed of the automatic rotation
@@ -112,6 +112,7 @@ class GlobeEntity: Entity, Codable {
         position: SIMD3<Float>? = nil,
         duration: Double = 2
     ) {
+        isAnimating = true
         if let scale, abs(scale) < 0.000001 {
             Logger().warning("Animating the scale of an entity to 0 will cause a subsequent inverse of the entity's transform to return NaN values.")
         }
@@ -129,6 +130,9 @@ class GlobeEntity: Entity, Codable {
             Logger().warning("move(to: relativeTo: duration:) animation not playing for '\(self.name)'.")
             self.transform = transform
         }
+        
+        
+        isAnimating = false
     }
     
 
@@ -254,12 +258,6 @@ class GlobeEntity: Entity, Codable {
         let position = oldPosition - globeCameraDirection * deltaRadius
         if duration > 0 {
             animateTransform(scale: newScale, position: position, duration: duration)
-            
-            
-            // RESIZE: SEND MESSAGE HERE
-            ViewModel.shared.activityState.tempTranslation = TempTranslation(scale: newScale, orientation: nil, position: position, duration: 1.0)
-            ViewModel.shared.activityState.changes[globeId] = GlobeChange.resize
-            ViewModel.shared.sendMessage()
         } else {
             self.scale = [newScale, newScale, newScale]
             self.position = position
@@ -310,14 +308,14 @@ class GlobeEntity: Entity, Codable {
         animateTransform(position: newGlobeCenter, duration: duration)
     }
     
+    
+    
     /// The  mean scale factor of this entity relative to the world space.
     @MainActor
     var meanScale: Float { scale(relativeTo: nil).sum() / 3 }
     
     
     /// Codable
-    ///
-    
     enum CodingKeys: String, CodingKey {
         case globeId
         case roughness

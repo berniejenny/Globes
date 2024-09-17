@@ -25,6 +25,8 @@ struct ContentView: View {
     @ScaledMetric private var scaledMinWidthAbout = 620.0
     @ScaledMetric private var scaledMinWidthSharePlay = 500.0
     
+    @ObservedObject var logStore = LogStore.shared
+    
     private enum Tab {
         case gallery, favorites, play, search, createGlobe, settings, about, sharePlay
     }
@@ -43,10 +45,15 @@ struct ContentView: View {
     }
     
     var body: some View {
+        
+        
+        
         TabView(selection: $selectedTab) {
-            GalleryView()
+            GalleryView(topPaddingHeight: 50) // added p
                 .tabItem { Label("Globes", systemImage: "globe") }
                 .tag(Tab.gallery)
+            
+                
             FavoritesView()
                 .tabItem { Label("Favorites", systemImage: "heart") }
                 .tag(Tab.favorites)
@@ -62,12 +69,13 @@ struct ContentView: View {
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gear") }
                 .tag(Tab.settings)
-            SharePlayView()
+            SharePlayTab()
                 .tabItem { Label("SharePlay", systemImage: "shareplay") }
                 .tag(Tab.sharePlay)
             AboutView()
                 .tabItem { Label("About", systemImage: "ellipsis") }
                 .tag(Tab.about)
+            
         }
         .alert(
             model.errorToShowInAlert?.localizedDescription ?? "An error occurred.",
@@ -118,6 +126,8 @@ struct ContentView: View {
             .disabled(!model.isShowingPanorama)
             
             debugButtons
+            
+//            LogView()
         }
         .toggleStyle(.button)
         .buttonStyle(.borderless)

@@ -289,10 +289,12 @@ struct GlobeAttachmentView: View {
         Button(action: toggleRotation) {
             let paused = configuration?.isRotationPaused == true
             if paused {
+                
                 ButtonImage(name: "rotate.3d.slash", isSystemImage: false)
             } else {
                 ButtonImage(name: "rotate.3d")
             }
+            
         }
         .buttonStyle(.plain)
         .buttonBorderShape(.circle)
@@ -336,6 +338,9 @@ struct GlobeAttachmentView: View {
         if var configuration {
             configuration.isRotationPaused.toggle()
             model.configurations[globeId] = configuration
+            self.model.activityState.sharedGlobeConfiguration[globeId]?.isRotationPaused = configuration.isRotationPaused
+            self.model.activityState.changes[globeId]?.globeChange = GlobeChange.update
+            self.model.sendMessage()
             resetAttachmentTimer()
         }
     }
