@@ -68,22 +68,6 @@ struct GlobeConfiguration: Equatable, Identifiable, Codable {
         return position
     }
     
-    func positionRelativeToWindow(windowSize: CGSize, distanceToGlobe: Float) -> SIMD3<Float> {
-        
-        let windowCenterX = Float(windowSize.width / 2)
-        let windowCenterY = Float(windowSize.height / 2)
-        
-        let zPosition: Float = -distanceToGlobe
-        
-        var position = SIMD3<Float>(windowCenterX, windowCenterY, zPosition)
-        
-        let alpha: Float = 30 / 180 * .pi
-        position.y -= sin(alpha) * distanceToGlobe
-        
-        return position
-    }
-
-    
     // MARK: - Scale
             
     /// Minimum scale factor

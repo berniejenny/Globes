@@ -24,8 +24,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         // start camera tracking
         CameraTracker.start()
        
-        
-        
         return true
     }
     
@@ -50,26 +48,20 @@ struct GlobesApp: App {
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
     @Environment(\.openURL) private var openURL
     @Environment(\.openImmersiveSpace) private var openImmersiveSpaceAction // ADDED this
-
     
     /// View model injected in environment. @State instead of the old @StateObject is fine with the new Observable framework.
     @State private var model = ViewModel.shared
     
-    
     init() {
 #if DEBUG
-         SharePlayMockManager.enable(webSocketUrl: "ws://10.250.64.10:8080/endpoint")
+        #warning("Remove this")
+         SharePlayMockManager.enable(webSocketUrl: "ws://118.138.80.245:8080/endpoint")
 #endif
+        // When the application starts, we will configure the group sessions for shareplay
         model.configureGroupSessions()
     }
-    
-    
     var body: some Scene {
-        
-        
         WindowGroup {
-           
-               
                 ContentView()
                     .environment(model)
                     .onAppear(){
@@ -77,9 +69,6 @@ struct GlobesApp: App {
                         
                         model.openImmersiveGlobeSpace(openImmersiveSpaceAction)
                     }
-     
-            
-                
         }
         .windowResizability(.contentSize) // window resizability is derived from window content
         

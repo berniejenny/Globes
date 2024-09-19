@@ -10,14 +10,10 @@ import SharePlayMock
 import Combine
 import os
 
-/// User can break out of the spatial persona and if they want to return to the spatial persona format they can press the digital crown
-
 extension ViewModel {
     
- 
-
+    /// This function loops through active sessions and manages tasks
     func configureGroupSessions(){
-        
         Task(priority: .high) {
             for await groupSession in MyGroupActivity.sessions() {
                 
@@ -28,7 +24,7 @@ extension ViewModel {
 #else
                 let messenger = GroupSessionMessenger(session: groupSession)
 #endif
-                
+                // set the messenger
                 self.messenger = messenger
                 
                 groupSession.$state.sink {
@@ -51,8 +47,6 @@ extension ViewModel {
                             // 19:33
                             try? await messenger.send(self.activityState,
                                                       to: .only(newParticipants))
-                            
-                            
                         }
                     }
                     .store(in: &self.subscriptions)
@@ -67,38 +61,8 @@ extension ViewModel {
                                 // Message from the local participant, we skip
                                 continue
                             }
-                            //
                             self.receive(message)
                         }
-                    }
-                )
-                
-                
-                
-                /// For visionOS
-                self.tasks.insert(
-                    Task {
-                        if let systemCoordinator = await groupSession.systemCoordinator {
-                            for await localParticipantState in systemCoordinator.localParticipantStates {
-                                // if it is spacial share play do something
-                                
-                            }
-                        }
-                    }
-                )
-                
-                self.tasks.insert(
-                    Task{
-                        if let systemCoordinator = await groupSession.systemCoordinator {
-                            for await immersionStyle in systemCoordinator.groupImmersionStyle{
-                                if let immersionStyle {
-                                    // open an immersive space with the same immersion style
-                                } else{
-                                    // Dismiss the immserive space
-                                }
-                            }
-                        }
-                        
                     }
                 )
                 self.tasks.insert(
@@ -145,6 +109,7 @@ extension ViewModel {
         }
     }
     
+    /// Start the sharePlay Manually if this function is triggered
     @MainActor
     func startSharePlay() {
         Task {
@@ -154,16 +119,12 @@ extension ViewModel {
                 do {
                     _ = try await activity.activate()
                 } catch {
-                    #warning("Need fix: Make an alert")
-                    self.errorToShowInAlert = error
-                    print("SharePlay unable to activate the activity: \(error)")
+                    Logger().info("SharePlay unable to activate the activity")
                 }
             case .activationDisabled:
                 Logger().info("SharePlay group activity activation disabled")
             case .cancelled:
-
                 Logger().info("SharePlay group activity activation cancelled")
-
             @unknown default:
                 Logger().info("SharePlay group activity activation unknown case")
                 print("SharePlay group activity activation unknown case")
@@ -171,32 +132,38 @@ extension ViewModel {
         }
     }
     
+    /// Stop the shareplay session
     func endSharePlay() {
         self.groupSession?.end()
     }
     
+    /// Function to send the message to each participant
     func sendMessage() {
+        
+        // we don't want to share messages if sharePlay is not enabled
         if !sharePlayEnabled{
             return
         }
-        
+        // We are sending it after a delay to minimise cpu overload
+        // self.subject.send will call the method inside of ViewModel.swift init method
         DispatchQueue.main.asyncAfter(deadline: .now()) {
             self.subject.send(self.activityState)
         }
-
     }
     
   
     
     func receive(_ message: ActivityState) {
+        
+        // We do not want to receive messages if sharePlay is not active
         if !sharePlayEnabled{
             return
         }
         
         Task{ @MainActor in
+            // update the activity state with the new message passed from other users
             self.activityState = message
-            // after i get the new activity state i need to update the UI/Globe position
-            
+            // after we get the new activity state we need to update the UI/Globe position
             self.updateEntity()
         }
     }
@@ -206,22 +173,29 @@ extension ViewModel {
     @MainActor
     private func updateEntity() {
         Task{
+            
+            // we need to check if the immersive space is active. Else we cannont do anything to globes that don't exist
             guard let openImmersiveSpaceAction = self.openImmersiveSpaceAction else{
                 return
             }
+            
+            // Iterate through all the activityState changes
             for (globeID, change) in activityState.changes {
+                
+                // Check if globe configuration in the activity state exists
                 guard let globeConfiguration = activityState.sharedGlobeConfiguration[globeID] else{
                     return
                 }
                 
-                
+                // We will go through each type of changes and compute what is necessary. Once done we will reset
+                // the globeChange to none
                 switch change.globeChange {
-                    case .load:
+                    case .load: // We need to load the globe
                         if !globeConfiguration.isVisible{ // check if globe is not visible
                             load(globe: globeConfiguration.globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
                             activityState.changes[globeID]?.globeChange = GlobeChange.none
                         }
-                    case .hide:
+                    case .hide: // We need to hide the globe
                     // we need to check if there is a local configuration. If not, it means the globe does not exist hence already hidden.
                         guard let localGlobeConfiguration = configurations[globeID] else{
                             activityState.changes[globeID]?.globeChange = GlobeChange.none
@@ -232,28 +206,22 @@ extension ViewModel {
                             hideGlobe(with: globeID)
                             activityState.changes[globeID]?.globeChange = GlobeChange.none
                         }
-                    case .transform:
-
+                    case .transform: // We need to transform the globe
+                        // Check if changes exist
                         if let tempTranslation = self.activityState.changes[globeID] {
                             let scale = tempTranslation.scale!
                             let orientation = tempTranslation.orientation!
                             let position = tempTranslation.position ?? .zero
                             let duration = tempTranslation.duration ?? 0.2
-                            
-//                            self.configurations[globeID]?.isRotationPaused = globeConfiguration.isRotationPaused
-                            
                             globeEntities[globeID]?.animateTransform(scale: scale, orientation: orientation, position: position, duration: duration)
-                            
-                            
                             activityState.changes[globeID]?.globeChange = GlobeChange.none
                         }
                     case .update:
+                    // Update the globe configuration
                         self.configurations[globeID] = globeConfiguration
                         activityState.changes[globeID]?.globeChange = GlobeChange.none
-                        
-                    case nil:
-                        self.configurations[globeID] = globeConfiguration
-                        activityState.changes[globeID]?.globeChange = GlobeChange.none
+                    case nil: // Update the globe configuration
+                        break
                     case .some(.none):
                         break
                 }
@@ -262,19 +230,18 @@ extension ViewModel {
         }
     }
     
-
+    /// function will reset the group session
     private func cleanupGroupSession() {
-        
         sharePlayEnabled = false
         self.messenger = nil
         self.tasks.forEach { $0.cancel() }
         self.tasks = []
         self.subscriptions = []
         self.groupSession = nil
-        self.activityState = ActivityState() // Reset activity state
-        //           self.spatialSharePlaying = false // Reset spatialSharePlaying
+        self.activityState = ActivityState()
     }
     
+    /// Enum to indicate the errors
     private enum ActivationError: Error {
         case failed, disabled, cancelled, unknown
     }

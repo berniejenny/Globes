@@ -10,10 +10,10 @@ import SwiftUI
 import SharePlayMock
 
 #if DEBUG
+/// This class is initialised when we are using SharePlayMock. The class used for release is defined below.
 class MyGroupActivity: GroupActivityMock {
     
     typealias ActivityType = MyGroupActivity.Activity
-    
     private(set) var groupActivity: Activity
     
     init() {
@@ -21,9 +21,7 @@ class MyGroupActivity: GroupActivityMock {
     }
     
     struct Activity: GroupActivity {
-        
         static let activityIdentifier = "com.davidrumseymapcollection.globes"
-        
         var metadata: GroupActivityMetadata {
             var metadata = GroupActivityMetadata()
             metadata.title = "Group activity: Globes Debug"

@@ -7,6 +7,8 @@
 
 import LinkPresentation
 enum Registration {
+    
+    /// configures and registers the group activity to the apple Goup Activity Api
     static func registerGroupActivity() {
         let itemProvider = NSItemProvider()
         
@@ -27,10 +29,10 @@ enum Registration {
             
 #else
             let metadata = LPLinkMetadata()
-            metadata.title = String(localized: "Register: Share planet Release")
+            metadata.title = String(localized: "Share Globes")
 #endif
-            #warning("add image")
-            //            metadata.imageProvider = NSItemProvider(object: UIImage(resource: .shareplay))
+     
+      
             return metadata
         }
         

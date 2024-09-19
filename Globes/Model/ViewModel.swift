@@ -160,8 +160,9 @@ import ARKit
         
         globeEntity.position = configuration.positionRelativeToCamera(distanceToGlobe: 2)
         
+        // If we are in shareplay mode we need to spawn the globes relative to the window screen
         if sharePlayEnabled{
-            globeEntity.position = SIMD3(0, 1, 0)
+            globeEntity.position = SIMD3(0, 1, -2*(configuration.globe.radius))
         }
         
         
@@ -348,11 +349,8 @@ import ARKit
         }
         
         var targetPosition = configuration.positionRelativeToCamera(distanceToGlobe: 0.5)
-//        if sharePlayEnabled {
-//            targetPosition = configuration.positionRelativeToWindow(windowSize: CGSize(width: 1024, height: 768), distanceToGlobe: 2)
-//        }
         
-        /// Once the user enters a facetime call, the globes will now spawn relative to the window position instead of the camera.
+        // Once the user enters a facetime call, the globes will now spawn relative to the window position instead of the camera.
         if sharePlayEnabled{
             targetPosition = SIMD3(0, 1, -2*(configuration.globe.radius))
         }
@@ -645,7 +643,10 @@ import ARKit
     
     // MARK: SharePlay Variables
     
+    /// initiates the activity state which stores the message that we want to share
     var activityState = ActivityState()
+    
+    /// Boolean that indicates if share play is enabled
     var sharePlayEnabled = false
         
 #if DEBUG
@@ -656,11 +657,14 @@ import ARKit
     var messenger: GroupSessionMessenger?
 #endif
     
+    /// Stores the subcriptions
     var subscriptions: Set<AnyCancellable> = []
+    
+    /// Stores the tasks that needs to be handled by sharePlay
     var tasks: Set<Task<Void, Never>> = []
     
     @MainActor
-    // Cancellable variables, so we can delay the messages sent
+    /// Cancellable variables, so we can delay the messages sent
     let subject = PassthroughSubject<ActivityState, Never>()
     
     @MainActor
@@ -681,16 +685,10 @@ import ARKit
             } catch {
                 fatalError("An error occurred when loading Globes.json from the bundle: \(error.localizedDescription)")
             }
-            
             // load favorite globes from user defaults
             let favoriteIdStrings = UserDefaults.standard.object(forKey: "Favorites") as? [String] ?? []
             favorites = Set(favoriteIdStrings.compactMap { UUID(uuidString: $0) })
-            
-//            self.configureGroupSessions()
-            
         }
-        
-        
         // Timer to synchronize the position of this entity with the camera position
         _ = Timer.scheduledTimer(withTimeInterval: timerInterval, repeats: true) { timer in
   
@@ -707,7 +705,6 @@ import ARKit
                             self.activityState.changes[globeID]?.globeChange = GlobeChange.transform
                         }
                         self.activityState.changes[globeID] = activityState // Update the dictionary
-                       
                     } else {
                         // Initialize and add new activityState
                         self.activityState.changes[globeID] = TempTransform(
@@ -716,15 +713,12 @@ import ARKit
                             position: globeEntity.position,
                             globeChange: GlobeChange.load
                         )
-                        
                         self.activityState.sharedGlobeConfiguration[globeID] = self.configurations[globeID]
                     }
                     self.sendMessage()
                 }
-                
             }
         }
-        
         cancellable = subject
             .debounce(for: .seconds(0.1), scheduler: RunLoop.main)
             .sink { activityState in
@@ -732,8 +726,5 @@ import ARKit
                     try? await self.messenger?.send(activityState)
                 }
             }
-        
-    }
-    
-    
+        }
 }

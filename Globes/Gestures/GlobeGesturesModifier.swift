@@ -176,13 +176,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                         let rotationSinceStart = simd_quatf(from: v1, to: v2)
                         let localRotationSinceStart = simd_quatf(value.convert(rotation: rotationSinceStart, from: .scene, to: .local))
                         let rotation = simd_mul(localRotationSinceStart, localRotationAtGestureStart)
-                        
-//                        globeEntity.scale
-                        // TRANSFORM: SEND MESSAGE HERE
-//                        model.activityState.tempTranslation = TempTranslation(orientation:rotation, position: position)
-                        
-//                        model.sendMessage()
-                        
+
                         // animate the transformation to reduce jitter, as in the Apple EntityGestures sample project
                         globeEntity.animateTransform(orientation: rotation, position: position, duration: animationDuration)
                     }
@@ -192,6 +186,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                 log("end drag")
                 state.endGesture()
                 
+                // Once the drag gesture is over we want to send the changes. This is because it would be unecessary to send messages while we are dragging.
                 if let globeEntity = value.entity as? GlobeEntity {
                     // Capture the latest transformation
                     let finalPosition = globeEntity.position(relativeTo: nil)
@@ -244,7 +239,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                             )
                         }
                     }
-                                    }
+                }
             }
             .onEnded { value in
                 state.endGesture()
@@ -300,11 +295,6 @@ private struct GlobeGesturesModifier: ViewModifier {
                         let newOrientation = orientationAtGestureStart.rotated(by: flippedRotation)
                         globeEntity.animationPlaybackController?.stop()
                         globeEntity.orientation = simd_quatf(newOrientation)
-                        
-                        // ROTATE  : SEND MESSAGE HERE
-//                        model.activityState.tempTranslation = TempTransform(orientation: globeEntity.orientation)
-                        
-//                        model.sendMessage()
                     }
                 }
             }
