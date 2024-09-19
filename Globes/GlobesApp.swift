@@ -54,8 +54,8 @@ struct GlobesApp: App {
     
     init() {
 #if DEBUG
-        #warning("Remove this")
-         SharePlayMockManager.enable(webSocketUrl: "ws://118.138.80.245:8080/endpoint")
+        
+         SharePlayMockManager.enable(webSocketUrl: "ws://x.x.x.x:8080/endpoint")
 #endif
         // When the application starts, we will configure the group sessions for shareplay
         model.configureGroupSessions()
