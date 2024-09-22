@@ -91,6 +91,8 @@ struct ImmersiveGlobeView: View {
             
             _ = content.subscribe(to: SceneEvents.DidAddEntity.self, handleDidAddEntity(_:))
             _ = content.subscribe(to: CollisionEvents.Began.self, handleCollisionBegan(_:))
+            
+            model.immersiveSpaceToSceneTransform = content.transform(from: .immersiveSpace, to: .scene)
         } update: { content, attachments in // synchronous on MainActor
             if globeEntitiesNeedUpdate {
                 addGlobeEntities(to: content, attachments: attachments, imageBasedLight: evenIBL)
@@ -104,6 +106,11 @@ struct ImmersiveGlobeView: View {
                 Task { @MainActor in
                     panoramaEntityNeedsUpdate = false
                 }
+            }
+            
+            let t = content.transform(from: .immersiveSpace, to: .scene)
+            Task { @MainActor in
+                model.immersiveSpaceToSceneTransform = t
             }
         } attachments: { // synchronous on MainActor
             if model.showOnboarding {

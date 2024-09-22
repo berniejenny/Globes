@@ -40,6 +40,9 @@ struct ImmersivePreviewGlobeView: View {
                 
                 let radius = computeRadius(content, geometry)
                 scaleTo(radius: radius)
+                // store the radius of the globe in scene coordinates
+                model.previewRadii[globe.id] = radius
+                
                 applyRotation()
                 
                 // image based lighting
@@ -64,9 +67,27 @@ struct ImmersivePreviewGlobeView: View {
                     scaleTo(radius: radius)
                     Task { @MainActor in
                         sizeChanged = false
+                        // store the radius of the globe in scene coordinates
+                        model.previewRadii[globe.id] = radius
                     }
                 }
             })
+            // store the center of this view such that the globe in immersive space can transition from and to the center
+            .onChange(of: geometry.frame(in: .immersiveSpace).center, initial: true) {
+                let previewCenter = geometry.frame(in: .immersiveSpace).center
+                Task { @MainActor in
+                    model.previewCenters[globe.id] = previewCenter
+                }
+            }
+            // store the dynamic scale factor of this view such that the globe transitioning from and to this view has the same size as the preview globe
+            .onChange(of: geometry.transform(in: .immersiveSpace), initial: true) {
+                if let transform = geometry.transform(in: .immersiveSpace) {
+                    let scale = Float(transform.scale.vector.sum() / 3)
+                    Task { @MainActor in
+                        model.previewScales[globe.id] = scale
+                    }
+                }
+            }
             .onChange(of: geometry.size) {
                 Task { @MainActor in
                     sizeChanged = true
@@ -106,7 +127,7 @@ struct ImmersivePreviewGlobeView: View {
         return globeEntity
     }
    
-    /// Computes a radius for the sphere such that the sphere fills the available view space.
+    /// Computes a radius in scene coordinates [m] for the sphere such that the sphere fills the available view space.
     /// - Parameters:
     ///   - content: Context for coordinate space conversion.
     ///   - geometry: Geometry of the view.

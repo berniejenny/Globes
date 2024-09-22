@@ -135,10 +135,17 @@ import SwiftUI
         configuration.isLoading = false
         configurations[id] = configuration
         
-        // Set the initial scale and position for a move-in animation.
-        // The animation is started by a DidAddEntity event when the immersive space has been created and the globe has been added to the scene.
-        globeEntity.scale = [0.01, 0.01, 0.01]
-        globeEntity.position = configuration.positionRelativeToCamera(distanceToGlobe: 2)
+        // Set the initial scale and position for a move-in animation to the scale and position of the corresponding preview globe.
+        // The animation is started by a DidAddEntity event once the immersive space has been created and the globe has been added to the scene.
+        if let radius = globes.first(where: { $0.id == id })?.radius,
+           let previewRadius = previewRadii[id],
+           let previewScale = previewScales[id] {
+            let scale = previewRadius / radius * previewScale
+            globeEntity.scale = [scale, scale, scale]
+        } else {
+            globeEntity.scale = [0.01, 0.01, 0.01]
+        }
+        globeEntity.position = windowPosition(for: id) ?? configuration.positionRelativeToCamera(distanceToGlobe: 2)
         
         // Rotate the central meridian to the camera, to avoid showing the empty hemisphere on the backside of some globes.
         // The central meridian is at [-1, 0, 0], because the texture u-coordinate with longitude = -180° starts at the x-axis.
@@ -231,21 +238,32 @@ import SwiftUI
     /// Hide a globe. The globe shrinks down. The corresponding `GlobeConfiguration` and `GlobeEntity` are deleted.
     /// - Parameter id: Globe ID
     func hideGlobe(with id: Globe.ID) {
-        let duration = 0.666
-        
-        // shrink the globe
         if let globeEntity = globeEntities[id],
            let radius = globes.first(where: { $0.id == id })?.radius {
-            globeEntity.scaleAndAdjustDistanceToCamera(
-                newScale: 0.001, // scaling to 0 spins the globe, so scale to a value slightly greater than 0
-                radius: radius,
-                duration: duration
-            )
+
+            // scale the globe to the size of the preview globe and move it to the position of the preview globe
+            if let position = windowPosition(for: id),
+               let previewScale = previewScales[id],
+               let previewRadius = previewRadii[id] {
+                let scale = previewRadius / radius * previewScale
+                globeEntity.animateTransform(
+                    scale: scale,
+                    position: position,
+                    duration: GlobeEntity.transformAnimationDuration
+                )
+            } else {
+                // shrink the globe if the required information about the preview globe cannot be found
+                globeEntity.scaleAndAdjustDistanceToCamera(
+                    newScale: 0.001, // scaling to 0 spins the globe, so scale to a value slightly greater than 0
+                    radius: radius,
+                    duration: GlobeEntity.transformAnimationDuration
+                )
+            }
         }
         
         // remove the globe from this model
         Task { @MainActor in
-            try? await Task.sleep(for: .seconds(duration))
+            try? await Task.sleep(for: .seconds(GlobeEntity.transformAnimationDuration))
             assert(configurations.keys.contains(id), "No configuration for \(id)")
             assert(globeEntities.keys.contains(id), "No globe entity for \(id)")
             configurations[id] = nil
@@ -500,6 +518,37 @@ import SwiftUI
     }
     
     // MARK: - UI State
+    
+    /// Centers of small 3D globe views embedded in a window in SwiftUI immersive space coordinates.
+    /// Used to position the start or end position when animating the appearance or disappearance of globes.
+    @MainActor
+    var previewCenters: [Globe.ID: Point3D] = [:]
+    
+    /// Scale factors of small 3D globe views embedded in a window in SwiftUI immersive space coordinates.
+    /// The scale factors are needed to compensate for the dynamic scale applied to windows when animating the appearance or disappearance of globes.
+    /// When a window is moved away form the camera, its scale factor increases.
+    @MainActor
+    var previewScales: [Globe.ID: Float] = [:]
+    
+    /// Radii of the small 3D preview globes in scene coordinates.
+    @MainActor
+    var previewRadii: [Globe.ID: Float] = [:]
+    
+    /// Transform from SwiftUI immersive space ["pixels"] to RealityKit scene space [m]
+    @MainActor
+    var immersiveSpaceToSceneTransform: AffineTransform3D?
+    
+    /// Position in scene coordinates [m] of a preview globe in a window.
+    /// - Parameter globeID: Globe ID.
+    /// - Returns: Position in scene coordinates [m] of the preview globe.
+    @MainActor
+    private func windowPosition(for globeID: Globe.ID) -> SIMD3<Float>? {
+        guard var viewCenterInImmersiveSpace = previewCenters[globeID],
+              let immersiveSpaceToSceneTransform else { return nil }
+        
+        viewCenterInImmersiveSpace.apply(immersiveSpaceToSceneTransform)
+        return SIMD3(viewCenterInImmersiveSpace.vector)
+    }
     
     @MainActor
     /// True if the user has not so far tapped a globe to see a globe attachment view. Stored in user defaults.
