@@ -246,8 +246,10 @@ import SwiftUI
                let previewScale = previewScales[id],
                let previewRadius = previewRadii[id] {
                 let scale = previewRadius / radius * previewScale
+                let orientation = GlobeEntity.orientToNorth(orientation: globeEntity.orientation)
                 globeEntity.animateTransform(
                     scale: scale,
+                    orientation: orientation,
                     position: position,
                     duration: GlobeEntity.transformAnimationDuration
                 )
