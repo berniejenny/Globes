@@ -150,10 +150,12 @@ class GlobeEntity: Entity, Codable {
     
     /// North-orient the globe.
     /// - Parameter radius: The unscaled radius of the globe, needed for computing the duration of the animation. If nil a default duration is used for the animation..
-    func orientToNorth(radius: Float? = nil) {
+    func orientToNorth(radius: Float? = nil) -> (simd_quatf, Double) {
         let orientation = Self.orientToNorth(orientation: self.orientation)
         let duration = animationDuration(for: orientation, radius: radius)
         animateTransform(orientation: orientation, duration: duration)
+        
+        return (orientation, duration)
     }
     
     /// Rotate an orientation quaternion, such that it is north-oriented.
@@ -184,7 +186,7 @@ class GlobeEntity: Entity, Codable {
     /// - Parameters:
     ///   - location: The point on the globe that is to face the camera relative to the center of the globe.
     ///   - radius: The unscaled radius of the globe, needed for computing the duration of the animation. If nil a default duration is used for the animation.
-    func rotate(to location: SIMD3<Float>, radius: Float? = nil) {
+    func rotate(to location: SIMD3<Float>, radius: Float? = nil) -> (simd_quatf, Double) {
         if let cameraPosition = CameraTracker.shared.position {
             // Unary vector in global space from the globe center to the camera.
             // This vector is pointing from the globe center toward the target position on the globe.
@@ -195,7 +197,10 @@ class GlobeEntity: Entity, Codable {
             
             let duration = animationDuration(for: orientation, radius: radius)
             animateTransform(orientation: orientation, duration: duration)
+            return (orientation, duration)
         }
+        return (orientation, 0)
+   
     }
     
     /// Returns a duration in seconds for animating a transformation. Takes into account the size of the globe and the angular distance of the transformation.

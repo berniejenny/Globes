@@ -230,6 +230,8 @@ struct GlobeAttachmentView: View {
             .glassBackgroundEffect()
             
             Button(action: {
+                model.activityState.changes[globe.id]?.globeChange = GlobeChange.hide
+                model.sendMessage()
                 model.hideGlobe(with: globeId)
             }) {
                 Label("Hide Globe", image: "globe.slash")
@@ -371,8 +373,10 @@ struct GlobeAttachmentView: View {
     @MainActor
     @ViewBuilder private var orientButton: some View {
         Button(action: {
-            globeEntity?.orientToNorth(radius: configuration?.globe.radius)
+            let orientation_duration = globeEntity?.orientToNorth(radius: configuration?.globe.radius)
+            sendRotationSharePlay(orientation_duration: orientation_duration)
             resetAttachmentTimer()
+            sendRotationSharePlay(orientation_duration: orientation_duration)
         }) {
             ButtonImage(name: "location.north.line")
         }
@@ -385,8 +389,10 @@ struct GlobeAttachmentView: View {
     @MainActor
     @ViewBuilder private var northPoleButton: some View {
         Button(action: {
-            globeEntity?.rotate(to: [0, 1, 0], radius: configuration?.globe.radius)
+            let orientation_duration = globeEntity?.rotate(to: [0, 1, 0], radius: configuration?.globe.radius)
+            sendRotationSharePlay(orientation_duration: orientation_duration)
             resetAttachmentTimer()
+            sendRotationSharePlay(orientation_duration: orientation_duration)
         }) {
             ButtonImage(name: "n.circle")
         }
@@ -398,14 +404,23 @@ struct GlobeAttachmentView: View {
     @MainActor
     @ViewBuilder private var southPoleButton: some View {
         Button(action: {
-            globeEntity?.rotate(to: [0, -1, 0], radius: configuration?.globe.radius)
+            let orientation_duration = globeEntity?.rotate(to: [0, -1, 0], radius: configuration?.globe.radius)
+            sendRotationSharePlay(orientation_duration: orientation_duration)
             resetAttachmentTimer()
+            sendRotationSharePlay(orientation_duration: orientation_duration)
         }) {
             ButtonImage(name: "s.circle")
         }
         .buttonBorderShape(.circle)
         .buttonStyle(.plain)
         .help("Show South Pole")
+    }
+    
+    private func sendRotationSharePlay(orientation_duration:(simd_quatf, Double)?){
+        model.activityState.changes[globeId]?.orientation = orientation_duration?.0
+        model.activityState.changes[globeId]?.duration = orientation_duration?.1
+        model.activityState.changes[globeId]?.globeChange = GlobeChange.transform
+        model.sendMessage()
     }
 }
 
