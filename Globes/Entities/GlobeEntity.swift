@@ -146,6 +146,11 @@ class GlobeEntity: Entity {
         // Compute the axis to rotate around to align localUp with the world up vector
         let rotationAxis = normalize(simd_cross(localUp, worldUp))
 
+        // The up vector and the rotated up vector are identical: return the passed orientation
+        if !rotationAxis.x.isFinite || !rotationAxis.y.isFinite || !rotationAxis.z.isFinite {
+            return orientation
+        }
+        
         // Compute the angle between localUp and the world up vector
         let dotProduct = simd_dot(localUp, worldUp)
         let angle = acos(dotProduct)
