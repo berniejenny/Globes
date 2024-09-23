@@ -46,13 +46,7 @@ class PreviewGlobeEntity: Entity {
         if addHoverEffect {
             self.components.set(HoverEffectComponent())
         }
-        
-        // Create a collision component with an empty group and mask, such that it does not participate in physics computations
-        // https://developer.apple.com/documentation/realitykit/inputtargetcomponent
-        var collision = CollisionComponent(shapes: [.generateSphere(radius: radius)])
-        collision.filter = CollisionFilter(group: [], mask: [])
-        self.components.set(collision)
-        
+
         self.name = globe.name
     }
 }
