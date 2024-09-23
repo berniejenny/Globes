@@ -51,6 +51,7 @@ struct GlobesApp: App {
     
     /// View model injected in environment. @State instead of the old @StateObject is fine with the new Observable framework.
     @State private var model = ViewModel.shared
+   
     
     init() {
 #if DEBUG
@@ -62,15 +63,28 @@ struct GlobesApp: App {
     }
     var body: some Scene {
         WindowGroup {
-                ContentView()
-                    .environment(model)
-                    .onAppear(){
-                        model.openImmersiveSpaceAction = openImmersiveSpaceAction // Pass the openImmersiveSpaceAction to the ViewModel
-                        
-                        model.openImmersiveGlobeSpace(openImmersiveSpaceAction)
+                GeometryReader { proxy in
+                    if #available(visionOS 1.1, *) {
+                        ContentView()
+                            .environment(model)
+                            .onAppear {
+                                model.openImmersiveSpaceAction = openImmersiveSpaceAction // Pass the openImmersiveSpaceAction to the ViewModel
+                                model.openImmersiveGlobeSpace(openImmersiveSpaceAction)
+                            }
+                            .onChange(of: proxy.transform(in: .immersiveSpace) ?? .identity) { _, transform in
+                                if model.originalWindowVector == .zero{
+                                    model.originalWindowVector = transform.translation
+                                } else{
+                                    model.differenceWindowVector = (model.originalWindowVector - transform.translation)/1000
+                                }
+                            }
+                    } else {
+                        // Fallback on earlier versions
                     }
-        }
-        .windowResizability(.contentSize) // window resizability is derived from window content
+                }
+            }
+            .windowResizability(.contentSize) // window resizability is derived from window content
+
         
         
         

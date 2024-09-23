@@ -26,6 +26,10 @@ import ARKit
 ///
 /// For the new Observable framework: https://developer.apple.com/documentation/swiftui/migrating-from-the-observable-object-protocol-to-the-observable-macro
 @Observable class ViewModel: CustomDebugStringConvertible {
+    
+    var initialWindowPosition: SIMD3<Float>?
+    var currentWindowPosition: SIMD3<Float>?
+    
     var openImmersiveSpaceAction: OpenImmersiveSpaceAction?
     
     /// Shared singleton that can be accessed by the AppDelegate.
@@ -159,12 +163,6 @@ import ARKit
         // Position relative to the window or the camera
         
         globeEntity.position = configuration.positionRelativeToCamera(distanceToGlobe: 2)
-        
-        // If we are in shareplay mode we need to spawn the globes relative to the window screen
-        if sharePlayEnabled{
-            globeEntity.position = SIMD3(0, 1, -2*(configuration.globe.radius))
-        }
-        
         
         // Rotate the central meridian to the camera, to avoid showing the empty hemisphere on the backside of some globes.
         // The central meridian is at [-1, 0, 0], because the texture u-coordinate with lat = -180° starts at the x-axis.
@@ -344,16 +342,12 @@ import ARKit
     ///   - configuration: Configuration of the new globe.
     /// - Returns: Position of the center of the globe.
     func targetPosition(for globeId: Globe.ID) -> SIMD3<Float> {
+        
         guard let configuration = configurations[globeId] else {
             return [0, 1, -1]
         }
         
         var targetPosition = configuration.positionRelativeToCamera(distanceToGlobe: 0.5)
-        
-        // Once the user enters a facetime call, the globes will now spawn relative to the window position instead of the camera.
-        if sharePlayEnabled{
-            targetPosition = SIMD3(0, 1, -2*(configuration.globe.radius))
-        }
       
         if canPlaceGlobe(at: targetPosition, with: configuration.globe.radius) {
             return targetPosition
@@ -381,10 +375,11 @@ import ARKit
             let y = sin(omega) * r / stretch
             let candidatePosition = targetPosition + x * rightAxis + y * upAxis
             if canPlaceGlobe(at: candidatePosition, with: configuration.globe.radius) {
+                
                 return candidatePosition
             }
         }
-        
+       
         // could not find an empty spot
         return targetPosition
     }
@@ -576,6 +571,22 @@ import ARKit
     /// If non-nil, show the gallery view and scroll its list such that this globe is visible.
     var scrollGalleryToGlobe: Globe.ID? = nil
     
+    // MARK: - Window default position
+    
+    var originalWindowVector: Vector3D
+    
+    var differenceWindowVector: Vector3D
+    
+    // Method to set the initial window position
+    func setInitialWindowPosition(_ position: SIMD3<Float>) {
+        self.initialWindowPosition = position
+    }
+
+    // Method to update the current window position
+    func updateCurrentWindowPosition(_ position: SIMD3<Float>) {
+        self.currentWindowPosition = position
+    }
+    
     // MARK: - Collisions
     
     /// Time of last detected collision
@@ -676,6 +687,11 @@ import ARKit
     // MARK: - Initializer
     @MainActor
     init() {
+        
+        // Initialize original window vector as zero
+        self.originalWindowVector = .zero
+        self.differenceWindowVector = .zero
+        
         Task { @MainActor in
             // load Globes.json
             do {
