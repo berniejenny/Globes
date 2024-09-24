@@ -14,11 +14,13 @@ extension View {
     /// Adds gestures for rotating a panorama around its vertical axis.
     @MainActor
     func panoramaGestures(model: ViewModel) -> some View {
-        self.modifier(
-            PanoramaGesturesModifier(model: model)
-        )
+            if let panoramaEntity = model.panoramaEntity {
+                return AnyView(self.modifier(PanoramaGesturesModifier(model: model)))
+            } else {
+                return AnyView(self)
+            }
+        }
     }
-}
 
 /// A modifier that adds a drag gesture for rotating a panorama around its vertical axis.
 @MainActor
@@ -68,7 +70,7 @@ private struct PanoramaGesturesModifier: ViewModifier {
                 }
             }
             .onEnded { _ in
-                log("end drag")
+                log("end panorama drag")
                 orientationAtGestureStart = nil
                 model.panoramaImmersionStyle = immersionStyleAtGestureStart
             }
