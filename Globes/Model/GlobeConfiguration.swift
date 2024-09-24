@@ -42,7 +42,6 @@ struct GlobeConfiguration: Equatable, Identifiable, Codable {
     
     var globe: Globe
     
-    
     // MARK: - Position
     
     /// Position the globe relative to the camera location such that the closest point on the globe is at `distanceToGlobe`.
@@ -66,6 +65,10 @@ struct GlobeConfiguration: Equatable, Identifiable, Codable {
         position.y -= sin(alpha) * d
         
         return position
+    }
+    
+    func positionRelativeToWindow(distanceToGlobe: Float, windowPosition: SIMD3<Float>) -> SIMD3<Float> {
+        return SIMD3(0,0,0)
     }
     
     // MARK: - Scale

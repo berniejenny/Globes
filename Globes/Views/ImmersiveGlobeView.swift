@@ -10,6 +10,7 @@ import RealityKit
 import SwiftUI
 
 /// Immersive view for rendering full-size globes and a panorama.
+@available(visionOS 1.1, *)
 struct ImmersiveGlobeView: View {
     @Environment(ViewModel.self) private var model
     
@@ -91,6 +92,7 @@ struct ImmersiveGlobeView: View {
             
             _ = content.subscribe(to: SceneEvents.DidAddEntity.self, handleDidAddEntity(_:))
             _ = content.subscribe(to: CollisionEvents.Began.self, handleCollisionBegan(_:))
+            model.immersiveSpaceToSceneTransform = content.transform(from: .immersiveSpace, to: .scene)
         } update: { content, attachments in // synchronous on MainActor
             if globeEntitiesNeedUpdate {
                 addGlobeEntities(to: content, attachments: attachments, imageBasedLight: evenIBL)
@@ -104,6 +106,7 @@ struct ImmersiveGlobeView: View {
                 Task { @MainActor in
                     panoramaEntityNeedsUpdate = false
                 }
+                model.immersiveSpaceToSceneTransform = content.transform(from: .immersiveSpace, to: .scene)
             }
         } attachments: { // synchronous on MainActor
             if model.showOnboarding {

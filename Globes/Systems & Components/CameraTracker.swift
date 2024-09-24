@@ -49,7 +49,7 @@ public final class CameraTracker {
     
     /// The current position of the camera in world coordinate space in meter. Returns nil if there is no open immersive space.
     public var position: SIMD3<Float>? {
-        cameraTransform?.translation
+        return cameraTransform?.translation
     }
     
     /// The unary direction vector pointing from the camera in the direction of view in the world coordinate space. Returns nil if there is no open immersive space.

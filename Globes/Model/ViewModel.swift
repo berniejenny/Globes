@@ -347,8 +347,9 @@ import ARKit
             return [0, 1, -1]
         }
         
-        var targetPosition = configuration.positionRelativeToCamera(distanceToGlobe: 0.5)
-      
+//        var targetPosition = configuration.positionRelativeToCamera(distanceToGlobe: 0.5)
+        var targetPosition = windowPosition() ?? configuration.positionRelativeToCamera(distanceToGlobe: 0.5)
+        
         if canPlaceGlobe(at: targetPosition, with: configuration.globe.radius) {
             return targetPosition
         }
@@ -573,18 +574,27 @@ import ARKit
     
     // MARK: - Window default position
     
+    /// Transform from SwiftUI immersive space ["pixels"] to RealityKit scene space [m]
+    @MainActor
+    var immersiveSpaceToSceneTransform: AffineTransform3D?
+    
+    @MainActor
+    var windowCenter: Point3D?
+    
     var originalWindowVector: Vector3D
     
     var differenceWindowVector: Vector3D
     
-    // Method to set the initial window position
-    func setInitialWindowPosition(_ position: SIMD3<Float>) {
-        self.initialWindowPosition = position
-    }
-
-    // Method to update the current window position
-    func updateCurrentWindowPosition(_ position: SIMD3<Float>) {
-        self.currentWindowPosition = position
+    /// Position in scene coordinates [m] of a preview globe in a window.
+        /// - Parameter globeID: Globe ID.
+        /// - Returns: Position in scene coordinates [m] of the preview globe.
+    @MainActor
+    private func windowPosition() -> SIMD3<Float>? {
+        guard var viewCenterInImmersiveSpace = windowCenter,
+              let immersiveSpaceToSceneTransform else { return nil }
+        
+        viewCenterInImmersiveSpace.apply(immersiveSpaceToSceneTransform)
+        return SIMD3(viewCenterInImmersiveSpace.vector)
     }
     
     // MARK: - Collisions

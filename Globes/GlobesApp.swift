@@ -42,6 +42,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
 }
 
+@available(visionOS 1.1, *)
 @main
 struct GlobesApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
@@ -53,6 +54,7 @@ struct GlobesApp: App {
     @State private var model = ViewModel.shared
    
     
+    
     init() {
 #if DEBUG
         
@@ -63,23 +65,18 @@ struct GlobesApp: App {
     }
     var body: some Scene {
         WindowGroup {
-                GeometryReader { proxy in
-                    if #available(visionOS 1.1, *) {
-                        ContentView()
-                            .environment(model)
-                            .onAppear {
-                                model.openImmersiveSpaceAction = openImmersiveSpaceAction // Pass the openImmersiveSpaceAction to the ViewModel
-                                model.openImmersiveGlobeSpace(openImmersiveSpaceAction)
-                            }
-                            .onChange(of: proxy.transform(in: .immersiveSpace) ?? .identity) { _, transform in
-                                if model.originalWindowVector == .zero{
-                                    model.originalWindowVector = transform.translation
-                                } else{
-                                    model.differenceWindowVector = (model.originalWindowVector - transform.translation)/1000
-                                }
-                            }
-                    } else {
-                        // Fallback on earlier versions
+            GeometryReader3D { proxy in
+                ContentView()
+                    .environment(model)
+                    .onAppear {
+                        model.openImmersiveSpaceAction = openImmersiveSpaceAction // Pass the openImmersiveSpaceAction to the ViewModel
+                        model.openImmersiveGlobeSpace(openImmersiveSpaceAction)
+                    }
+                    .onChange(of: proxy.frame(in: .immersiveSpace).center, initial: true) {
+                        let windowCenter = proxy.frame(in: .immersiveSpace).center
+                        Task { @MainActor in
+                            model.windowCenter = windowCenter
+                        }
                     }
                 }
             }
