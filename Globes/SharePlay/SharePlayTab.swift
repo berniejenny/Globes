@@ -22,7 +22,7 @@ struct SharePlayTab: View {
             .buttonStyle(.bordered).tint(model.sharePlayEnabled ? .green : .gray)
 #endif
  
-            Text("To view globes with other people, start or join a FaceTime call. Then tap the button above this window to share globes. To enter a more immersive experience, enable Spatial Mode in the FaceTime call settings.")
+            Text("To view globes with other people, start or join a FaceTime call. Then tap the button above this window to share globes. To enter a more immersive experience, press the cube \(Image(systemName: "cube")) button in FaceTime call settings.")
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: 400)
             Button {

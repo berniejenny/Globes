@@ -161,8 +161,9 @@ import ARKit
         // The animation is started by a DidAddEntity event when the immersive space has been created and the globe has been added to the scene.
         globeEntity.scale = [0.01, 0.01, 0.01]
         // Position relative to the window or the camera
-        
-        globeEntity.position = configuration.positionRelativeToCamera(distanceToGlobe: 2)
+        let globePositionRelativeToCamera = configuration.positionRelativeToCamera(distanceToGlobe: 0.5)
+        globeEntity.position = windowPosition() ?? globePositionRelativeToCamera
+   
         
         // Rotate the central meridian to the camera, to avoid showing the empty hemisphere on the backside of some globes.
         // The central meridian is at [-1, 0, 0], because the texture u-coordinate with lat = -180° starts at the x-axis.
@@ -347,8 +348,9 @@ import ARKit
             return [0, 1, -1]
         }
         
-//        var targetPosition = configuration.positionRelativeToCamera(distanceToGlobe: 0.5)
-        var targetPosition = windowPosition() ?? configuration.positionRelativeToCamera(distanceToGlobe: 0.5)
+        
+        let globePositionRelativeToCamera = configuration.positionRelativeToCamera(distanceToGlobe: 0.5)
+        let targetPosition = windowPosition() ?? globePositionRelativeToCamera
         
         if canPlaceGlobe(at: targetPosition, with: configuration.globe.radius) {
             return targetPosition
