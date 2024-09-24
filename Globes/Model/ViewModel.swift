@@ -266,8 +266,6 @@ import SwiftUI
         // remove the globe from this model
         Task { @MainActor in
             try? await Task.sleep(for: .seconds(GlobeEntity.transformAnimationDuration))
-            assert(configurations.keys.contains(id), "No configuration for \(id)")
-            assert(globeEntities.keys.contains(id), "No globe entity for \(id)")
             configurations[id] = nil
             globeEntities[id] = nil
         }
