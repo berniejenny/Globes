@@ -248,7 +248,7 @@ import SwiftUI
                 let scale = previewRadius / radius * previewScale
                 let orientation = GlobeEntity.orientToNorth(orientation: globeEntity.orientation)
                 globeEntity.animateTransform(
-                    scale: scale,
+                    scale: scale * 0.999, // reduce globe size slightly to avoid z-fighting artefacts 
                     orientation: orientation,
                     position: position,
                     duration: GlobeEntity.transformAnimationDuration
