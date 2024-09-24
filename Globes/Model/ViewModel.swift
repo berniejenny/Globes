@@ -115,7 +115,7 @@ import SwiftUI
         configurations[globe.id] = configuration
         
         Task {
-            openImmersiveGlobeSpace(openImmersiveSpaceAction)            
+            await openImmersiveSpace(with: openImmersiveSpaceAction)
             await SerialGlobeLoader.shared.load(globe: globe)
         }
     }
@@ -339,6 +339,7 @@ import SwiftUI
         }
         
         let targetPosition = configuration.positionRelativeToCamera(distanceToGlobe: 0.5)
+        
         if canPlaceGlobe(at: targetPosition, with: configuration.globe.radius) {
             return targetPosition
         }
@@ -413,7 +414,7 @@ import SwiftUI
         
         Task {
             do {
-                openImmersiveGlobeSpace(openImmersiveSpaceAction)
+                await openImmersiveSpace(with: openImmersiveSpaceAction)
                 await SerialGlobeLoader.shared.load(panorama: globe)
             }
         }        
@@ -477,26 +478,24 @@ import SwiftUI
     var immersiveSpaceIsShown = false
 
     @MainActor
-    private func openImmersiveGlobeSpace(_ action: OpenImmersiveSpaceAction) {
+    func openImmersiveSpace(with action: OpenImmersiveSpaceAction) async {
         guard !immersiveSpaceIsShown else { return }
-        Task {
-            let result = await action(id: "ImmersiveGlobeSpace")
-            switch result {
-            case .opened:                
-                Task { @MainActor in
-                    immersiveSpaceIsShown = true
-                }
-            case .error:
-                Task { @MainActor in
-                    errorToShowInAlert = error("A globe could not be shown.")
-                }
-                fallthrough
-            case .userCancelled:
-                fallthrough
-            @unknown default:
-                Task { @MainActor in
-                    immersiveSpaceIsShown = false
-                }
+        let result = await action(id: "ImmersiveGlobeSpace")
+        switch result {
+        case .opened:
+            Task { @MainActor in
+                immersiveSpaceIsShown = true
+            }
+        case .error:
+            Task { @MainActor in
+                errorToShowInAlert = error("A globe could not be shown.")
+            }
+            fallthrough
+        case .userCancelled:
+            fallthrough
+        @unknown default:
+            Task { @MainActor in
+                immersiveSpaceIsShown = false
             }
         }
     }

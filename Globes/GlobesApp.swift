@@ -43,6 +43,7 @@ struct GlobesApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
     @Environment(\.openURL) private var openURL
+    @Environment(\.openImmersiveSpace) var openImmersiveSpaceAction
     
     /// View model injected in environment. @State instead of the old @StateObject is fine with the new Observable framework.
     @State private var model = ViewModel.shared
@@ -51,6 +52,13 @@ struct GlobesApp: App {
         WindowGroup {
             ContentView()
                 .environment(model)
+                .onAppear() {
+                    if !model.immersiveSpaceIsShown {
+                        Task { @MainActor in
+                            await model.openImmersiveSpace(with: openImmersiveSpaceAction)
+                        }
+                    }
+                }
         }
         .windowResizability(.contentSize) // window resizability is derived from window content
         
