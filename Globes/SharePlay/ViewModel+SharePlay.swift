@@ -82,6 +82,7 @@ extension ViewModel {
                             //enable support
                             configuration.supportsGroupImmersiveSpace = true
                             
+                            
                             // https://developer.apple.com/videos/play/wwdc2023/10087/?time=248
                             // we are using .surround since we are viewing a globe
                             if #available(visionOS 2.0, *) {
@@ -149,6 +150,7 @@ extension ViewModel {
         DispatchQueue.main.asyncAfter(deadline: .now()) {
             self.subject.send(self.activityState)
         }
+        
     }
     
   
@@ -193,6 +195,7 @@ extension ViewModel {
                     case .load: // We need to load the globe
                         if !globeConfiguration.isVisible{ // check if globe is not visible
                             load(globe: globeConfiguration.globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
+                            
                             activityState.changes[globeID]?.globeChange = GlobeChange.none
                         }
                     case .hide: // We need to hide the globe
@@ -208,11 +211,14 @@ extension ViewModel {
                         }
                     case .transform: // We need to transform the globe
                         // Check if changes exist
-                        if let tempTranslation = self.activityState.changes[globeID] {
+                    
+                    #warning("check if globeEntities.transformation is the same as tempTranslation if not, animate")
+                        if let tempTranslation = self.activityState.changes[globeID]{
                             let scale = tempTranslation.scale!
                             let orientation = tempTranslation.orientation!
                             let position = tempTranslation.position ?? .zero
                             let duration = tempTranslation.duration ?? 0.2
+                            
                             globeEntities[globeID]?.animateTransform(scale: scale, orientation: orientation, position: position, duration: duration)
                             activityState.changes[globeID]?.globeChange = GlobeChange.none
                         }

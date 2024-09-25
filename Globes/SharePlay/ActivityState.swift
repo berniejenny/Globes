@@ -7,11 +7,12 @@
 import CoreFoundation
 import Foundation
 import RealityFoundation
+import SwiftUI
 
 /// VisionPro A will have its own globeConfiguration and for every change it will record what the change is and the globeConfiguration in the activityState. This information will be passed down to VisionPro B which will gather this information and
 /// apply the changes accordingly. This will work with more players too.
 struct ActivityState: Codable, Equatable {
-    
+
     /// Changes is a dictionary that will store tempTransform for each globe.ID
     var changes: [Globe.ID: TempTransform] = [:]
     

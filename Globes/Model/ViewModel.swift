@@ -717,14 +717,22 @@ import ARKit
             let favoriteIdStrings = UserDefaults.standard.object(forKey: "Favorites") as? [String] ?? []
             favorites = Set(favoriteIdStrings.compactMap { UUID(uuidString: $0) })
         }
+
         // Timer to synchronize the position of this entity with the camera position
         _ = Timer.scheduledTimer(withTimeInterval: timerInterval, repeats: true) { timer in
   
             DispatchQueue.main.asyncAfter(deadline: .now()) {
                 // Loop through all globe entities and update the activity state
                 for (globeID, globeEntity) in self.globeEntities {
+                   
+                    // Check if changes dictionary is not none and make sure that the globeChange is not .none
+                    // This is because if it is not .none it means that there is a change that needs to be applied first
+                    // And if we don't, it means the change will be overwritten!!
+                    if self.activityState.changes[globeID] != nil && self.activityState.changes[globeID]?.globeChange != GlobeChange.none{
+                        self.sendMessage() // we still need to send the original message
+                        continue
+                    }
                     if var activityState = self.activityState.changes[globeID] {
-
                         activityState.scale = globeEntity.scale.x
                         activityState.orientation = globeEntity.orientation
                         activityState.position = globeEntity.position

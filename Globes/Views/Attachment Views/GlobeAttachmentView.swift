@@ -230,9 +230,11 @@ struct GlobeAttachmentView: View {
             .glassBackgroundEffect()
             
             Button(action: {
+                
+                model.hideGlobe(with: globeId)
+                
                 model.activityState.changes[globe.id]?.globeChange = GlobeChange.hide
                 model.sendMessage()
-                model.hideGlobe(with: globeId)
             }) {
                 Label("Hide Globe", image: "globe.slash")
             }
@@ -376,7 +378,7 @@ struct GlobeAttachmentView: View {
             let orientation_duration = globeEntity?.orientToNorth(radius: configuration?.globe.radius)
             sendRotationSharePlay(orientation_duration: orientation_duration)
             resetAttachmentTimer()
-            sendRotationSharePlay(orientation_duration: orientation_duration)
+//            sendRotationSharePlay(orientation_duration: orientation_duration)
         }) {
             ButtonImage(name: "location.north.line")
         }
@@ -392,7 +394,7 @@ struct GlobeAttachmentView: View {
             let orientation_duration = globeEntity?.rotate(to: [0, 1, 0], radius: configuration?.globe.radius)
             sendRotationSharePlay(orientation_duration: orientation_duration)
             resetAttachmentTimer()
-            sendRotationSharePlay(orientation_duration: orientation_duration)
+//            sendRotationSharePlay(orientation_duration: orientation_duration)
         }) {
             ButtonImage(name: "n.circle")
         }
@@ -407,7 +409,7 @@ struct GlobeAttachmentView: View {
             let orientation_duration = globeEntity?.rotate(to: [0, -1, 0], radius: configuration?.globe.radius)
             sendRotationSharePlay(orientation_duration: orientation_duration)
             resetAttachmentTimer()
-            sendRotationSharePlay(orientation_duration: orientation_duration)
+//            sendRotationSharePlay(orientation_duration: orientation_duration)
         }) {
             ButtonImage(name: "s.circle")
         }

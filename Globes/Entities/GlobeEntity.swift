@@ -130,8 +130,7 @@ class GlobeEntity: Entity, Codable {
             Logger().warning("move(to: relativeTo: duration:) animation not playing for '\(self.name)'.")
             self.transform = transform
         }
-        
-        
+
         isAnimating = false
     }
     

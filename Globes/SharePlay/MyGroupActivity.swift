@@ -37,11 +37,10 @@ class MyGroupActivity: GroupActivityMock {
 struct MyGroupActivity: GroupActivity {
     var metadata: GroupActivityMetadata {
         var metadata = GroupActivityMetadata()
-        metadata.title = "Group activity: Globes Release"
+        metadata.title = "Group activity: Globes"
         metadata.subtitle = "Let's explore together!"
         metadata.sceneAssociationBehavior = .content("planet")
         metadata.previewImage = UIImage(resource: .shareplay).cgImage
-        
         metadata.type = .generic
         
         return metadata

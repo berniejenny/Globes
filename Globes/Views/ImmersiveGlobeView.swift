@@ -159,7 +159,7 @@ struct ImmersiveGlobeView: View {
             }
         }
         .globeGestures(model: model)
-        .panoramaGestures(model: model)
+//        .panoramaGestures(model: model)
         .task(id: animationInterval) {
             animationTimer?.invalidate()
             animationTimer = Timer.scheduledTimer(withTimeInterval: animationInterval, repeats: true) { _ in
