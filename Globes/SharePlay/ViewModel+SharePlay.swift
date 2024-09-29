@@ -223,8 +223,8 @@ extension ViewModel {
                             activityState.changes[globeID]?.globeChange = GlobeChange.none
                         }
                     case .update:
-                    // Update the globe configuration
-                        self.configurations[globeID] = globeConfiguration
+                    // Update necessary globe configurations
+                    self.configurations[globeID]?.isRotationPaused = globeConfiguration.isRotationPaused
                         activityState.changes[globeID]?.globeChange = GlobeChange.none
                     case nil: // Update the globe configuration
                         break
