@@ -737,8 +737,13 @@ import ARKit
                         activityState.orientation = globeEntity.orientation
                         activityState.position = globeEntity.position
                         activityState.duration = 0.2
+                        // if nothing else is happening we check the if the globe has moved positions and transform it
                         if let isLoading = self.activityState.sharedGlobeConfiguration[globeID]?.isLoading, isLoading {
                             self.activityState.changes[globeID]?.globeChange = GlobeChange.transform
+                        }
+                        // every tick we want to check if globe is visible if not we hide for all other users
+                        if let isVisible = self.activityState.sharedGlobeConfiguration[globeID]?.isVisible, !isVisible {
+                            self.activityState.changes[globeID]?.globeChange = GlobeChange.hide
                         }
                         self.activityState.changes[globeID] = activityState // Update the dictionary
                     } else {

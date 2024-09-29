@@ -230,11 +230,12 @@ struct GlobeAttachmentView: View {
             .glassBackgroundEffect()
             
             Button(action: {
+                model.activityState.changes[globe.id]?.globeChange = GlobeChange.hide
+                model.sendMessage()
                 
                 model.hideGlobe(with: globeId)
                 
-                model.activityState.changes[globe.id]?.globeChange = GlobeChange.hide
-                model.sendMessage()
+                
             }) {
                 Label("Hide Globe", image: "globe.slash")
             }
