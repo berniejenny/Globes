@@ -167,6 +167,7 @@ extension ViewModel {
             self.activityState = message
             // after we get the new activity state we need to update the UI/Globe position
             self.updateEntity()
+            
         }
     }
     
@@ -193,9 +194,9 @@ extension ViewModel {
                 // the globeChange to none
                 switch change.globeChange {
                     case .load: // We need to load the globe
+                        // Rather than checking if configurations[globeID] we need to check the sharedGlobeConfiguration because the local configuration will not exist if the globe has not been loaded
                         if !globeConfiguration.isVisible{ // check if globe is not visible
                             load(globe: globeConfiguration.globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
-                            
                             activityState.changes[globeID]?.globeChange = GlobeChange.none
                         }
                     case .hide: // We need to hide the globe
@@ -206,13 +207,11 @@ extension ViewModel {
                         }
                          if localGlobeConfiguration.isVisible {
                             activityState.sharedGlobeConfiguration.removeValue(forKey: globeID)
+                            activityState.changes.removeValue(forKey: globeID)
                             hideGlobe(with: globeID)
                             activityState.changes[globeID]?.globeChange = GlobeChange.none
                         }
-                    case .transform: // We need to transform the globe
-                        // Check if changes exist
-                    
-                    #warning("check if globeEntities.transformation is the same as tempTranslation if not, animate")
+                    case .transform: // We need to transform the globe to a new position
                         if let tempTranslation = self.activityState.changes[globeID]{
                             let scale = tempTranslation.scale!
                             let orientation = tempTranslation.orientation!
@@ -224,7 +223,7 @@ extension ViewModel {
                         }
                     case .update:
                     // Update necessary globe configurations
-                    self.configurations[globeID]?.isRotationPaused = globeConfiguration.isRotationPaused
+                        self.configurations[globeID]?.isRotationPaused = globeConfiguration.isRotationPaused
                         activityState.changes[globeID]?.globeChange = GlobeChange.none
                     case nil: // Update the globe configuration
                         break

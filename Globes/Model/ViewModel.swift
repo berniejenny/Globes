@@ -130,8 +130,16 @@ import ARKit
         // Add the configuration to the dictionary.
         configurations[globe.id] = configuration
         self.activityState.sharedGlobeConfiguration[globe.id] = configuration
-        self.activityState.changes[globe.id]?.globeChange = GlobeChange.load
+        
+        
+        self.activityState.changes[globe.id] = TempTransform(
+            scale: globeEntities[globe.id]?.scale.x,
+            orientation: globeEntities[globe.id]?.orientation,
+            position: globeEntities[globe.id]?.position,
+            globeChange: GlobeChange.load
+        )
         self.sendMessage()
+        
         
         Task {
             openImmersiveGlobeSpace(openImmersiveSpaceAction)
@@ -271,8 +279,8 @@ import ARKit
         // remove the globe from this model
         Task { @MainActor in
             try? await Task.sleep(for: .seconds(duration))
-            assert(configurations.keys.contains(id), "No configuration for \(id)")
-            assert(globeEntities.keys.contains(id), "No globe entity for \(id)")
+//            assert(configurations.keys.contains(id), "No configuration for \(id)")
+//            assert(globeEntities.keys.contains(id), "No globe entity for \(id)")
             configurations[id] = nil
             globeEntities[id] = nil
             
@@ -728,7 +736,9 @@ import ARKit
                     // Check if changes dictionary is not none and make sure that the globeChange is not .none
                     // This is because if it is not .none it means that there is a change that needs to be applied first
                     // And if we don't, it means the change will be overwritten!!
-                    if self.activityState.changes[globeID] != nil && self.activityState.changes[globeID]?.globeChange != GlobeChange.none{
+                    let changes = self.activityState.changes[globeID]?.globeChange
+                    if self.activityState.changes[globeID] != nil && changes != GlobeChange.none{
+                        
                         self.sendMessage() // we still need to send the original message
                         continue
                     }
@@ -748,13 +758,13 @@ import ARKit
                         self.activityState.changes[globeID] = activityState // Update the dictionary
                     } else {
                         // Initialize and add new activityState
-                        self.activityState.changes[globeID] = TempTransform(
-                            scale: globeEntity.scale.x,
-                            orientation: globeEntity.orientation,
-                            position: globeEntity.position,
-                            globeChange: GlobeChange.load
-                        )
-                        self.activityState.sharedGlobeConfiguration[globeID] = self.configurations[globeID]
+//                        self.activityState.changes[globeID] = TempTransform(
+//                            scale: globeEntity.scale.x,
+//                            orientation: globeEntity.orientation,
+//                            position: globeEntity.position,
+//                            globeChange: GlobeChange.load
+//                        )
+//                        self.activityState.sharedGlobeConfiguration[globeID] = self.configurations[globeID]
                     }
                     self.sendMessage()
                 }

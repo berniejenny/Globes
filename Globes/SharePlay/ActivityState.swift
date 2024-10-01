@@ -18,6 +18,12 @@ struct ActivityState: Codable, Equatable {
     
     /// This will store the globeConfiguration for each globe.ID
     var sharedGlobeConfiguration: [Globe.ID: GlobeConfiguration] = [:]
+    
+    var selectedTab = Tab.gallery
+}
+
+enum Tab: Codable {
+    case gallery, favorites, play, search, createGlobe, settings, about, sharePlay
 }
 
 /// Enum for each type of globe change
