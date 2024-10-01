@@ -213,8 +213,11 @@ extension ViewModel {
                         }
                     case .transform: // We need to transform the globe to a new position
                         if let tempTranslation = self.activityState.changes[globeID]{
-                            let scale = tempTranslation.scale!
-                            let orientation = tempTranslation.orientation!
+                            let scale = tempTranslation.scale ?? 1
+                            
+                            let orientation = tempTranslation.orientation ?? simd_quatf(angle: 0, axis: .init(x: 0, y: 0, z: 1))
+                            
+                            
                             let position = tempTranslation.position ?? .zero
                             let duration = tempTranslation.duration ?? 0.2
                             

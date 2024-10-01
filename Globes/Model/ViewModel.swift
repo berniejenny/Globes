@@ -738,7 +738,6 @@ import ARKit
                     // And if we don't, it means the change will be overwritten!!
                     let changes = self.activityState.changes[globeID]?.globeChange
                     if self.activityState.changes[globeID] != nil && changes != GlobeChange.none{
-                        
                         self.sendMessage() // we still need to send the original message
                         continue
                     }
@@ -756,15 +755,6 @@ import ARKit
                             self.activityState.changes[globeID]?.globeChange = GlobeChange.hide
                         }
                         self.activityState.changes[globeID] = activityState // Update the dictionary
-                    } else {
-                        // Initialize and add new activityState
-//                        self.activityState.changes[globeID] = TempTransform(
-//                            scale: globeEntity.scale.x,
-//                            orientation: globeEntity.orientation,
-//                            position: globeEntity.position,
-//                            globeChange: GlobeChange.load
-//                        )
-//                        self.activityState.sharedGlobeConfiguration[globeID] = self.configurations[globeID]
                     }
                     self.sendMessage()
                 }
