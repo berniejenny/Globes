@@ -197,6 +197,9 @@ extension ViewModel {
                         // Rather than checking if configurations[globeID] we need to check the sharedGlobeConfiguration because the local configuration will not exist if the globe has not been loaded
                         if !globeConfiguration.isVisible{ // check if globe is not visible
                             load(globe: globeConfiguration.globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
+                            
+                            // The globe rotation setting may be different for each user so we will set the default rotation bool to whomever sends the message first
+                            self.configurations[globeID]?.isRotationPaused = globeConfiguration.isRotationPaused
                             activityState.changes[globeID]?.globeChange = GlobeChange.none
                         }
                     case .hide: // We need to hide the globe
@@ -214,10 +217,7 @@ extension ViewModel {
                     case .transform: // We need to transform the globe to a new position
                         if let tempTranslation = self.activityState.changes[globeID]{
                             let scale = tempTranslation.scale ?? 1
-                            
                             let orientation = tempTranslation.orientation ?? simd_quatf(angle: 0, axis: .init(x: 0, y: 0, z: 1))
-                            
-                            
                             let position = tempTranslation.position ?? .zero
                             let duration = tempTranslation.duration ?? 0.2
                             

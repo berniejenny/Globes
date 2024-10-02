@@ -102,15 +102,15 @@ struct ContentView: View {
                 closeWindowsAndImmersiveSpace()
             }
         }
-        .onChange(of: selectedTab) {
-            // Initialize selectedTab after the view has appeared
-            model.activityState.selectedTab = selectedTab
-            model.sendMessage()
-        }
-        .onChange(of: model.activityState.selectedTab) { _, newTab in
-            // Update selectedTab when it changes in the model
-            selectedTab = newTab
-        }
+//        .onChange(of: selectedTab) {
+//            // Initialize selectedTab after the view has appeared
+//            model.activityState.selectedTab = selectedTab
+//            model.sendMessage()
+//        }
+//        .onChange(of: model.activityState.selectedTab) { _, newTab in
+//            // Update selectedTab when it changes in the model
+//            selectedTab = newTab
+//        }
         .frame(width: scaledWidth, height: scaledHeight)
         .frame(minWidth: scaledMinWidth, minHeight: scaledMinHeight)
         .task { Registration.registerGroupActivity() }
