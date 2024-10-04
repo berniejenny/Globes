@@ -32,9 +32,12 @@ class MyGroupActivity: GroupActivityMock {
             return metadata
         }
     }
+   
+    
 }
 #else
 struct MyGroupActivity: GroupActivity {
+    
     var metadata: GroupActivityMetadata {
         var metadata = GroupActivityMetadata()
         metadata.title = "Group activity: Globes"
@@ -42,8 +45,13 @@ struct MyGroupActivity: GroupActivity {
         metadata.sceneAssociationBehavior = .content("planet")
         metadata.previewImage = UIImage(resource: .shareplay).cgImage
         metadata.type = .generic
-        
         return metadata
     }
+    
+    
 }
+
+
+
 #endif
+

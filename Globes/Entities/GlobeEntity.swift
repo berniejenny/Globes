@@ -65,7 +65,7 @@ class GlobeEntity: Entity, Codable {
         modelEntity.components.set(GroundingShadowComponent(castsShadow: true))
         
         
-        #warning("do research how to get notification every time there is a physics collision and send message")
+        
         // Add InputTargetComponent and CollisionComponent to enable gestures and physics
         components.set(InputTargetComponent())
         components.set(CollisionComponent(shapes: [.generateSphere(radius: globe.radius)], mode: .trigger))

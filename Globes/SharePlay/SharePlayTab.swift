@@ -10,16 +10,30 @@ import SwiftUI
 struct SharePlayTab: View {
     @Environment(ViewModel.self) var model
     @Environment(\.openURL) private var openURL
+    
+    
+    
     var body: some View {
         
         VStack(spacing: 48) {
+
+            
+            // Use ShareLink to share your group activity
+            ShareLink(item: model.activityState,
+                      preview: SharePreview("Explore Globes Together", image: Image(systemName: "globe"))) {
+                Text("Share Globes via SharePlay")
+            }
 #if DEBUG
             Button(action: {
                 model.toggleSharePlay()
             }, label: {
-                model.sharePlayEnabled ? Text("Stop SharePlay") : Text("Start SharePlay")
+                
+                    model.sharePlayEnabled ? Text("Stop SharePlay") : Text("Start SharePlay")
+                
             })
-            .buttonStyle(.bordered).tint(model.sharePlayEnabled ? .green : .gray)
+            .buttonStyle(.bordered)
+            .tint(model.sharePlayEnabled ? .green : .gray)
+
 #endif
  
             Text("To view globes with other people, start or join a FaceTime call. Then tap the button above this window to share globes. To enter a more immersive experience, press the cube \(Image(systemName: "cube")) button in FaceTime call settings.")

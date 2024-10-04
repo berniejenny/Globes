@@ -8,11 +8,12 @@ import CoreFoundation
 import Foundation
 import RealityFoundation
 import SwiftUI
+import GroupActivities
 
 /// VisionPro A will have its own globeConfiguration and for every change it will record what the change is and the globeConfiguration in the activityState. This information will be passed down to VisionPro B which will gather this information and
 /// apply the changes accordingly. This will work with more players too.
-struct ActivityState: Codable, Equatable {
-
+struct ActivityState: Codable, Equatable, Transferable{
+    
     /// Changes is a dictionary that will store tempTransform for each globe.ID
     var changes: [Globe.ID: TempTransform] = [:]
     
@@ -20,6 +21,14 @@ struct ActivityState: Codable, Equatable {
     var sharedGlobeConfiguration: [Globe.ID: GlobeConfiguration] = [:]
     
     var selectedTab = Tab.gallery
+    
+    // Conform to Transferable
+    static var transferRepresentation: some TransferRepresentation {
+        
+        GroupActivityTransferRepresentation { _ in
+            return MyGroupActivity()
+        }
+    }
 }
 
 enum Tab: Codable {
@@ -42,7 +51,7 @@ struct TempTransform: Codable, Equatable {
     var position: SIMD3<Float>?
     var duration: Double?
     var globeChange: GlobeChange?
-
+    
     init(scale: Float? = nil, orientation: simd_quatf? = nil, position: SIMD3<Float>? = nil, duration: Double? = 0, globeChange: GlobeChange? = GlobeChange.load) {
         self.scale = scale
         self.orientation = orientation
@@ -50,7 +59,7 @@ struct TempTransform: Codable, Equatable {
         self.duration = duration
         self.globeChange = globeChange
     }
-
+    
     // Custom Codable implementation
     enum CodingKeys: String, CodingKey {
         case scale
@@ -59,7 +68,7 @@ struct TempTransform: Codable, Equatable {
         case duration
         case globeChange
     }
-
+    
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         scale = try container.decodeIfPresent(Float.self, forKey: .scale)
@@ -73,7 +82,7 @@ struct TempTransform: Codable, Equatable {
         duration = try container.decodeIfPresent(Double.self, forKey: .duration)
         globeChange = try container.decodeIfPresent(GlobeChange.self, forKey: .globeChange)
     }
-
+    
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(scale, forKey: .scale)
@@ -85,6 +94,6 @@ struct TempTransform: Codable, Equatable {
         }
         try container.encodeIfPresent(duration, forKey: .duration)
         try container.encodeIfPresent(globeChange, forKey: .globeChange)
-    
+        
     }
 }

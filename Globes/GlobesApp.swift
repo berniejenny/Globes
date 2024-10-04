@@ -57,11 +57,11 @@ struct GlobesApp: App {
     
     init() {
 #if DEBUG
-        
-         SharePlayMockManager.enable(webSocketUrl: "ws://x.x.x.x:8080/endpoint")
+         
 #endif
         // When the application starts, we will configure the group sessions for shareplay
         model.configureGroupSessions()
+        Registration.registerGroupActivity()
     }
     var body: some Scene {
         WindowGroup {
@@ -77,6 +77,7 @@ struct GlobesApp: App {
                         Task { @MainActor in
                             model.windowCenter = windowCenter
                         }
+                    
                     }
                 }
             }

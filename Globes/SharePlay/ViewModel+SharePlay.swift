@@ -16,7 +16,7 @@ extension ViewModel {
     func configureGroupSessions(){
         Task(priority: .high) {
             for await groupSession in MyGroupActivity.sessions() {
-                
+          	
                 // set group session messenger
                 self.groupSession = groupSession
 #if DEBUG
@@ -81,7 +81,6 @@ extension ViewModel {
                             
                             //enable support
                             configuration.supportsGroupImmersiveSpace = true
-                            
                             
                             // https://developer.apple.com/videos/play/wwdc2023/10087/?time=248
                             // we are using .surround since we are viewing a globe
