@@ -258,6 +258,13 @@ struct ImmersiveGlobeView: View {
     private func animateMoveIn(of entity: Entity) {
         if let globeEntity = entity as? GlobeEntity {
             let targetPosition = model.targetPosition(for: globeEntity.globeId)
+            
+            // Use the same orientation as the preview globe; do this immediately before
+            // the animation starts to closely align the new globe with the rotating preview globe.
+            if let previewOrientation = model.previewGlobes[globeEntity.globeId]?.orientation {
+                globeEntity.orientation = previewOrientation
+            }
+           
             globeEntity.animateTransform(scale: 1, position: targetPosition)
         }
     }

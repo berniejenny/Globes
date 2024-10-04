@@ -23,7 +23,9 @@ struct ImmersivePreviewGlobeView: View {
     var addHoverEffect = false
     
     /// The globe entity
-    @State private var globeEntity: PreviewGlobeEntity? = nil
+    private var globeEntity: PreviewGlobeEntity? {
+        model.previewGlobes[globe.id]
+    }
     
     /// IBL entity if virtual light is used.
     @State private var imageBasedLightSourceEntity: ImageBasedLightSourceEntity? = nil
@@ -35,6 +37,7 @@ struct ImmersivePreviewGlobeView: View {
         GeometryReader3D { geometry in
             RealityView (make: { content in
                 if let globeEntity = await createGlobe() {
+                    globeEntity.removeFromParent()
                     content.add(globeEntity)
                 }
                 
@@ -49,28 +52,29 @@ struct ImmersivePreviewGlobeView: View {
                 self.imageBasedLightSourceEntity = await loadImageBasedLightSourceEntity()
                 applyImageBasedLighting()
             }, update: { content in
-                // replace the globe entity if it changed
-                if let globeEntity,
-                   let oldGlobeEntity = content.entities.first(where: { $0 is PreviewGlobeEntity }) {
-                    if oldGlobeEntity.id != globeEntity.id {
-                        content.remove(oldGlobeEntity)
-                        globeEntity.scale = oldGlobeEntity.scale
-                        content.add(globeEntity)
-                    }
-                }
-                
-                applyRotation()
-                applyImageBasedLighting()
-                
-                if sizeChanged {
-                    let radius = computeRadius(content, geometry)
-                    scaleTo(radius: radius)
-                    Task { @MainActor in
-                        sizeChanged = false
-                        // store the radius of the globe in scene coordinates
-                        model.previewRadii[globe.id] = radius
-                    }
-                }
+#warning("Fix needed")
+//                // replace the globe entity if it changed
+//                if let globeEntity,
+//                   let oldGlobeEntity = content.entities.first(where: { $0 is PreviewGlobeEntity }) {
+//                    if oldGlobeEntity.id != globeEntity.id {
+//                        content.remove(oldGlobeEntity)
+//                        globeEntity.scale = oldGlobeEntity.scale
+//                        content.add(globeEntity)
+//                    }
+//                }
+//                
+//                applyRotation()
+//                applyImageBasedLighting()
+//                
+//                if sizeChanged {
+//                    let radius = computeRadius(content, geometry)
+//                    scaleTo(radius: radius)
+//                    Task { @MainActor in
+//                        sizeChanged = false
+//                        // store the radius of the globe in scene coordinates
+//                        model.previewRadii[globe.id] = radius
+//                    }
+//                }
             })
             // store the center of this view such that the globe in immersive space can transition from and to the center
             .onChange(of: geometry.frame(in: .immersiveSpace).center, initial: true) {
@@ -115,7 +119,11 @@ struct ImmersivePreviewGlobeView: View {
     }
     
     private func createGlobe() async -> PreviewGlobeEntity? {
-        globeEntity = try? await PreviewGlobeEntity(
+        if let previewGlobe = model.previewGlobes[globe.id] {
+            return previewGlobe
+        }
+        
+        let globeEntity = try? await PreviewGlobeEntity(
             globe: globe,
             addHoverEffect: addHoverEffect,
             radius: 1
@@ -124,6 +132,8 @@ struct ImmersivePreviewGlobeView: View {
             Logger().error("Cannot load preview for \(globe.name)")
             return nil
         }
+        
+        model.previewGlobes[globe.id] = globeEntity
         return globeEntity
     }
    

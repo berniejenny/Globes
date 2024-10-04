@@ -147,14 +147,6 @@ import SwiftUI
         }
         globeEntity.position = windowPosition(for: id) ?? configuration.positionRelativeToCamera(distanceToGlobe: 2)
         
-        // Rotate the central meridian to the camera, to avoid showing the empty hemisphere on the backside of some globes.
-        // The central meridian is at [-1, 0, 0], because the texture u-coordinate with longitude = -180° starts at the x-axis.
-        if let viewDirection = CameraTracker.shared.viewDirection {
-            var orientation = simd_quatf(from: [-1, 0, 0], to: -viewDirection)
-            orientation = GlobeEntity.orientToNorth(orientation: globeEntity.orientation)
-            globeEntity.orientation = orientation
-        }
-        
         // store the globe entity
         globeEntities[id] = globeEntity
         
@@ -246,7 +238,17 @@ import SwiftUI
                let previewScale = previewScales[id],
                let previewRadius = previewRadii[id] {
                 let scale = previewRadius / radius * previewScale
-                let orientation = GlobeEntity.orientToNorth(orientation: globeEntity.orientation)
+                
+                let orientation: simd_quatf
+                if let previewOrientation =  previewGlobes[id]?.orientation {
+#warning("This does not work consistently")
+                    let angleOffset = GlobeConfiguration.defaultRotationSpeedForPreviewGlobes * Float(GlobeEntity.transformAnimationDuration)
+                    var angle = previewOrientation.angle + angleOffset
+                    angle = angle.remainder(dividingBy: 2 * .pi)
+                    orientation = simd_quatf(angle: angle, axis: [0, 1, 0])
+                } else {
+                    orientation = GlobeEntity.orientToNorth(orientation: globeEntity.orientation)
+                }
                 globeEntity.animateTransform(
                     scale: scale * 0.999, // reduce globe size slightly to avoid z-fighting artefacts 
                     orientation: orientation,
@@ -517,6 +519,11 @@ import SwiftUI
     }
     
     // MARK: - UI State
+    
+    /// Preview globes are stored for access to their current orientation.
+    /// The current orientation is needed for transitioning appearing and disappearing globes from and into the preview globes.
+    @MainActor
+    var previewGlobes: [Globe.ID: PreviewGlobeEntity] = [:]
     
     /// Centers of small 3D globe views embedded in a window in SwiftUI immersive space coordinates.
     /// Used to position the start or end position when animating the appearance or disappearance of globes.
