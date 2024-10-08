@@ -102,6 +102,7 @@ struct ContentView: View {
                 closeWindowsAndImmersiveSpace()
             }
         }
+        // This is used to share the current window with other users
 //        .onChange(of: selectedTab) {
 //            // Initialize selectedTab after the view has appeared
 //            model.activityState.selectedTab = selectedTab

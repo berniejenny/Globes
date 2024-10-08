@@ -167,6 +167,7 @@ extension ViewModel {
             // after we get the new activity state we need to update the UI/Globe position
             self.updateEntity()
             
+            
         }
     }
     
@@ -181,13 +182,27 @@ extension ViewModel {
                 return
             }
             
+            if activityState.panoramaState.isUpdate{
+                // check for panorama
+                if activityState.panoramaState.showPanorama{
+                    self.loadPanorama(globe: activityState.panoramaState.currentPanoramaGlobe!, openImmersiveSpaceAction: openImmersiveSpaceAction)
+                    activityState.panoramaState.showPanorama = false
+                }
+                if activityState.panoramaState.hidePanorama{
+                    self.hidePanorama()
+                    activityState.panoramaState.currentPanoramaGlobe = nil
+                    activityState.panoramaState.hidePanorama = false
+                }
+                activityState.panoramaState.isUpdate = false
+            }
             // Iterate through all the activityState changes
             for (globeID, change) in activityState.changes {
-                
-                // Check if globe configuration in the activity state exists
+//                self.updateEntityChanges(globeID: globeID,change: change,openImmsersiveSpaceAction: openImmersiveSpaceAction)
                 guard let globeConfiguration = activityState.sharedGlobeConfiguration[globeID] else{
                     return
                 }
+                
+                
                 
                 // We will go through each type of changes and compute what is necessary. Once done we will reset
                 // the globeChange to none
@@ -227,12 +242,74 @@ extension ViewModel {
                     // Update necessary globe configurations
                         self.configurations[globeID]?.isRotationPaused = globeConfiguration.isRotationPaused
                         activityState.changes[globeID]?.globeChange = GlobeChange.none
-                    case nil: // Update the globe configuration
+                   
+                        
+                    case nil:
                         break
                     case .some(.none):
                         break
+                
                 }
             }
+        
+        }
+    }
+    
+    @MainActor
+    func updateEntityChanges(globeID: Globe.ID, change: TempTransform, openImmsersiveSpaceAction: OpenImmersiveSpaceAction){
+        // Check if globe configuration in the activity state exists
+        guard let globeConfiguration = activityState.sharedGlobeConfiguration[globeID] else{
+            return
+        }
+        
+        guard let openImmersiveSpaceAction else{
+            return
+        }
+        
+        // We will go through each type of changes and compute what is necessary. Once done we will reset
+        // the globeChange to none
+        switch change.globeChange {
+            case .load: // We need to load the globe
+                // Rather than checking if configurations[globeID] we need to check the sharedGlobeConfiguration because the local configuration will not exist if the globe has not been loaded
+                if !globeConfiguration.isVisible{ // check if globe is not visible
+                    load(globe: globeConfiguration.globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
+                    
+                    // The globe rotation setting may be different for each user so we will set the default rotation bool to whomever sends the message first
+                    self.configurations[globeID]?.isRotationPaused = globeConfiguration.isRotationPaused
+                    activityState.changes[globeID]?.globeChange = GlobeChange.none
+                }
+            case .hide: // We need to hide the globe
+            // we need to check if there is a local configuration. If not, it means the globe does not exist hence already hidden.
+                guard let localGlobeConfiguration = configurations[globeID] else{
+                    activityState.changes[globeID]?.globeChange = GlobeChange.none
+                    return
+                }
+                 if localGlobeConfiguration.isVisible {
+                    activityState.sharedGlobeConfiguration.removeValue(forKey: globeID)
+                    activityState.changes.removeValue(forKey: globeID)
+                    hideGlobe(with: globeID)
+                    activityState.changes[globeID]?.globeChange = GlobeChange.none
+                }
+            case .transform: // We need to transform the globe to a new position
+                if let tempTranslation = self.activityState.changes[globeID]{
+                    let scale = tempTranslation.scale ?? 1
+                    let orientation = tempTranslation.orientation ?? simd_quatf(angle: 0, axis: .init(x: 0, y: 0, z: 1))
+                    let position = tempTranslation.position ?? .zero
+                    let duration = tempTranslation.duration ?? 0.2
+                    
+                    globeEntities[globeID]?.animateTransform(scale: scale, orientation: orientation, position: position, duration: duration)
+                    activityState.changes[globeID]?.globeChange = GlobeChange.none
+                }
+            case .update:
+            // Update necessary globe configurations
+                self.configurations[globeID]?.isRotationPaused = globeConfiguration.isRotationPaused
+                activityState.changes[globeID]?.globeChange = GlobeChange.none
+           
+                
+            case nil:
+                break
+            case .some(.none):
+                break
         
         }
     }

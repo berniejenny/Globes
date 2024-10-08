@@ -12,6 +12,20 @@ import GroupActivities
 
 /// VisionPro A will have its own globeConfiguration and for every change it will record what the change is and the globeConfiguration in the activityState. This information will be passed down to VisionPro B which will gather this information and
 /// apply the changes accordingly. This will work with more players too.
+
+#if DEBUG
+struct ActivityState: Codable, Equatable{
+    
+    /// Changes is a dictionary that will store tempTransform for each globe.ID
+    var changes: [Globe.ID: TempTransform] = [:]
+    
+    /// This will store the globeConfiguration for each globe.ID
+    var sharedGlobeConfiguration: [Globe.ID: GlobeConfiguration] = [:]
+    
+    var panoramaState: PanoramaState = PanoramaState()
+
+}
+#else
 struct ActivityState: Codable, Equatable, Transferable{
     
     /// Changes is a dictionary that will store tempTransform for each globe.ID
@@ -20,16 +34,16 @@ struct ActivityState: Codable, Equatable, Transferable{
     /// This will store the globeConfiguration for each globe.ID
     var sharedGlobeConfiguration: [Globe.ID: GlobeConfiguration] = [:]
     
-    var selectedTab = Tab.gallery
+    var panoramaState: PanoramaState = PanoramaState()
     
     // Conform to Transferable
     static var transferRepresentation: some TransferRepresentation {
-        
-        GroupActivityTransferRepresentation { _ in
-            return MyGroupActivity()
+            GroupActivityTransferRepresentation { _ in
+                MyGroupActivity()
+            }
         }
-    }
 }
+#endif
 
 enum Tab: Codable {
     case gallery, favorites, play, search, createGlobe, settings, about, sharePlay
@@ -42,6 +56,21 @@ enum GlobeChange: String, Codable, Equatable, CaseIterable {
     case transform
     case update
     case none
+}
+
+struct PanoramaState: Codable, Equatable{
+
+    var showPanorama: Bool = false
+    var hidePanorama: Bool = false
+    var currentPanoramaGlobe: Globe? = nil
+    var isUpdate: Bool = false
+    
+    mutating func update(showPanorama: Bool = false, hidePanorama: Bool = false, currentPanoramaGlobe: Globe? = nil){
+        self.showPanorama = showPanorama
+        self.hidePanorama = hidePanorama
+        self.currentPanoramaGlobe = currentPanoramaGlobe
+        self.isUpdate = true
+    }
 }
 
 /// A struct to store the different variables that we need to pass down to other users so we can transform the globe

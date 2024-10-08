@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -208,6 +208,12 @@
 		7DEAB0542B9B04C4004027B1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		7DEAB0562B9B04C4004027B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		2B17F0882CB2C34300D10677 /* SharePlayTestGlobes */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SharePlayTestGlobes; sourceTree = "<group>"; };
+		2B17F09B2CB2C34500D10677 /* SharePlayTestGlobesTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SharePlayTestGlobesTests; sourceTree = "<group>"; };
+		2B17F0A52CB2C34500D10677 /* SharePlayTestGlobesUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SharePlayTestGlobesUITests; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		7DCFBEED2BA4203900B4F27C /* Frameworks */ = {
@@ -428,6 +434,9 @@
 				7DEAB0462B9B04C2004027B1 /* Globes */,
 				2B090D582C855DD300A7D36C /* Helper */,
 				7DCFBEF12BA4203900B4F27C /* Globes Meta */,
+				2B17F0882CB2C34300D10677 /* SharePlayTestGlobes */,
+				2B17F09B2CB2C34500D10677 /* SharePlayTestGlobesTests */,
+				2B17F0A52CB2C34500D10677 /* SharePlayTestGlobesUITests */,
 				7DEAB0452B9B04C2004027B1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -526,7 +535,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1530;
+				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1540;
 				TargetAttributes = {
 					7DCFBEEF2BA4203900B4F27C = {

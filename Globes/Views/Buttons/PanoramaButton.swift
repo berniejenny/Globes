@@ -28,9 +28,13 @@ struct PanoramaButton: View {
             Button(action: {
                 if isSelected  {
                     model.hidePanorama()
+                    model.activityState.panoramaState.update(hidePanorama: true)
                 } else {
                     model.loadPanorama(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
+                    model.activityState.panoramaState.currentPanoramaGlobe = globe
+                    model.activityState.panoramaState.update(showPanorama: true, currentPanoramaGlobe: globe)
                 }
+                model.sendMessage()
             }) {
                 ButtonImage(name: isSelected || showLoadingProgress ? "pano.fill" : "pano")
                     .foregroundColor(isSelected || showLoadingProgress ? .accentColor : .primary)
