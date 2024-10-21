@@ -117,7 +117,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                             globeEntity.moveTowardCamera(distance: maxDistanceToCameraWhenTapped, radius: scaledRadius, duration: 1)
                         }
                     }
-                    model.activityState.changes[globeEntity.globeId]?.globeChange = GlobeChange.transform
+                    model.activityState.globeTransformations[globeEntity.globeId]?.globeChange = GlobeChange.transform
                 }
             }
     }
@@ -192,13 +192,21 @@ private struct GlobeGesturesModifier: ViewModifier {
                     let finalPosition = globeEntity.position(relativeTo: nil)
                     let finalOrientation = globeEntity.orientation
                     
+                    #warning("sometimes when other users load the globe, the local users activity changes and sharedglobeconfiguration is not initialized. Hence, the globes become unsynced")
                     // Update the activity state immediately
-                    model.activityState.changes[globeEntity.globeId]?.position = finalPosition
-                    model.activityState.changes[globeEntity.globeId]?.orientation = finalOrientation
-                    model.activityState.changes[globeEntity.globeId]?.globeChange = GlobeChange.transform
+//                    model.activityState.globeTransformations[globeEntity.globeId]?.position = finalPosition
+//                    model.activityState.globeTransformations[globeEntity.globeId]?.orientation = finalOrientation
+//                    model.activityState.globeTransformations[globeEntity.globeId]?.globeChange = GlobeChange.transform
+//                    
+//                    // Send the updated transformation
+//                    model.sendMessage()
                     
-                    // Send the updated transformation
-                    model.sendMessage()
+                    model.updateShareGlobe(globeID: globeEntity.globeId,
+                                               scale: globeEntity.scale.x,
+                                               orientation: finalOrientation,
+                                               position: finalPosition,
+                                               model: model,
+                                               globeChange: GlobeChange.transform)
                 }
             }
     }
@@ -246,10 +254,10 @@ private struct GlobeGesturesModifier: ViewModifier {
                 log("end magnify")
                 
                 if let globeEntity = value.entity as? GlobeEntity {
-                    model.activityState.changes[globeEntity.globeId]?.globeChange = GlobeChange.transform
-                    model.activityState.changes[globeEntity.globeId]?.scale = globeEntity.scale.x
-                    
-                    model.sendMessage()
+                    model.updateShareGlobe(globeID: globeEntity.globeId,
+                                               scale: globeEntity.scale.x,
+                                               model: model,
+                                               globeChange: GlobeChange.transform)
                 }
             }
     }
@@ -306,14 +314,14 @@ private struct GlobeGesturesModifier: ViewModifier {
                    let globeId = (value.entity as? GlobeEntity)?.globeId,
                    var configuration = model.configurations[globeId] {
                     configuration.isRotationPaused = paused
-                    model.configurations[globeId] = configuration
+                    model.configurations[globeId] = configuration	
+                
                 }
                 
                 state.endGesture()
                 
                 if let globeEntity = value.entity as? GlobeEntity {
-                    model.activityState.changes[globeEntity.globeId]?.globeChange = GlobeChange.transform
-                    model.sendMessage()
+                    model.activityState.globeTransformations[globeEntity.globeId]?.globeChange = GlobeChange.transform
                 }
             }
     }
@@ -399,7 +407,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                     state.endGesture()
                     
                     if let globeEntity = value.entity as? GlobeEntity {
-                        model.activityState.changes[globeEntity.globeId]?.globeChange = GlobeChange.transform
+                        model.activityState.globeTransformations[globeEntity.globeId]?.globeChange = GlobeChange.transform
                     }
                 default:
                     break

@@ -230,8 +230,10 @@ struct GlobeAttachmentView: View {
             .glassBackgroundEffect()
             
             Button(action: {
-                model.activityState.changes[globe.id]?.globeChange = GlobeChange.hide
-                model.sendMessage()
+//                model.activityState.globeTransformations[globe.id]?.globeChange = GlobeChange.hide
+//                model.sendMessage()
+                
+                model.updateShareGlobe(globeID: globe.id, model: model, globeChange: GlobeChange.hide)
                 
                 model.hideGlobe(with: globeId)
                 
@@ -343,8 +345,8 @@ struct GlobeAttachmentView: View {
         if var configuration {
             configuration.isRotationPaused.toggle()
             model.configurations[globeId] = configuration
-            self.model.activityState.sharedGlobeConfiguration[globeId]?.isRotationPaused = configuration.isRotationPaused
-            self.model.activityState.changes[globeId]?.globeChange = GlobeChange.update
+            self.model.activityState.sharedGlobeConfigurations[globeId]?.isRotationPaused = configuration.isRotationPaused
+            self.model.activityState.globeTransformations[globeId]?.globeChange = GlobeChange.update
             self.model.sendMessage()
             resetAttachmentTimer()
         }
@@ -420,9 +422,9 @@ struct GlobeAttachmentView: View {
     }
     
     private func sendRotationSharePlay(orientation_duration:(simd_quatf, Double)?){
-        model.activityState.changes[globeId]?.orientation = orientation_duration?.0
-        model.activityState.changes[globeId]?.duration = orientation_duration?.1
-        model.activityState.changes[globeId]?.globeChange = GlobeChange.transform
+        model.activityState.globeTransformations[globeId]?.orientation = orientation_duration?.0
+        model.activityState.globeTransformations[globeId]?.duration = orientation_duration?.1
+        model.activityState.globeTransformations[globeId]?.globeChange = GlobeChange.transform
         model.sendMessage()
     }
 }

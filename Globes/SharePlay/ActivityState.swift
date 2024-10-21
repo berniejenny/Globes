@@ -16,17 +16,33 @@ import GroupActivities
 #if DEBUG
 struct ActivityState: Codable, Equatable{
     
+    #warning("There are currently race conditions, therefore we need to get a messageHost, so anyone else that sends a message does not affect anything else")
+    var sessionHost: String?
+    
     /// Changes is a dictionary that will store tempTransform for each globe.ID
-    var changes: [Globe.ID: TempTransform] = [:]
+    var globeTransformations: [Globe.ID: TempTransform] = [:]
     
     /// This will store the globeConfiguration for each globe.ID
-    var sharedGlobeConfiguration: [Globe.ID: GlobeConfiguration] = [:]
+    var sharedGlobeConfigurations: [Globe.ID: GlobeConfiguration] = [:]
     
     var panoramaState: PanoramaState = PanoramaState()
-
+    
+    
+    
+//    mutating func setGlobeChange(globeID: Globe.ID, globeChange: GlobeChange){
+//        self.globeTransformations[globeID]?.globeChange = globeChange
+//    }
+    
+//    mutating func hideGlobe(globeID: Globe.ID){
+//        self.globeTransformations.removeValue(forKey: globeID)
+//        self.sharedGlobeConfigurations.removeValue(forKey: globeID)
+//    }
+    
 }
 #else
 struct ActivityState: Codable, Equatable, Transferable{
+    
+    var sessionHost: String?
     
     /// Changes is a dictionary that will store tempTransform for each globe.ID
     var changes: [Globe.ID: TempTransform] = [:]
@@ -42,6 +58,7 @@ struct ActivityState: Codable, Equatable, Transferable{
                 MyGroupActivity()
             }
         }
+    
 }
 #endif
 
@@ -63,13 +80,14 @@ struct PanoramaState: Codable, Equatable{
     var showPanorama: Bool = false
     var hidePanorama: Bool = false
     var currentPanoramaGlobe: Globe? = nil
-    var isUpdate: Bool = false
+    var isUpdate: Bool {
+        return showPanorama || hidePanorama
+    }
     
     mutating func update(showPanorama: Bool = false, hidePanorama: Bool = false, currentPanoramaGlobe: Globe? = nil){
         self.showPanorama = showPanorama
         self.hidePanorama = hidePanorama
         self.currentPanoramaGlobe = currentPanoramaGlobe
-        self.isUpdate = true
     }
 }
 
