@@ -19,6 +19,7 @@ private struct GlobeGesturesModifier: ViewModifier {
     
     /// State variables for drag, magnify, scale and 3D rotation gestures. State variables for the y-rotation gesture is separate.
     struct GlobeGestureState {
+        var isOwner = false
         var isDragging = false
         var isScaling: Bool { scaleAtGestureStart != nil }
         var isRotating: Bool { orientationAtGestureStart != nil }
@@ -55,6 +56,7 @@ private struct GlobeGesturesModifier: ViewModifier {
             cameraPositionAtGestureStart = nil
             isRotationPausedAtGestureStart = nil
             previousLocation3D = nil
+            isOwner = false
         }
     }
     
@@ -117,7 +119,10 @@ private struct GlobeGesturesModifier: ViewModifier {
                             globeEntity.moveTowardCamera(distance: maxDistanceToCameraWhenTapped, radius: scaledRadius, duration: 1)
                         }
                     }
+                    
                     model.activityState.globeTransformations[globeEntity.globeId]?.globeChange = GlobeChange.transform
+                    // Only claim ownership if this device is not already the owner
+                    model.forceClaimOwnership()
                 }
             }
     }
@@ -132,6 +137,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                     configuration.isRotationPaused.toggle()
                     model.configurations[globeId] = configuration
                 }
+                model.forceClaimOwnership()
             }
     }
     
@@ -141,6 +147,7 @@ private struct GlobeGesturesModifier: ViewModifier {
             .targetedToAnyEntity()
             .handActivationBehavior(.automatic) // allow for globe to be pushed when the hand or a finger intersects it
             .onChanged { value in
+                model.forceClaimOwnership()
                 Task { @MainActor in
                     guard !state.isScaling,
                           !state.isRotating,
@@ -176,7 +183,8 @@ private struct GlobeGesturesModifier: ViewModifier {
                         let rotationSinceStart = simd_quatf(from: v1, to: v2)
                         let localRotationSinceStart = simd_quatf(value.convert(rotation: rotationSinceStart, from: .scene, to: .local))
                         let rotation = simd_mul(localRotationSinceStart, localRotationAtGestureStart)
-
+                        
+                        
                         // animate the transformation to reduce jitter, as in the Apple EntityGestures sample project
                         globeEntity.animateTransform(orientation: rotation, position: position, duration: animationDuration)
                     }
@@ -247,6 +255,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                             )
                         }
                     }
+                    model.forceClaimOwnership()
                 }
             }
             .onEnded { value in
@@ -304,6 +313,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                         globeEntity.animationPlaybackController?.stop()
                         globeEntity.orientation = simd_quatf(newOrientation)
                     }
+                    model.forceClaimOwnership()
                 }
             }
             .onEnded { value in
@@ -387,7 +397,7 @@ private struct GlobeGesturesModifier: ViewModifier {
                             entity.orientation *= simd_quatf(angle: rotationAmount, axis: SIMD3<Float>(0, 1, 0))
                         }
                     }
-                    
+                    model.forceClaimOwnership()
                     // Dragging ended or the long press cancelled.
                 default:
                     yRotationState = .inactive

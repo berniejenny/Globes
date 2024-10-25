@@ -266,18 +266,20 @@ import ARKit
     /// Hide a globe. The globe shrinks down. The corresponding `GlobeConfiguration` and `GlobeEntity` are deleted.
     /// - Parameter id: Globe ID
     func hideGlobe(with id: Globe.ID) {
-        if configurations[id]!.isLoading{
+        guard let configuration = configurations[id] else { return }
+        if configuration.isLoading {
             return
         }
+
         let duration = 0.666
+
+        // Remove the globe transformation and configuration from the activity state
+        self.activityState.globeTransformations.removeValue(forKey: id)
+        self.activityState.sharedGlobeConfigurations.removeValue(forKey: id)
         
-        activityState.sharedGlobeConfigurations.removeValue(forKey: id)
-        activityState.globeTransformations.removeValue(forKey: id)
+       
         
-        // Send the updated state before making changes locally
-        sendMessage()
-        
-        // shrink the globe
+        // Shrink the globe visually before removing it
         if let globeEntity = globeEntities[id],
            let radius = globes.first(where: { $0.id == id })?.radius {
             globeEntity.scaleAndAdjustDistanceToCamera(
@@ -286,17 +288,20 @@ import ARKit
                 duration: duration
             )
         }
+        
         configurations[id]?.isVisible = false
-        // remove the globe from this model
+        
+        // Remove the globe from the model after the animation
         Task { @MainActor in
             try? await Task.sleep(for: .seconds(duration))
-//            assert(configurations.keys.contains(id), "No configuration for \(id)")
-//            assert(globeEntities.keys.contains(id), "No globe entity for \(id)")
             configurations[id] = nil
             globeEntities[id] = nil
             
+            // Send a message immediately to notify others about the globe hiding
+            self.sendMessage(isAcknowledgment: false)
         }
     }
+
     
     @MainActor
     /// Hide all currently visible globes and delete their GlobeConfiguration` and `GlobeEntity`.
@@ -687,6 +692,10 @@ import ARKit
     
     /// Boolean that indicates if share play is enabled
     var sharePlayEnabled = false
+    
+    var isOwner: Bool {
+        return activityState.owner == UIDevice.current.identifierForVendor?.uuidString
+    }
         
 #if DEBUG
     var groupSession: GroupSessionMock<MyGroupActivity>?
@@ -710,51 +719,47 @@ import ARKit
                          position: SIMD3<Float>? = nil,
                          duration: Double? = nil,
                          model: ViewModel,
-                         globeChange: GlobeChange){
-        
+                         globeChange: GlobeChange,
+                          claimOwnership: Bool = false){
+
         guard let currentGlobeID = globeID ?? globe?.id else {
-            return // If both are nil
+            return // If both are nil, exit
         }
-        
-        let updatedScale = scale
-        let updatedOrientation = orientation
-        let updatedPosition = position
-        let updatedDuration = duration
-       
+        if claimOwnership && !model.isOwner {
+            model.forceClaimOwnership()
+        }
+
         DispatchQueue.main.async {
-            // Ensure globeTransformations exists for currentGlobeID
+            // Ensure transformations exist for currentGlobeID
             if self.activityState.globeTransformations[currentGlobeID] == nil {
-                // Ensure sharedGlobeConfigurations exists for currentGlobeID
+                if globeChange == GlobeChange.hide { return }
                 guard let configuration = model.configurations[currentGlobeID] else {
-                    print("Configuration for \(currentGlobeID) is nil")
                     return
                 }
                 self.activityState.sharedGlobeConfigurations[currentGlobeID] = configuration
-                
-                // Create a TempTransform only if configuration exists
+
                 self.activityState.globeTransformations[currentGlobeID] = TempTransform(
-                    scale: updatedScale,
-                    orientation: updatedOrientation,
-                    position: updatedPosition,
-                    globeChange: GlobeChange.load
+                    scale: scale,
+                    orientation: orientation,
+                    position: position,
+                    globeChange: globeChange
                 )
             }
-            
-            // Now update transformations safely
+
+            // Now safely update transformations
             if var transformation = self.activityState.globeTransformations[currentGlobeID] {
                 transformation.globeChange = globeChange
-                transformation.scale = updatedScale
-                transformation.orientation = updatedOrientation
-                transformation.position = updatedPosition
-                transformation.duration = updatedDuration
+                transformation.scale = scale
+                transformation.orientation = orientation
+                transformation.position = position
+                transformation.duration = duration
                 self.activityState.globeTransformations[currentGlobeID] = transformation
-            } else {
-                print("Transformation for \(currentGlobeID) not found")
             }
-
+            // Send the updated message
             self.sendMessage()
         }
     }
+
 
     
     
@@ -794,11 +799,8 @@ import ARKit
 
         // Timer to synchronize the position of this entity with the camera position
         _ = Timer.scheduledTimer(withTimeInterval: timerInterval, repeats: true) { timer in
-            DispatchQueue.main.asyncAfter(deadline: .now()) { [self] in
-                // Check if the panorama entity is not nil
-                if self.panoramaGlobe != nil {
-                    self.activityState.panoramaState.showPanorama = true
-                }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
+                
                 // Loop through all globe entities and update the activity state
                 for (globeID, globeEntity) in self.globeEntities {
                    
@@ -806,41 +808,38 @@ import ARKit
                     // This is because if it is not .none it means that there is a change that needs to be applied first
                     // And if we don't, it means the change will be overwritten!!
                     let changes = self.activityState.globeTransformations[globeID]?.globeChange
-                    if self.activityState.globeTransformations[globeID] != nil && changes != GlobeChange.none{
-                        self.sendMessage() // we still need to send the original message
+                    if self.activityState.globeTransformations[globeID] != nil,
+                        changes == GlobeChange.hide,
+                        changes == GlobeChange.load
+                    {
+                        // we still need to send the original message
                         continue
                     }
                     if var activityState = self.activityState.globeTransformations[globeID] {
+                        // check if activityState and globeEntity values are not the same
+                        if activityState.scale == globeEntity.scale.x,
+                           activityState.orientation == globeEntity.orientation,
+                           activityState.position == globeEntity.position
+                        {
+                            continue
+                        }
                         activityState.scale = globeEntity.scale.x
                         activityState.orientation = globeEntity.orientation
                         activityState.position = globeEntity.position
                         activityState.duration = 0.2
-                        // if nothing else is happening we check the if the globe has moved positions and transform it
-//                        if !globeEntity.isAnimating {
-//                            activityState.globeChange = GlobeChange.transform
-//                        }
-                        
+                        activityState.globeChange = GlobeChange.transform
                         self.activityState.globeTransformations[globeID] = activityState // Update the dictionary
                     }
-                    
-                    // every tick we want to check if globe is visible if not we hide for all other users
-                    if let isVisible = self.configurations[globeID]?.isVisible, !isVisible {
-                        self.activityState.globeTransformations.removeValue(forKey: globeID)
-                        self.activityState.sharedGlobeConfigurations.removeValue(forKey: globeID)
-                    }
-                   
-                    self.sendMessage()
                 }
-                
-                
+                self.sendMessage()
             }
         }
-//        cancellable = subject
-//            .debounce(for: .seconds(0.1), scheduler: RunLoop.main)
-//            .sink { activityState in
-//                Task{
-//                    try? await self.messenger?.send(activityState)
-//                }
-//            }
+        cancellable = subject
+            .debounce(for: .seconds(0.1), scheduler: RunLoop.main)
+            .sink { activityState in
+                Task{
+                    try? await self.messenger?.send(activityState)
+                }
+            }
         }
 }

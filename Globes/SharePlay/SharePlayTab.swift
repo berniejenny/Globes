@@ -71,6 +71,8 @@ struct SharePlayTab: View {
             })
             .buttonStyle(.bordered)
             .tint(model.sharePlayEnabled ? .green : .gray)
+            
+            Text("Is owner ") + Text("\(model.isOwner ? "true" : "false")").bold()
 
 #endif
             

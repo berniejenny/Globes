@@ -17,7 +17,7 @@ import GroupActivities
 struct ActivityState: Codable, Equatable{
     
     #warning("There are currently race conditions, therefore we need to get a messageHost, so anyone else that sends a message does not affect anything else")
-    var sessionHost: String?
+    var owner: String?
     
     /// Changes is a dictionary that will store tempTransform for each globe.ID
     var globeTransformations: [Globe.ID: TempTransform] = [:]
@@ -27,30 +27,25 @@ struct ActivityState: Codable, Equatable{
     
     var panoramaState: PanoramaState = PanoramaState()
     
-    
-    
-//    mutating func setGlobeChange(globeID: Globe.ID, globeChange: GlobeChange){
-//        self.globeTransformations[globeID]?.globeChange = globeChange
-//    }
-    
-//    mutating func hideGlobe(globeID: Globe.ID){
-//        self.globeTransformations.removeValue(forKey: globeID)
-//        self.sharedGlobeConfigurations.removeValue(forKey: globeID)
-//    }
+    /// Track whether each participant has finished processing updates
+    var participantsAcknowledgments: [String: Bool] = [:]
     
 }
 #else
 struct ActivityState: Codable, Equatable, Transferable{
     
-    var sessionHost: String?
+    var owner: String?
     
     /// Changes is a dictionary that will store tempTransform for each globe.ID
-    var changes: [Globe.ID: TempTransform] = [:]
+    var globeTransformations: [Globe.ID: TempTransform] = [:]
     
     /// This will store the globeConfiguration for each globe.ID
-    var sharedGlobeConfiguration: [Globe.ID: GlobeConfiguration] = [:]
+    var sharedGlobeConfigurations: [Globe.ID: GlobeConfiguration] = [:]
     
     var panoramaState: PanoramaState = PanoramaState()
+    
+    /// Track whether each participant has finished processing updates
+    var participantsAcknowledgments: [String: Bool] = [:]
     
     // Conform to Transferable
     static var transferRepresentation: some TransferRepresentation {

@@ -233,7 +233,7 @@ struct GlobeAttachmentView: View {
 //                model.activityState.globeTransformations[globe.id]?.globeChange = GlobeChange.hide
 //                model.sendMessage()
                 
-                model.updateShareGlobe(globeID: globe.id, model: model, globeChange: GlobeChange.hide)
+                model.updateShareGlobe(globeID: globe.id, model: model, globeChange: GlobeChange.hide, claimOwnership: true)
                 
                 model.hideGlobe(with: globeId)
                 
@@ -347,6 +347,7 @@ struct GlobeAttachmentView: View {
             model.configurations[globeId] = configuration
             self.model.activityState.sharedGlobeConfigurations[globeId]?.isRotationPaused = configuration.isRotationPaused
             self.model.activityState.globeTransformations[globeId]?.globeChange = GlobeChange.update
+            
             self.model.sendMessage()
             resetAttachmentTimer()
         }
@@ -425,7 +426,12 @@ struct GlobeAttachmentView: View {
         model.activityState.globeTransformations[globeId]?.orientation = orientation_duration?.0
         model.activityState.globeTransformations[globeId]?.duration = orientation_duration?.1
         model.activityState.globeTransformations[globeId]?.globeChange = GlobeChange.transform
+        model.forceClaimOwnership()
         model.sendMessage()
+        
+//        DispatchQueue.main.asyncAfter(deadline: .now()) {
+//            model.subject.send(model.activityState)
+//        }
     }
 }
 
