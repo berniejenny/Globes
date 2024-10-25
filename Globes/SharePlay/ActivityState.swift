@@ -19,6 +19,8 @@ struct ActivityState: Codable, Equatable{
     #warning("There are currently race conditions, therefore we need to get a messageHost, so anyone else that sends a message does not affect anything else")
     var owner: String?
     
+    var ownershipTimestamp: Date = Date()
+    
     /// Changes is a dictionary that will store tempTransform for each globe.ID
     var globeTransformations: [Globe.ID: TempTransform] = [:]
     

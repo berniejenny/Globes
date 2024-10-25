@@ -156,21 +156,23 @@ extension ViewModel {
     }
 
     func receive(_ message: ActivityState) {
-        
-        // We do not want to receive messages if sharePlay is not active
+        // Ensure SharePlay is active
         guard sharePlayEnabled else { return }
-        
-        Task{ @MainActor in
+
+        Task { @MainActor in
+            // If the local device is the owner and the incoming message has an older timestamp, ignore it
+            if isOwner && (message.ownershipTimestamp <= self.activityState.ownershipTimestamp) {
+                Logger().info("Ignored ownership update from \(message.owner ?? "unknown") due to older timestamp.")
+                return
+            }
             
-            
-            
-            // update the activity state with the new message passed from other users
+            // Apply the incoming message's activity state and update the UI if the message has a newer timestamp
             self.activityState = message
-            // after we get the new activity state we need to update the UI/Globe position
-            
             self.updateEntity()
+            
         }
     }
+
     
     
     @MainActor
@@ -209,24 +211,17 @@ extension ViewModel {
     
     @MainActor
     func forceClaimOwnership() {
-        if self.isOwner{
-            return
-        }
-        Task(priority: .high) {
-            // Ensure ownership update happens on the main thread and synchronously
-            await MainActor.run {
-                self.activityState.owner = UIDevice.current.identifierForVendor?.uuidString
-                self.sendMessage()
-            }
+        // If already the owner, do nothing
+        if self.isOwner { return }
 
+        // Update ownership to the current device and set the current timestamp
+        self.activityState.owner = UIDevice.current.identifierForVendor?.uuidString
+        self.activityState.ownershipTimestamp = Date()  // Set the current timestamp
 
-            // Check if ownership state was retained or reverted
-            if self.activityState.owner != UIDevice.current.identifierForVendor?.uuidString {
-                // Log or handle the ownership conflict if necessary
-                Logger().info("Ownership force claim failed, reverting to previous owner")
-            }
-        }
+        // Send the ownership claim with the updated timestamp
+        self.sendMessage()
     }
+
     
     
     
@@ -237,9 +232,6 @@ extension ViewModel {
     private func updateEntity() {
         Task{
             guard let openImmersiveSpaceAction else{
-                return
-            }
-            if self.isOwner{
                 return
             }
             // Iterate through all the activityState changes

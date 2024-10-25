@@ -347,7 +347,7 @@ struct GlobeAttachmentView: View {
             model.configurations[globeId] = configuration
             self.model.activityState.sharedGlobeConfigurations[globeId]?.isRotationPaused = configuration.isRotationPaused
             self.model.activityState.globeTransformations[globeId]?.globeChange = GlobeChange.update
-            
+            model.forceClaimOwnership()
             self.model.sendMessage()
             resetAttachmentTimer()
         }

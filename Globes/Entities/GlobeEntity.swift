@@ -129,10 +129,15 @@ class GlobeEntity: Entity, Codable {
         if animationPlaybackController?.isPlaying == false {
             Logger().warning("move(to: relativeTo: duration:) animation not playing for '\(self.name)'.")
             self.transform = transform
+            isAnimating = false
+        } else {
+            // Set `isAnimating` to false after the animation duration
+            DispatchQueue.main.asyncAfter(deadline: .now() + duration) { [weak self] in
+                self?.isAnimating = false
+            }
         }
-
-        isAnimating = false
     }
+
     
 
       

@@ -52,9 +52,10 @@ struct GlobeButton: View {
     private func showOrHideGlobe(_ show: Bool) {
         Task { @MainActor in
             if show {
+                model.forceClaimOwnership()
                 model.load(globe: globe, openImmersiveSpaceAction: openImmersiveSpaceAction)
-                
-                model.updateShareGlobe(globe: globe, model: model, globeChange: GlobeChange.load, claimOwnership: true)
+               
+                model.updateShareGlobe(globe: globe, model: model, globeChange: GlobeChange.load)
                 
                 // LOAD: SEND MESSAGE
 //                model.activityState.changes[globe.id]?.globeChange = GlobeChange.load
@@ -64,7 +65,8 @@ struct GlobeButton: View {
                 
 //                model.activityState.changes[globe.id]?.globeChange = GlobeChange.hide
 //                model.sendMessage()
-                model.updateShareGlobe(globe: globe, model: model, globeChange: GlobeChange.hide, claimOwnership: true)
+                model.forceClaimOwnership()
+                model.updateShareGlobe(globe: globe, model: model, globeChange: GlobeChange.hide)
                 
                 model.hideGlobe(with: globe.id)
                 bounceDownTrigger += 1

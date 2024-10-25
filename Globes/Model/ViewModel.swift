@@ -298,7 +298,7 @@ import ARKit
             globeEntities[id] = nil
             
             // Send a message immediately to notify others about the globe hiding
-            self.sendMessage(isAcknowledgment: false)
+            self.sendMessage()
         }
     }
 
@@ -799,11 +799,15 @@ import ARKit
 
         // Timer to synchronize the position of this entity with the camera position
         _ = Timer.scheduledTimer(withTimeInterval: timerInterval, repeats: true) { timer in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [self] in
                 
                 // Loop through all globe entities and update the activity state
                 for (globeID, globeEntity) in self.globeEntities {
                    
+                    // Skip updates if the entity is animating
+                    if globeEntity.isAnimating {
+                        continue
+                    }
                     // Check if changes dictionary is not none and make sure that the globeChange is not .none
                     // This is because if it is not .none it means that there is a change that needs to be applied first
                     // And if we don't, it means the change will be overwritten!!
@@ -813,6 +817,7 @@ import ARKit
                         changes == GlobeChange.load
                     {
                         // we still need to send the original message
+                        self.sendMessage()
                         continue
                     }
                     if var activityState = self.activityState.globeTransformations[globeID] {
